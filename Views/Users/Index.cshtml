@@ -1,0 +1,91 @@
+﻿@model IEnumerable<Restaurant_Management__System.Models.User>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="fw-bold">Users</h2>
+        <p class="text-muted">Manage system users</p>
+    </div>
+
+    <a asp-action="Create" class="btn btn-dark">
+        <i class="bi bi-person-plus"></i>
+        Add User
+    </a>
+
+</div>
+
+<div class="table-card">
+
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>#@item.UserId</td>
+
+                        <td>
+                            <strong>@item.FullName</strong>
+                        </td>
+
+                        <td>@item.Email</td>
+
+                        <td>@item.Phone</td>
+
+                        <td>
+                            <span class="badge bg-primary">
+                                @item.Role
+                            </span>
+                        </td>
+
+                        <td class="text-end">
+
+                            <a asp-action="Details"
+                               asp-route-id="@item.UserId"
+                               class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye"></i>
+                            </a>
+
+                            <a asp-action="Edit"
+                               asp-route-id="@item.UserId"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@item.UserId"
+                               class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

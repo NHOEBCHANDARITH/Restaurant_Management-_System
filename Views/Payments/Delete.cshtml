@@ -1,0 +1,100 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Restaurant_Management__System.Models.Payment
+
+@{
+    ViewData["Title"] = "Delete Payment";
+}
+
+<div class="container py-4">
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">
+                <i class="bi bi-trash me-2"></i>
+                Delete Payment
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                Are you sure you want to delete this payment?
+            </div>
+
+            <dl class="row">
+
+                <dt class="col-sm-4">
+                    Payment ID
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.PaymentId
+                </dd>
+
+                <dt class="col-sm-4">
+                    Order ID
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.OrderId
+                </dd>
+
+                <dt class="col-sm-4">
+                    Payment Method
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.PaymentMethod
+                </dd>
+
+                <dt class="col-sm-4">
+                    Payment Date
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.PaymentDate.ToString("dd/MM/yyyy HH:mm")
+                </dd>
+
+                <dt class="col-sm-4">
+                    Amount
+                </dt>
+                <dd class="col-sm-8 fw-bold">
+                    $@Model.Amount.ToString("N2")
+                </dd>
+
+                <dt class="col-sm-4">
+                    Status
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.PaymentStatus
+                </dd>
+
+            </dl>
+
+            <hr />
+
+            <form asp-action="Delete">
+
+                <input type="hidden"
+                       asp-for="PaymentId" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    <i class="bi bi-trash me-1"></i>
+                    Confirm Delete
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

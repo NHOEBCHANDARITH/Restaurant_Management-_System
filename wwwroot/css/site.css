@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -28,4 +28,607 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+:root {
+    --gold-primary: #c59d5f;
+    --gold-hover: #b3894b;
+    --gold-light-bg: rgba(197, 157, 95, 0.08);
+    --gold-glow: rgba(197, 157, 95, 0.25);
+    --nav-bg: rgba(255, 255, 255, 0.92); /* Glass Effect Background */
+    --nav-text: #2c3038;
+    --nav-text-muted: #6c757d;
+    --nav-border: rgba(197, 157, 95, 0.18);
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --shadow-gold: 0 8px 20px rgba(197, 157, 95, 0.28);
+    --nav-height: 70px;
+}
+
+/* =========================================================
+   PUBLIC NAVBAR WRAPPER
+========================================================= */
+.public-navbar {
+    width: 100%;
+    height: var(--nav-height);
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--nav-border);
+    box-shadow: var(--shadow-soft);
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    transition: all 0.3s ease;
+}
+
+.public-navbar-container {
+    width: 100%;
+    max-width: 1320px;
+    height: var(--nav-height);
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+}
+
+/* =========================================================
+   1. BRAND LOGO
+========================================================= */
+.public-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    margin-right: 35px;
+}
+
+.public-brand-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+    color: #ffffff;
+    border-radius: 12px;
+    font-size: 21px;
+    box-shadow: var(--shadow-gold);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.public-brand:hover .public-brand-icon {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(170, 124, 17, 0.4);
+}
+
+.public-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+    .public-brand-text strong {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text-dark);
+        letter-spacing: -0.5px;
+    }
+
+    .public-brand-text span {
+        font-size: 10px;
+        color: var(--gold-primary);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2.5px;
+    }
+
+/* =========================================================
+   2. NAVIGATION LINKS & HOVER EFFECTS
+========================================================= */
+.public-nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.public-nav-link {
+    position: relative;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 16px;
+    color: var(--nav-text-muted) !important;
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 500;
+    border-radius: 20px; /* Pill Shape Hover */
+    transition: all 0.25s ease;
+}
+    .public-nav-link:hover {
+        color: var(--gold-primary) !important;
+        background: var(--gold-light-bg);
+    }
+
+        .public-nav-link:hover i {
+            color: var(--gold-primary);
+            transform: translateY(-1px);
+        }
+
+    /* Active State Design */
+    .public-nav-link.active {
+        color: var(--gold-primary) !important;
+        background: var(--gold-light-bg);
+        font-weight: 600;
+    }
+
+        .public-nav-link.active i {
+            color: var(--gold-primary);
+        }
+
+        .public-nav-link.active::after {
+            content: "";
+            position: absolute;
+            bottom: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: linear-gradient(90deg, #d4af37, #aa7c11);
+            border-radius: 10px;
+        }
+
+/* =========================================================
+   4. BUTTONS (Refined Gold & Outline Styles)
+========================================================= */
+.public-navbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.public-icon-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 1px solid var(--nav-border);
+    border-radius: 12px;
+    color: var(--nav-text);
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+    .public-icon-btn:hover {
+        color: var(--gold-primary);
+        background: var(--gold-light-bg);
+        border-color: var(--gold-primary);
+        transform: translateY(-2px);
+    }
+
+.cart-badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    background: linear-gradient(135deg, #e63946, #d62828);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 5px rgba(214, 40, 40, 0.4);
+}
+
+/* Login Button */
+.public-login-btn {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 16px;
+    color: var(--nav-text);
+    border: 1px solid var(--nav-border);
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+    .public-login-btn:hover {
+        color: var(--gold-primary);
+        border-color: var(--gold-primary);
+        background: var(--gold-light-bg);
+    }
+
+/* Book Table Button (Gradient Luxury Gold) */
+.public-book-btn {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 18px;
+    background: linear-gradient(135deg, #c59d5f 0%, #a27a3c 100%);
+    color: #ffffff !important;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    box-shadow: var(--shadow-gold);
+    transition: all 0.25s ease;
+}
+    .public-book-btn:hover {
+        background: linear-gradient(135deg, #b3894b 0%, #8e672d 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(197, 157, 95, 0.4);
+    }
+/* Mobile Toggle Button */
+.public-mobile-btn {
+    display: none;
+    width: 38px;
+    height: 38px;
+    margin-left: auto;
+    background: #ffffff;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    font-size: 22px;
+    color: var(--text-dark);
+    transition: background 0.2s ease;
+}
+
+    .public-mobile-btn:hover {
+        background: var(--primary-gold-light);
+    }
+
+/* =========================================================
+   4. RESPONSIVE BREAKPOINTS
+========================================================= */
+@media (min-width: 993px) {
+    .public-navbar .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
+        align-items: center;
+    }
+}
+
+@media (max-width: 992px) {
+    .public-navbar {
+        height: auto;
+    }
+
+    .public-navbar-container {
+        height: var(--nav-height);
+    }
+
+    .public-mobile-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .public-navbar .navbar-collapse {
+        width: 100%;
+        background: #ffffff;
+        padding: 15px 20px 20px;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        border-top: 1px solid var(--border-light);
+    }
+
+    .public-nav-menu {
+        flex-direction: column;
+        width: 100%;
+        gap: 2px;
+    }
+
+    .public-nav-link {
+        width: 100%;
+        height: 44px;
+        border-radius: 8px;
+        padding: 0 12px;
+    }
+
+        .public-nav-link.active::after {
+            display: none;
+        }
+
+    .public-navbar-right {
+        width: 100%;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-light);
+        justify-content: space-between;
+    }
+}
+
+/* =========================================================
+   1. DESKTOP FIX (បង្ហាញ MENU លើ DESKTOP)
+========================================================= */
+@media (min-width: 993px) {
+    .public-navbar .navbar-collapse {
+        display: flex !important;
+        flex-basis: auto;
+        align-items: center;
+    }
+}
+
+
+/* =========================================================
+   2. GENERAL STYLE IMPROVEMENTS (ទំហំ TEXT & ICON ធំស្អាត)
+========================================================= */
+
+/* Logo / Brand */
+.public-brand-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+}
+
+.public-brand-text strong {
+    font-size: 22px;
+}
+
+.public-brand-text span {
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+/* Navigation Links */
+.public-nav-link {
+    font-size: 15px;
+    font-weight: 500;
+    gap: 8px;
+    padding: 0 18px;
+}
+    .public-nav-link i {
+        font-size: 18px;
+    }
+
+/* Buttons Right */
+.public-icon-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+}
+
+.public-login-btn {
+    height: 44px;
+    font-size: 14px;
+    padding: 0 18px;
+    gap: 8px;
+}
+
+    .public-login-btn i {
+        font-size: 18px;
+    }
+
+.public-book-btn {
+    height: 44px;
+    font-size: 14px;
+    padding: 0 20px;
+    gap: 8px;
+}
+
+    .public-book-btn i {
+        font-size: 18px;
+    }
+
+.public-mobile-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+}
+
+
+/* =========================================================
+   3. SMALL MOBILE RESPONSIVE (< 576px)
+========================================================= */
+@media (max-width: 576px) {
+
+    .public-navbar-container {
+        padding: 0 12px;
+    }
+
+    .public-brand-text strong {
+        font-size: 18px;
+    }
+
+    .public-brand-text span {
+        font-size: 9px;
+        letter-spacing: 1.5px;
+    }
+
+    .public-brand-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+    }
+
+    .public-login-btn {
+        padding: 0 10px;
+        font-size: 13px;
+    }
+
+    .public-book-btn {
+        padding: 0 12px;
+        font-size: 13px;
+    }
+}
+
+/* =========================================================
+   PUBLIC FOOTER STYLES
+========================================================= */
+.public-footer {
+    background-color: #1a1a1a;
+    color: #a0a0a0;
+    padding-top: 60px;
+    padding-bottom: 25px;
+    font-size: 14px;
+    border-top: 3px solid #b8864b; /* បន្ទាត់ពណ៌មាសលម្អខាងលើ */
+}
+
+/* Brand Section */
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-brand-icon {
+    width: 44px;
+    height: 44px;
+    background: #b8864b;
+    color: #ffffff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.footer-brand-text strong {
+    font-size: 20px;
+    color: #ffffff;
+    display: block;
+    line-height: 1.1;
+}
+
+.footer-brand-text span {
+    font-size: 10px;
+    color: #b8864b;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.footer-desc {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #999999;
+}
+
+/* Titles */
+.footer-title {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+    .footer-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 35px;
+        height: 2px;
+        background: #b8864b;
+    }
+
+/* Links List */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .footer-links li {
+        margin-bottom: 10px;
+    }
+
+    .footer-links a {
+        color: #a0a0a0;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .footer-links a i {
+            font-size: 12px;
+            color: #b8864b;
+            transition: transform 0.25s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+            padding-left: 5px;
+        }
+
+            .footer-links a:hover i {
+                transform: translateX(3px);
+            }
+
+/* Social Icons */
+.footer-socials {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.social-link {
+    width: 36px;
+    height: 36px;
+    background: #282828;
+    color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+    .social-link:hover {
+        background: #b8864b;
+        color: #ffffff;
+        transform: translateY(-3px);
+    }
+
+/* Contact Info */
+.footer-contact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .footer-contact li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+        color: #a0a0a0;
+    }
+
+    .footer-contact i {
+        color: #b8864b;
+        font-size: 16px;
+        margin-top: 2px;
+    }
+
+/* Footer Bottom */
+.footer-bottom {
+    margin-top: 45px;
+    padding-top: 20px;
+    border-top: 1px solid #2a2a2a;
+    font-size: 13px;
+    color: #777777;
+}
+
+.footer-badge {
+    background: #252525;
+    color: #b8864b;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    border: 1px solid #333333;
 }

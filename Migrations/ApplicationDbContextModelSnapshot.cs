@@ -36,7 +36,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.Customer", b =>
@@ -61,7 +61,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.DiningTable", b =>
@@ -85,7 +85,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasKey("TableId");
 
-                    b.ToTable("DiningTables");
+                    b.ToTable("DiningTables", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.Ingredient", b =>
@@ -114,7 +114,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Ingredients");
+                    b.ToTable("Ingredients", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.Inventory", b =>
@@ -138,7 +138,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasIndex("IngredientId");
 
-                    b.ToTable("Inventories");
+                    b.ToTable("Inventories", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.MenuItem", b =>
@@ -156,6 +156,9 @@ namespace Restaurant_Management__System.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ItemName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -171,7 +174,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("MenuItems");
+                    b.ToTable("MenuItems", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.Order", b =>
@@ -209,7 +212,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.OrderDetail", b =>
@@ -241,7 +244,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.Payment", b =>
@@ -273,7 +276,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.Reservation", b =>
@@ -306,7 +309,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasIndex("TableId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.Supplier", b =>
@@ -319,19 +322,22 @@ namespace Restaurant_Management__System.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("SupplierName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("SupplierId");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.User", b =>
@@ -364,7 +370,7 @@ namespace Restaurant_Management__System.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Restaurant_Management__System.Models.Ingredient", b =>

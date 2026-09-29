@@ -1,50 +1,303 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Restaurant_Management__System</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Restaurant_Management__System.styles.css" asp-append-version="true" />
+
+    <title>@ViewData["Title"] - Restaurant Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Site CSS -->
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Restaurant_Management__System</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+
+<body class="bg-light">
+
+    <!-- ================= NAVBAR ================= -->
+    <!-- ================= MODERN NAVBAR ================= -->
+
+    <nav class="public-navbar">
+
+        <div class="public-navbar-container">
+
+            <!-- LOGO -->
+            <a class="public-brand"
+               asp-controller="Home"
+               asp-action="Index">
+
+                <div class="public-brand-icon">
+                    <i class="bi bi-shop"></i>
+                </div>
+
+                <div class="public-brand-text">
+                    <strong>Resto</strong>
+                    <span>Restaurant</span>
+                </div>
+
+            </a>
+
+
+            <!-- MOBILE BUTTON -->
+            <button class="public-mobile-btn"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#publicNavbar">
+
+                <i class="bi bi-list"></i>
+
+            </button>
+
+
+            <!-- NAVIGATION -->
+            <div class="collapse navbar-collapse"
+                 id="publicNavbar">
+
+                <ul class="public-nav-menu">
+
+                    <!-- HOME -->
+                    <li>
+                        <a asp-controller="Home"
+                           asp-action="Index"
+                           class="public-nav-link active">
+
+                            <i class="bi bi-house"></i>
+                            <span>Home</span>
+
+                        </a>
+                    </li>
+
+
+                    <!-- MENU -->
+                    <li>
+                        <a asp-controller="MenuItems"
+                           asp-action="Index"
+                           class="public-nav-link">
+
+                            <i class="bi bi-cup-hot"></i>
+                            <span>Menu</span>
+
+                        </a>
+                    </li>
+
+
+                    <!-- ABOUT -->
+                    <li>
+                        <a href="#about"
+                           class="public-nav-link">
+
+                            <i class="bi bi-info-circle"></i>
+                            <span>About Us</span>
+
+                        </a>
+                    </li>
+
+
+                    <!-- RESERVATION -->
+                    <li>
+                        <a asp-controller="Reservations"
+                           asp-action="Create"
+                           class="public-nav-link">
+
+                            <i class="bi bi-calendar-check"></i>
+                            <span>Reservation</span>
+
+                        </a>
+                    </li>
+
+
+                    <!-- CONTACT -->
+                    <li>
+                        <a href="#contact"
+                           class="public-nav-link">
+
+                            <i class="bi bi-telephone"></i>
+                            <span>Contact</span>
+
+                        </a>
+                    </li>
+
+                </ul>
+
+
+                <!-- RIGHT SIDE -->
+                <div class="public-navbar-right">
+
+                    <!-- SEARCH -->
+                    <button class="public-icon-btn"
+                            type="button"
+                            title="Search">
+
+                        <i class="bi bi-search"></i>
+
+                    </button>
+                    <a asp-controller="Orders"
+                       asp-action="Cart"
+                       class="public-icon-btn position-relative"
+                       title="Shopping Cart">
+
+                        <i class="bi bi-bag"></i>
+                        <!-- Badge បង្ហាញចំនួនទំនិញក្នុងកន្ត្រក -->
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">
+                            3
+                        </span>
+
+                    </a>
+
+
+                    <!-- LOGIN -->
+                    <a href="/Account/Login"
+                       class="public-login-btn">
+
+                        <i class="bi bi-person"></i>
+                        Login
+
+                    </a>
+
+                    <!-- BOOK TABLE -->
+                    <a asp-controller="Reservations"
+                       asp-action="Create"
+                       class="public-book-btn">
+
+                        <i class="bi bi-calendar-plus"></i>
+                        Book a Table
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </nav>
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="container-fluid">
+
+        <div class="container py-4">
+
+            @RenderBody()
+
+        </div>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="public-footer">
+        <div class="container">
+            <div class="row g-4">
+
+                <!-- 1. BRAND & ABOUT -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-brand mb-3">
+                        <div class="footer-brand-icon">
+                            <i class="bi bi-shop"></i>
+                        </div>
+                        <div class="footer-brand-text">
+                            <strong>Resto</strong>
+                            <span>Restaurant</span>
+                        </div>
+                    </div>
+                    <p class="footer-desc">
+                        Exquisite dining experience and outstanding service. We are ready to serve you delicious dishes and seamless table bookings.
+                    </p>
+                    <!-- SOCIAL LINKS -->
+                    <div class="footer-socials">
+                        <a href="#" class="social-link" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-link" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-link" title="Telegram"><i class="bi bi-telegram"></i></a>
+                        <a href="#" class="social-link" title="TikTok"><i class="bi bi-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <!-- 2. QUICK LINKS -->
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="footer-title">Quick Links</h6>
+                    <ul class="footer-links">
+                        <li><a asp-controller="Home" asp-action="Index"><i class="bi bi-chevron-right"></i> Home</a></li>
+                        <li><a asp-controller="MenuItems" asp-action="Index"><i class="bi bi-chevron-right"></i> Our Menu</a></li>
+                        <li><a asp-controller="Reservations" asp-action="Create"><i class="bi bi-chevron-right"></i> Book a Table</a></li>
+                        <li><a asp-controller="Orders" asp-action="Cart"><i class="bi bi-chevron-right"></i> My Cart</a></li>
+                        <li><a href="#about"><i class="bi bi-chevron-right"></i> About Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- 3. SERVICES & SYSTEM -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="footer-title">Services & System</h6>
+                    <ul class="footer-links">
+                        <li><a asp-controller="Orders" asp-action="Index"><i class="bi bi-chevron-right"></i> Track Orders</a></li>
+                        <li><a asp-controller="Payments" asp-action="Index"><i class="bi bi-chevron-right"></i> Payment Methods</a></li>
+                        <li><a asp-controller="Categories" asp-action="Index"><i class="bi bi-chevron-right"></i> Food Categories</a></li>
+                        <li><a asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-lock"></i> Privacy Policy</a></li>
+                        <li><a href="/Account/Login"><i class="bi bi-person-lock"></i> Staff Login</a></li>
+                    </ul>
+                </div>
+
+                <!-- 4. CONTACT & WORKING HOURS -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="footer-title">Contact Us</h6>
+                    <ul class="footer-contact">
+                        <li>
+                            <i class="bi bi-geo-alt"></i>
+                            <span>Phnom Penh, Cambodia</span>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li>
+                            <i class="bi bi-telephone"></i>
+                            <span>+855 12 345 678</span>
+                        </li>
+                        <li>
+                            <i class="bi bi-envelope"></i>
+                            <span>info@restorst.com</span>
+                        </li>
+                        <li>
+                            <i class="bi bi-clock"></i>
+                            <span>Mon - Sun: 08:00 AM - 10:00 PM</span>
                         </li>
                     </ul>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Restaurant_Management__System - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+
+            <!-- FOOTER BOTTOM -->
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                        &copy; 2026 <strong>Resto Restaurant Management System</strong>. All rights reserved.
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <span class="footer-badge"><i class="bi bi-shield-check"></i> Secure Payments & Ordering</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
+    
+
+    <!-- ================= SCRIPTS ================= -->
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
+
 </html>

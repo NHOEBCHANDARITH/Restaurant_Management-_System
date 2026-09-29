@@ -1,0 +1,112 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">Order Details</h2>
+        <p class="text-muted">Manage order items and quantities</p>
+    </div>
+
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i>
+        Add Order Detail
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Detail ID</th>
+                        <th>Order</th>
+                        <th>Menu Item</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                #@item.DetailId
+                            </td>
+
+                            <td>
+                                <span class="badge bg-primary">
+                                    Order #@item.OrderId
+                                </span>
+                            </td>
+
+                            <td>
+                                <i class="bi bi-menu-button-wide"></i>
+                                <strong>
+                                    @item.MenuItem?.ItemName
+                                </strong>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-secondary">
+                                    @item.Quantity
+                                </span>
+                            </td>
+
+                            <td>
+                                $@item.UnitPrice.ToString("N2")
+                            </td>
+
+                            <td>
+                                <strong class="text-success">
+                                    $@item.Subtotal.ToString("N2")
+                                </strong>
+                            </td>
+
+                            <td class="text-end">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@item.DetailId"
+                                   class="btn btn-sm btn-info text-white"
+                                   title="Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.DetailId"
+                                   class="btn btn-sm btn-warning"
+                                   title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.DetailId"
+                                   class="btn btn-sm btn-danger"
+                                   title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>

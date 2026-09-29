@@ -1,0 +1,183 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Restaurant_Management__System.Models.Reservation
+
+@{
+    ViewData["Title"] = "Reservation Details";
+}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-8">
+
+        <div class="card">
+
+            <div class="card-body p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                    <h3 class="fw-bold mb-0">
+                        <i class="bi bi-calendar-check text-info"></i>
+                        Reservation Details
+                    </h3>
+
+                    <span class="badge bg-primary">
+                        ID: @Model.ReservationId
+                    </span>
+
+                </div>
+
+                <div class="row">
+
+                    <!-- Customer -->
+                    <div class="col-md-6 mb-4">
+
+                        <small class="text-muted">
+                            Customer
+                        </small>
+
+                        <h5>
+                            <i class="bi bi-person text-primary"></i>
+                            @Model.Customer?.CustomerName
+                        </h5>
+
+                    </div>
+
+                    <!-- Table -->
+                    <div class="col-md-6 mb-4">
+
+                        <small class="text-muted">
+                            Dining Table
+                        </small>
+
+                        <h5>
+                            <i class="bi bi-table text-primary"></i>
+                            Table @Model.DiningTable?.TableNumber
+                        </h5>
+
+                    </div>
+
+                    <!-- Date -->
+                    <div class="col-md-6 mb-4">
+
+                        <small class="text-muted">
+                            Reservation Date
+                        </small>
+
+                        <h5>
+                            <i class="bi bi-calendar-event text-primary"></i>
+                            @Model.ReservationDate.ToString("dd/MM/yyyy")
+                        </h5>
+
+                    </div>
+
+                    <!-- Time -->
+                    <div class="col-md-6 mb-4">
+
+                        <small class="text-muted">
+                            Reservation Time
+                        </small>
+
+                        <h5>
+                            <i class="bi bi-clock text-primary"></i>
+                            @Model.ReservationDate.ToString("hh:mm tt")
+                        </h5>
+
+                    </div>
+
+                    <!-- Guests -->
+                    <div class="col-md-6 mb-4">
+
+                        <small class="text-muted">
+                            Number of Guests
+                        </small>
+
+                        <h5>
+                            <i class="bi bi-people text-primary"></i>
+                            @Model.Guests Guests
+                        </h5>
+
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-md-6 mb-4">
+
+                        <small class="text-muted">
+                            Status
+                        </small>
+
+                        <div class="mt-2">
+
+                            @if (Model.Status == "Confirmed")
+                            {
+                                <span class="badge bg-success fs-6">
+                                    Confirmed
+                                </span>
+                            }
+                            else if (Model.Status == "Pending")
+                            {
+                                <span class="badge bg-warning text-dark fs-6">
+                                    Pending
+                                </span>
+                            }
+                            else if (Model.Status == "Cancelled")
+                            {
+                                <span class="badge bg-danger fs-6">
+                                    Cancelled
+                                </span>
+                            }
+                            else if (Model.Status == "Completed")
+                            {
+                                <span class="badge bg-primary fs-6">
+                                    Completed
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary fs-6">
+                                    @Model.Status
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr />
+
+                <div class="mt-3">
+
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.ReservationId"
+                       class="btn btn-warning">
+                        <i class="bi bi-pencil"></i>
+                        Edit
+                    </a>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@Model.ReservationId"
+                       class="btn btn-danger">
+                        <i class="bi bi-trash"></i>
+                        Delete
+                    </a>
+
+                    <a asp-action="Index"
+                       class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Back
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

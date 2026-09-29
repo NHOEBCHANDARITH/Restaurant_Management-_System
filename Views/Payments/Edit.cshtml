@@ -1,0 +1,144 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Restaurant_Management__System.Models.Payment
+
+@{
+    ViewData["Title"] = "Edit Payment";
+}
+
+<div class="container py-4">
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-warning">
+            <h4 class="mb-0">
+                <i class="bi bi-pencil-square me-2"></i>
+                Edit Payment
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Edit">
+
+                <input type="hidden"
+                       asp-for="PaymentId" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="OrderId"
+                           class="form-label">
+                        Order
+                    </label>
+
+                    <select asp-for="OrderId"
+                            class="form-select"
+                            asp-items="ViewBag.OrderId">
+                        <option value="">-- Select Order --</option>
+                    </select>
+
+                    <span asp-validation-for="OrderId"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PaymentMethod"
+                           class="form-label">
+                        Payment Method
+                    </label>
+
+                    <select asp-for="PaymentMethod"
+                            class="form-select">
+                        <option value="">-- Select Method --</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Card">Card</option>
+                        <option value="ABA">ABA</option>
+                        <option value="ACLEDA">ACLEDA</option>
+                        <option value="Wing">Wing</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <span asp-validation-for="PaymentMethod"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PaymentDate"
+                           class="form-label">
+                        Payment Date
+                    </label>
+
+                    <input asp-for="PaymentDate"
+                           type="datetime-local"
+                           class="form-control" />
+
+                    <span asp-validation-for="PaymentDate"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Amount"
+                           class="form-label">
+                        Amount
+                    </label>
+
+                    <input asp-for="Amount"
+                           type="number"
+                           step="0.01"
+                           class="form-control" />
+
+                    <span asp-validation-for="Amount"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PaymentStatus"
+                           class="form-label">
+                        Payment Status
+                    </label>
+
+                    <select asp-for="PaymentStatus"
+                            class="form-select">
+                        <option value="">-- Select Status --</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Refunded">Refunded</option>
+                    </select>
+
+                    <span asp-validation-for="PaymentStatus"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit"
+                            class="btn btn-warning">
+                        <i class="bi bi-save me-1"></i>
+                        Update
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Back
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

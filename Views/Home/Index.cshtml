@@ -1,8 +1,822 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- HERO SECTION -->
+<section class="public-hero">
+    <div class="hero-overlay"></div>
+    <div class="container position-relative z-2">
+        <div class="row align-items-center min-vh-80">
+            <div class="col-lg-8 col-xl-7">
+                <div class="hero-badge">
+                    <i class="bi bi-stars"></i> WELCOME TO RESTO
+                </div>
+                <h1 class="hero-title">
+                    Crafting Memorable <br />
+                    <span>Culinary Experience</span>
+                </h1>
+                <p class="hero-desc">
+                    Enjoy delicious flavors, a luxurious atmosphere, and high-standard service. We are ready to serve you the best dining experience.
+                </p>
+                <div class="hero-actions">
+                    <a asp-controller="MenuItems" asp-action="Index" class="btn-hero-primary">
+                        <i class="bi bi-book"></i> View Full Menu
+                    </a>
+                    <a asp-controller="Reservations" asp-action="Create" class="btn-hero-outline">
+                        <i class="bi bi-calendar-check"></i> Book a Table
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- QUICK STATS SECTION -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-wrapper">
+            <div class="row g-4 text-center">
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <h3 class="stat-number">50+</h3>
+                        <p class="stat-label">Special Dishes</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <h3 class="stat-number">100%</h3>
+                        <p class="stat-label">Fresh Ingredients</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <h3 class="stat-number">15+</h3>
+                        <p class="stat-label">Expert Chefs</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <h3 class="stat-number">5k+</h3>
+                        <p class="stat-label">Happy Clients</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features-section">
+    <div class="container">
+        <div class="text-center section-header">
+            <span class="sub-title">WHY CHOOSE US</span>
+            <h2 class="main-title">Our Premium Standards</h2>
+            <div class="title-line me-auto ms-auto"></div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-egg-fried"></i>
+                    </div>
+                    <h4>Fresh Ingredients</h4>
+                    <p>Daily selected fresh ingredients to ensure maximum quality and healthiness.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-award"></i>
+                    </div>
+                    <h4>Master Chefs</h4>
+                    <p>Experienced culinary experts passionate about creating extraordinary dishes.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <h4>Fast Delivery</h4>
+                    <p>Quick and friendly service for both dine-in and online order delivery.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h4>Hygienic & Clean</h4>
+                    <p>Maintaining highest hygiene standards in kitchen and dining areas.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="about-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4" class="img-fluid main-img" alt="Restaurant Interior">
+                    <div class="experience-badge">
+                        <span class="years">10+</span>
+                        <span class="text">Years of Excellence</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="about-content">
+                    <span class="sub-title">ABOUT RESTO</span>
+                    <h2 class="main-title">We Deliver Passion & Unforgettable Taste</h2>
+                    <div class="title-line"></div>
+                    <p class="desc">
+                        Resto was created to provide a wonderful dining experience. We pay close attention to every detail, from carefully selected ingredients to beautifully presented dishes.
+                    </p>
+                    <div class="about-features">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="a-feat-item"><i class="bi bi-check-circle-fill"></i> Authentic Recipes</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="a-feat-item"><i class="bi bi-check-circle-fill"></i> Comfortable Atmosphere</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="a-feat-item"><i class="bi bi-check-circle-fill"></i> Online Reservation</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="a-feat-item"><i class="bi bi-check-circle-fill"></i> VIP Dining Rooms</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#about" class="btn-resto-primary mt-4">Discover More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- POPULAR MENU SECTION -->
+<section class="menu-section">
+    <div class="container">
+        <div class="text-center section-header">
+            <span class="sub-title">SPECIAL DISHES</span>
+            <h2 class="main-title">Popular Menu Items</h2>
+            <div class="title-line me-auto ms-auto"></div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Menu Card 1 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="menu-card">
+                    <div class="menu-card-img">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38" alt="Pizza">
+                        <span class="category-tag">Main Course</span>
+                    </div>
+                    <div class="menu-card-body">
+                        <div class="menu-title-price">
+                            <h5>Signature Seafood Pizza</h5>
+                            <span class="price">$14.99</span>
+                        </div>
+                        <p class="menu-desc">Fresh seafood, rich Mozzarella cheese, and signature chef sauce.</p>
+                        <div class="menu-card-footer">
+                            <a asp-controller="Reservations" asp-action="Create" class="btn-order-now">
+                                <i class="bi bi-cart-plus"></i> Order Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Card 2 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="menu-card">
+                    <div class="menu-card-img">
+                        <img src="https://images.unsplash.com/photo-1550547660-d9450f859349" alt="Burger">
+                        <span class="category-tag">Fast Food</span>
+                    </div>
+                    <div class="menu-card-body">
+                        <div class="menu-title-price">
+                            <h5>Double Beef Burger</h5>
+                            <span class="price">$9.50</span>
+                        </div>
+                        <p class="menu-desc">Double juicy beef patties with fresh vegetables and crispy bacon.</p>
+                        <div class="menu-card-footer">
+                            <a asp-controller="Reservations" asp-action="Create" class="btn-order-now">
+                                <i class="bi bi-cart-plus"></i> Order Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Card 3 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="menu-card">
+                    <div class="menu-card-img">
+                        <img src="https://images.unsplash.com/photo-1547592180-85f173990554" alt="Salad">
+                        <span class="category-tag">Healthy</span>
+                    </div>
+                    <div class="menu-card-body">
+                        <div class="menu-title-price">
+                            <h5>Fresh Caesar Salad</h5>
+                            <span class="price">$7.99</span>
+                        </div>
+                        <p class="menu-desc">Fresh organic greens, grilled chicken breast, and healthy Caesar dressing.</p>
+                        <div class="menu-card-footer">
+                            <a asp-controller="Reservations" asp-action="Create" class="btn-order-now">
+                                <i class="bi bi-cart-plus"></i> Order Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a asp-controller="MenuItems" asp-action="Index" class="btn-resto-outline">
+                View Full Menu <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- RESERVATION CTA SECTION -->
+<section class="cta-reservation">
+    <div class="cta-overlay"></div>
+    <div class="container position-relative z-2">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <span class="sub-title text-gold">ONLINE RESERVATION</span>
+                <h2 class="cta-title">Book Your Table In Advance</h2>
+                <p class="cta-desc">
+                    Secure the best seating for your family or loved ones with our fast and easy reservation process.
+                </p>
+                <a asp-controller="Reservations" asp-action="Create" class="btn-hero-primary rounded-pill px-5">
+                    <i class="bi bi-calendar2-check"></i> Book A Table Now
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="contact-section">
+    <div class="container">
+        <div class="text-center section-header">
+            <span class="sub-title">GET IN TOUCH</span>
+            <h2 class="main-title">Visit Our Restaurant</h2>
+            <div class="title-line me-auto ms-auto"></div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="contact-info-card">
+                    <div class="c-icon"><i class="bi bi-geo-alt"></i></div>
+                    <h5>Location</h5>
+                    <p>Phnom Penh, Cambodia</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info-card">
+                    <div class="c-icon"><i class="bi bi-telephone"></i></div>
+                    <h5>Phone Number</h5>
+                    <p>+855 12 345 678 / +855 98 765 432</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="contact-info-card">
+                    <div class="c-icon"><i class="bi bi-clock"></i></div>
+                    <h5>Working Hours</h5>
+                    <p>Mon - Sun: 08:00 AM - 10:00 PM</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<style>
+    /* =========================================================
+       LUXURY RESTO HOME PAGE STYLES
+    ========================================================= */
+
+    :root {
+        --primary-gold: #b8864b;
+        --primary-gold-dark: #9a6d36;
+        --dark-bg: #181818;
+        --light-bg: #fcfbfa;
+        --text-dark: #222222;
+        --text-muted: #666666;
+        --border-color: #eee4d8;
+    }
+
+    /* Common Section Header */
+    .section-header {
+        margin-bottom: 50px;
+    }
+
+    .sub-title {
+        color: var(--primary-gold);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .main-title {
+        font-size: 36px;
+        font-weight: 800;
+        color: var(--text-dark);
+    }
+
+    .title-line {
+        width: 60px;
+        height: 3px;
+        background: var(--primary-gold);
+        margin-top: 12px;
+        border-radius: 2px;
+    }
+
+    /* =========================================================
+       HERO SECTION
+    ========================================================= */
+    .public-hero {
+        min-height: 85vh;
+        background: url('https://images.unsplash.com/photo-1515003197210-e0cd71810b5f') center/cover no-repeat;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 100%);
+    }
+
+    .min-vh-80 {
+        min-height: 75vh;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        background: rgba(184, 134, 75, 0.2);
+        border: 1px solid var(--primary-gold);
+        color: var(--primary-gold);
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+    }
+
+    .hero-title {
+        color: #ffffff;
+        font-size: 56px;
+        font-weight: 800;
+        line-height: 1.15;
+        margin-bottom: 20px;
+    }
+
+        .hero-title span {
+            color: var(--primary-gold);
+        }
+
+    .hero-desc {
+        color: #cccccc;
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 35px;
+        max-width: 580px;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn-hero-primary, .btn-resto-primary {
+        background: var(--primary-gold);
+        color: #ffffff !important;
+        padding: 13px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(184, 134, 75, 0.3);
+    }
+
+        .btn-hero-primary:hover, .btn-resto-primary:hover {
+            background: var(--primary-gold-dark);
+            transform: translateY(-2px);
+        }
+
+    .btn-hero-outline {
+        background: transparent;
+        color: #ffffff !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.4);
+        padding: 13px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-hero-outline:hover {
+            background: #ffffff;
+            color: var(--text-dark) !important;
+        }
+
+    .btn-resto-outline {
+        border: 2px solid var(--primary-gold);
+        color: var(--primary-gold) !important;
+        padding: 12px 28px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-resto-outline:hover {
+            background: var(--primary-gold);
+            color: #ffffff !important;
+        }
+
+    /* =========================================================
+       STATS SECTION
+    ========================================================= */
+    .stats-section {
+        margin-top: -50px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .stats-wrapper {
+        background: #ffffff;
+        padding: 35px 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--border-color);
+    }
+
+    .stat-number {
+        font-size: 34px;
+        font-weight: 800;
+        color: var(--primary-gold);
+        margin-bottom: 2px;
+    }
+
+    .stat-label {
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    /* =========================================================
+       FEATURES SECTION
+    ========================================================= */
+    .features-section {
+        padding: 90px 0;
+        background: var(--light-bg);
+    }
+
+    .feature-card {
+        background: #ffffff;
+        padding: 35px 25px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        text-align: center;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 12px 30px rgba(184, 134, 75, 0.12);
+            border-color: var(--primary-gold);
+        }
+
+    .feature-icon {
+        width: 65px;
+        height: 65px;
+        background: rgba(184, 134, 75, 0.1);
+        color: var(--primary-gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin: 0 auto 20px;
+    }
+
+    .feature-card h4 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .feature-card p {
+        color: var(--text-muted);
+        font-size: 13.5px;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* =========================================================
+       ABOUT SECTION
+    ========================================================= */
+    .about-section {
+        padding: 90px 0;
+    }
+
+    .about-image-wrapper {
+        position: relative;
+    }
+
+        .about-image-wrapper .main-img {
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+    .experience-badge {
+        position: absolute;
+        bottom: -20px;
+        right: -20px;
+        background: var(--primary-gold);
+        color: #ffffff;
+        padding: 20px 25px;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 10px 25px rgba(184, 134, 75, 0.3);
+    }
+
+        .experience-badge .years {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .experience-badge .text {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+    .about-content .desc {
+        color: var(--text-muted);
+        line-height: 1.8;
+        font-size: 15px;
+        margin-top: 20px;
+    }
+
+    .a-feat-item {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .a-feat-item i {
+            color: var(--primary-gold);
+        }
+
+    /* =========================================================
+       MENU SECTION
+    ========================================================= */
+    .menu-section {
+        padding: 90px 0;
+        background: var(--light-bg);
+    }
+
+    .menu-card {
+        background: #ffffff;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+    }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+    .menu-card-img {
+        position: relative;
+        height: 220px;
+    }
+
+        .menu-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .category-tag {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: rgba(24, 24, 24, 0.75);
+        backdrop-filter: blur(4px);
+        color: #ffffff;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .menu-card-body {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .menu-title-price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .menu-title-price h5 {
+            font-size: 17px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .menu-title-price .price {
+            color: var(--primary-gold);
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+    .menu-desc {
+        color: var(--text-muted);
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .menu-card-footer {
+        margin-top: auto;
+    }
+
+    .btn-order-now {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--primary-gold);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13.5px;
+        transition: color 0.25s ease;
+    }
+
+        .btn-order-now:hover {
+            color: var(--primary-gold-dark);
+        }
+
+    /* =========================================================
+       RESERVATION CTA
+    ========================================================= */
+    .cta-reservation {
+        padding: 100px 0;
+        background: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0') center/cover no-repeat fixed;
+        position: relative;
+        color: #ffffff;
+    }
+
+    .cta-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+    }
+
+    .text-gold {
+        color: var(--primary-gold);
+    }
+
+    .cta-title {
+        font-size: 42px;
+        font-weight: 800;
+        margin: 15px 0 20px;
+    }
+
+    .cta-desc {
+        color: #dddddd;
+        font-size: 16px;
+        margin-bottom: 35px;
+    }
+
+    /* =========================================================
+       CONTACT SECTION
+    ========================================================= */
+    .contact-section {
+        padding: 90px 0;
+    }
+
+    .contact-info-card {
+        text-align: center;
+        padding: 35px 20px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background: #ffffff;
+        height: 100%;
+    }
+
+        .contact-info-card .c-icon {
+            width: 55px;
+            height: 55px;
+            background: rgba(184, 134, 75, 0.1);
+            color: var(--primary-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 15px;
+        }
+
+        .contact-info-card h5 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .contact-info-card p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 14px;
+        }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+    @@media (max-width: 992px) {
+        .hero-title
+
+    {
+        font-size: 42px;
+    }
+
+    .experience-badge {
+        right: 10px;
+        bottom: 10px;
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .hero-title
+
+    {
+        font-size: 34px;
+    }
+
+    .cta-title {
+        font-size: 30px;
+    }
+
+    .main-title {
+        font-size: 28px;
+    }
+
+    .stats-section {
+        margin-top: 20px;
+    }
+
+    }
+</style>

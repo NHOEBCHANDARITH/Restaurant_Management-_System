@@ -1,0 +1,291 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model IEnumerable<Restaurant_Management__System.Models.MenuItem>
+
+
+@{
+    ViewData["Title"] = "Our Menu";
+}
+
+<!-- PAGE HEADER -->
+<section class="menu-page-header">
+    <div class="container text-center">
+        <span class="sub-title">EXPLORE OUR DELICACIES</span>
+        <h1 class="main-title text-white">Our Delicious Menu</h1>
+        <div class="title-line mx-auto"></div>
+    </div>
+</section>
+
+<!-- MAIN MENU CONTENT -->
+<section class="menu-display-section py-5">
+    <div class="container">
+        
+        <!-- SEARCH & FILTER BAR -->
+        <div class="menu-filter-wrapper mb-5">
+            <div class="row g-3 align-items-center justify-content-between">
+                <div class="col-md-6 col-lg-4">
+                    <div class="search-box">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" id="menuSearchInput" class="form-control" placeholder="Search menu items..." onkeyup="filterMenu()">
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-8">
+                    <div class="category-tabs d-flex flex-wrap gap-2 justify-content-md-end">
+                        <button class="btn btn-filter active" onclick="filterCategory('all')">All Items</button>
+                        @if (ViewBag.Categories != null)
+                        {
+                            foreach (var cat in ViewBag.Categories)
+                            {
+                                <button class="btn btn-filter" onclick="filterCategory('@cat.CategoryName.ToLower()')">@cat.CategoryName</button>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENU GRID -->
+        <div class="row g-4" id="menuGrid">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="col-lg-4 col-md-6 menu-item-card" 
+                         data-category="@(item.Category?.CategoryName?.ToLower() ?? "uncategorized")"
+                         data-name="@item.ItemName.ToLower()">
+                        <div class="card h-100 menu-card border-0 shadow-sm">
+                            <div class="menu-img-wrapper">
+                                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" : item.ImageUrl)" 
+                                     class="card-img-top" alt="@item.ItemName">
+                                
+                                <span class="badge category-badge">
+                                    @(item.Category != null ? item.Category.CategoryName : "General")
+                                </span>
+
+                                @if (!string.IsNullOrEmpty(item.Status))
+                                {
+                                    <span class="badge status-badge @(item.Status.ToLower() == "available" ? "bg-success" : "bg-danger")">
+                                        @item.Status
+                                    </span>
+                                }
+                            </div>
+                            
+                            <div class="card-body d-flex flex-column p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title fw-bold text-dark mb-0">@item.ItemName</h5>
+                                    <span class="price-tag">$@item.Price.ToString("F2")</span>
+                                </div>
+                                
+                                <p class="card-text text-muted small flex-grow-1">
+                                    @item.Description
+                                </p>
+                                
+                                <div class="card-footer-action pt-3 mt-auto border-top d-flex justify-content-between align-items-center">
+                                    <a asp-controller="Orders" asp-action="AddToCart" asp-route-id="@item.ItemId" 
+                                       class="btn btn-add-cart @(item.Status?.ToLower() == "unavailable" ? "disabled" : "")">
+                                        <i class="bi bi-cart-plus me-1"></i> Order Now
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.ItemId" class="btn-details">
+                                        Details <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-inbox text-muted display-4"></i>
+                    <p class="mt-3 text-muted">No menu items available at the moment.</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- JAVASCRIPT FOR FILTERING -->
+<script>
+    function filterCategory(category) {
+        let buttons = document.querySelectorAll('.btn-filter');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        let cards = document.querySelectorAll('.menu-item-card');
+        cards.forEach(card => {
+            let cardCategory = card.getAttribute('data-category');
+            if (category === 'all' || cardCategory === category) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function filterMenu() {
+        let input = document.getElementById('menuSearchInput').value.toLowerCase();
+        let cards = document.querySelectorAll('.menu-item-card');
+
+        cards.forEach(card => {
+            let name = card.getAttribute('data-name');
+            if (name.includes(input)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+
+<style>
+    :root {
+        --primary-gold: #b8864b;
+        --primary-gold-dark: #9a6d36;
+        --dark-bg: #181818;
+        --border-color: #eee4d8;
+    }
+
+    /* Header */
+    .menu-page-header {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4') center/cover no-repeat;
+        padding: 80px 0;
+    }
+
+    /* Search Box */
+    .search-box {
+        position: relative;
+    }
+
+        .search-box .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: var(--primary-gold);
+        }
+
+        .search-box input {
+            padding-left: 42px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            height: 45px;
+        }
+
+            .search-box input:focus {
+                border-color: var(--primary-gold);
+                box-shadow: 0 0 8px rgba(184, 134, 75, 0.25);
+            }
+
+    /* Category Filter Buttons */
+    .btn-filter {
+        border: 1px solid var(--border-color);
+        background-color: #ffffff;
+        color: #444;
+        border-radius: 25px;
+        padding: 8px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-filter:hover, .btn-filter.active {
+            background-color: var(--primary-gold);
+            color: #ffffff;
+            border-color: var(--primary-gold);
+        }
+
+    /* Card Styling */
+    .menu-card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: #ffffff;
+    }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1) !important;
+        }
+
+    .menu-img-wrapper {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+
+        .menu-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+    .menu-card:hover .menu-img-wrapper img {
+        transform: scale(1.08);
+    }
+
+    .category-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: rgba(24, 24, 24, 0.8);
+        backdrop-filter: blur(4px);
+        color: #ffffff;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .status-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .price-tag {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--primary-gold);
+    }
+
+    /* Action Buttons */
+    .btn-add-cart {
+        background-color: var(--primary-gold);
+        color: #ffffff;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 8px 16px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-add-cart:hover {
+            background-color: var(--primary-gold-dark);
+            color: #ffffff;
+        }
+
+    .btn-details {
+        color: #666;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+        .btn-details:hover {
+            color: var(--primary-gold);
+        }
+   
+
+
+    
+
+</style>

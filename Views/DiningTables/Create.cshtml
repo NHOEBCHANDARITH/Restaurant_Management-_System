@@ -1,0 +1,129 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Restaurant_Management__System.Models.DiningTable
+
+@{
+    ViewData["Title"] = "Create Dining Table";
+}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-7">
+
+        <div class="card">
+            <div class="card-body p-4">
+
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-plus-circle text-primary"></i>
+                    Create Dining Table
+                </h3>
+
+                <form asp-action="Create" method="post">
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger">
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="TableNumber"
+                               class="form-label">
+                            Table Number
+                        </label>
+
+                        <input asp-for="TableNumber"
+                               class="form-control"
+                               placeholder="Example: T01" />
+
+                        <span asp-validation-for="TableNumber"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="Capacity"
+                               class="form-label">
+                            Capacity
+                        </label>
+
+                        <input asp-for="Capacity"
+                               type="number"
+                               min="1"
+                               class="form-control"
+                               placeholder="Number of persons" />
+
+                        <span asp-validation-for="Capacity"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="Status"
+                               class="form-label">
+                            Status
+                        </label>
+
+                        <select asp-for="Status"
+                                class="form-select">
+
+                            <option value="">
+                                -- Select Status --
+                            </option>
+
+                            <option value="Available">
+                                Available
+                            </option>
+
+                            <option value="Occupied">
+                                Occupied
+                            </option>
+
+                            <option value="Reserved">
+                                Reserved
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="Status"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="mt-4">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            <i class="bi bi-save"></i>
+                            Save Table
+                        </button>
+
+                        <a asp-action="Index"
+                           class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i>
+                            Back
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

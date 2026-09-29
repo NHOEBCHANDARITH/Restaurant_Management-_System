@@ -1,0 +1,105 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Restaurant_Management__System.Models.Supplier
+
+@{
+    ViewData["Title"] = "Supplier Details";
+}
+
+<div class="container py-4">
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-info text-white">
+
+            <h4 class="mb-0">
+                <i class="bi bi-info-circle me-2"></i>
+                Supplier Details
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <dl class="row">
+
+                <dt class="col-sm-4">
+                    Supplier ID
+                </dt>
+
+                <dd class="col-sm-8">
+                    @Model.SupplierId
+                </dd>
+
+
+                <dt class="col-sm-4">
+                    Supplier Name
+                </dt>
+
+                <dd class="col-sm-8 fw-semibold">
+                    @Model.SupplierName
+                </dd>
+
+
+                <dt class="col-sm-4">
+                    Phone
+                </dt>
+
+                <dd class="col-sm-8">
+                    <i class="bi bi-telephone me-1"></i>
+                    @Model.Phone
+                </dd>
+
+
+                <dt class="col-sm-4">
+                    Address
+                </dt>
+
+                <dd class="col-sm-8">
+                    <i class="bi bi-geo-alt me-1"></i>
+                    @Model.Address
+                </dd>
+
+            </dl>
+
+            <hr />
+
+            <div class="d-flex gap-2">
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.SupplierId"
+                   class="btn btn-warning">
+
+                    <i class="bi bi-pencil me-1"></i>
+                    Edit
+
+                </a>
+
+                <a asp-action="Delete"
+                   asp-route-id="@Model.SupplierId"
+                   class="btn btn-danger">
+
+                    <i class="bi bi-trash me-1"></i>
+                    Delete
+
+                </a>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Back
+
+                </a>
+
+            </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
