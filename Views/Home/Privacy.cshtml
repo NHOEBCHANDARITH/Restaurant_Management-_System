@@ -1,6 +1,62 @@
-﻿@{
+@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-5">
+                    <div class="public-brand-icon mx-auto mb-3" style="width: 54px; height: 54px; font-size: 26px;">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h2 class="fw-bold text-dark mb-2">Privacy & Policy</h2>
+                    <p class="text-muted">How Resto Restaurant manages and protects your personal information</p>
+                    <div class="title-line mx-auto" style="width: 48px; height: 3px; background: var(--primary); border-radius: 4px;"></div>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark d-flex align-items-center gap-2">
+                        <i class="bi bi-person-check text-primary"></i> 1. Information We Collect
+                    </h5>
+                    <p class="text-muted ps-4">
+                        When you make table reservations, place food orders, or register an account, we may collect your name, phone number, email address, and dining preferences to serve you better.
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark d-flex align-items-center gap-2">
+                        <i class="bi bi-lock text-primary"></i> 2. How We Protect Your Data
+                    </h5>
+                    <p class="text-muted ps-4">
+                        We prioritize data security with industry-standard protocols. Customer contact details and order histories are handled strictly within our secure management system.
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark d-flex align-items-center gap-2">
+                        <i class="bi bi-credit-card text-primary"></i> 3. Payment Processing
+                    </h5>
+                    <p class="text-muted ps-4">
+                        All online and point-of-sale transactions follow verified security procedures. Payment records are encrypted and protected against unauthorized access.
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark d-flex align-items-center gap-2">
+                        <i class="bi bi-telephone text-primary"></i> 4. Contact Us
+                    </h5>
+                    <p class="text-muted ps-4">
+                        If you have any questions about this privacy statement, please contact us at <strong class="text-dark">info@restorst.com</strong> or call <strong class="text-dark">+855 12 345 678</strong>.
+                    </p>
+                </div>
+
+                <div class="text-center pt-3 border-top mt-5">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                        <i class="bi bi-arrow-left me-1"></i> Return to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

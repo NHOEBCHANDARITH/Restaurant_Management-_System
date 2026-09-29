@@ -1,120 +1,111 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model IEnumerable<Restaurant_Management__System.Models.Payment>
 
 @{
     ViewData["Title"] = "Payments";
 }
 
-<div class="container-fluid py-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold">
-                <i class="bi bi-credit-card me-2"></i>Payments
-            </h2>
-            <p class="text-muted mb-0">
-                Manage restaurant payments
-            </p>
-        </div>
-
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i>
-            Add Payment
-        </a>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-credit-card text-primary me-2"></i>Payments & Billing
+        </h2>
+        <p class="text-muted mb-0">Record and review customer payment transactions</p>
     </div>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>
+        New Payment
+    </a>
+</div>
 
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Payment ID</th>
-                            <th>Order ID</th>
-                            <th>Payment Method</th>
-                            <th>Payment Date</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var item in Model)
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Payment ID</th>
+                        <th>Order</th>
+                        <th>Method</th>
+                        <th>Date & Time</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.PaymentId</td>
-
+                                <td class="ps-4">
+                                    <span class="badge bg-secondary">#@item.PaymentId</span>
+                                </td>
                                 <td>
-                                    <span class="badge bg-secondary">
-                                        #@item.OrderId
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-receipt me-1"></i> Order #@item.OrderId
                                     </span>
                                 </td>
-
-                                <td>@item.PaymentMethod</td>
-
                                 <td>
-                                    @item.PaymentDate.ToString("dd/MM/yyyy HH:mm")
+                                    <strong class="text-dark">
+                                        <i class="bi bi-wallet2 text-primary me-1"></i>
+                                        @item.PaymentMethod
+                                    </strong>
                                 </td>
-
-                                <td class="fw-bold">
-                                    $@item.Amount.ToString("N2")
-                                </td>
-
                                 <td>
-                                    @if (item.PaymentStatus == "Paid")
+                                    <span class="text-dark font-monospace small">@item.PaymentDate.ToString("dd/MM/yyyy HH:mm")</span>
+                                </td>
+                                <td>
+                                    <strong class="text-primary font-monospace fs-6">
+                                        $@item.Amount.ToString("N2")
+                                    </strong>
+                                </td>
+                                <td>
+                                    @if (item.PaymentStatus == "Paid" || item.PaymentStatus == "Completed")
                                     {
                                         <span class="badge bg-success">
-                                            Paid
+                                            <i class="bi bi-check-circle me-1"></i> @item.PaymentStatus
                                         </span>
                                     }
                                     else if (item.PaymentStatus == "Pending")
                                     {
                                         <span class="badge bg-warning text-dark">
-                                            Pending
+                                            <i class="bi bi-clock me-1"></i> Pending
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="badge bg-danger">
-                                            @item.PaymentStatus
+                                            <i class="bi bi-exclamation-circle me-1"></i> @item.PaymentStatus
                                         </span>
                                     }
                                 </td>
-
-                                <td class="text-center">
-                                    <a asp-action="Details"
-                                       asp-route-id="@item.PaymentId"
-                                       class="btn btn-sm btn-info text-white">
+                                <td class="text-end pe-4">
+                                    <a asp-action="Details" asp-route-id="@item.PaymentId" class="btn btn-sm btn-outline-secondary" title="Details">
                                         <i class="bi bi-eye"></i>
                                     </a>
-
-                                    <a asp-action="Edit"
-                                       asp-route-id="@item.PaymentId"
-                                       class="btn btn-sm btn-warning">
+                                    <a asp-action="Edit" asp-route-id="@item.PaymentId" class="btn btn-sm btn-outline-primary" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-
-                                    <a asp-action="Delete"
-                                       asp-route-id="@item.PaymentId"
-                                       class="btn btn-sm btn-danger">
+                                    <a asp-action="Delete" asp-route-id="@item.PaymentId" class="btn btn-sm btn-outline-danger" title="Delete">
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </td>
                             </tr>
                         }
-                    </tbody>
-
-                </table>
-            </div>
-
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-cash-stack display-6 d-block mb-2 text-primary opacity-50"></i>
+                                No payment records found.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
-
 </div>

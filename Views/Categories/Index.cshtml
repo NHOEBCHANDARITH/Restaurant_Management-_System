@@ -1,136 +1,110 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model IEnumerable<Restaurant_Management__System.Models.Category>
 
 @{
     ViewData["Title"] = "Categories";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
-        <h2 class="fw-bold mb-1">Categories</h2>
-        <p class="text-muted mb-0">Manage food categories</p>
+        <h2 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-tags text-primary me-2"></i>Food Categories
+        </h2>
+        <p class="text-muted mb-0">Organize and manage dishes by category</p>
     </div>
 
-    <a asp-action="Create" class="btn btn-dark">
+    <a asp-action="Create" class="btn btn-primary">
         <i class="bi bi-plus-lg me-1"></i>
         Add Category
     </a>
-
 </div>
 
 <div class="row g-4">
-
     @foreach (var item in Model)
     {
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-
             <div class="card h-100 border-0 shadow-sm category-card">
-
-                <div class="card-body">
-
+                <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">
-
                         <div class="category-icon">
                             <i class="bi bi-grid-fill"></i>
                         </div>
-
-                        <span class="badge bg-light text-dark">
+                        <span class="badge bg-primary">
                             #@item.CategoryId
                         </span>
-
                     </div>
 
-                    <h5 class="fw-bold mb-1">
+                    <h5 class="fw-bold mb-1 text-dark">
                         @item.CategoryName
                     </h5>
 
                     <p class="text-muted small mb-4">
-                        Food Category
+                        Food & Beverage Category
                     </p>
 
                     <div class="d-flex gap-2">
-
-                        <a asp-action="Details"
-                           asp-route-id="@item.CategoryId"
-                           class="btn btn-sm btn-outline-secondary flex-fill">
-                            <i class="bi bi-eye me-1"></i>
-                            View
+                        <a asp-action="Details" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-secondary flex-fill">
+                            <i class="bi bi-eye me-1"></i> View
                         </a>
-
-                        <a asp-action="Edit"
-                           asp-route-id="@item.CategoryId"
-                           class="btn btn-sm btn-outline-primary">
+                        <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-primary" title="Edit">
                             <i class="bi bi-pencil"></i>
                         </a>
-
-                        <a asp-action="Delete"
-                           asp-route-id="@item.CategoryId"
-                           class="btn btn-sm btn-outline-danger">
+                        <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-danger" title="Delete">
                             <i class="bi bi-trash"></i>
                         </a>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
     }
-
 </div>
 
 @if (!Model.Any())
 {
-    <div class="text-center py-5">
-
+    <div class="text-center py-5 card shadow-sm border-0 my-4">
         <div class="mb-3">
-            <i class="bi bi-grid fs-1 text-muted"></i>
+            <div class="category-icon mx-auto" style="width: 70px; height: 70px; font-size: 32px;">
+                <i class="bi bi-grid"></i>
+            </div>
         </div>
-
-        <h5 class="fw-bold">
-            No Categories Found
-        </h5>
-
-        <p class="text-muted">
-            Start by creating your first food category.
-        </p>
-
-        <a asp-action="Create" class="btn btn-dark">
-            <i class="bi bi-plus-lg me-1"></i>
-            Add Category
-        </a>
-
+        <h5 class="fw-bold text-dark">No Categories Found</h5>
+        <p class="text-muted">Start by creating your first food category.</p>
+        <div>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i> Add Category
+            </a>
+        </div>
     </div>
 }
 
 <style>
-
     .category-card {
         border-radius: 16px;
-        transition: all 0.25s ease;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
     }
 
-        .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.10) !important;
-        }
+    .category-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 30px rgba(72, 190, 218, 0.16) !important;
+        border-color: rgba(72, 190, 218, 0.4) !important;
+    }
 
     .category-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        background: #f1f3f5;
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        background: rgba(72, 190, 218, 0.12);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 22px;
-        color: #212529;
+        color: #48beda;
+        transition: all 0.3s ease;
     }
 
+    .category-card:hover .category-icon {
+        background: #48beda;
+        color: #ffffff;
+        transform: scale(1.05);
+    }
 </style>

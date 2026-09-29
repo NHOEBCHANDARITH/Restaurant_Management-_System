@@ -1,150 +1,103 @@
-﻿@model IEnumerable<Restaurant_Management__System.Models.Ingredient>
-@{
-}
+@model IEnumerable<Restaurant_Management__System.Models.Ingredient>
 
 @{
     ViewData["Title"] = "Ingredients";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
-        <h2 class="fw-bold">Ingredients</h2>
-        <p class="text-muted mb-0">
-            Manage restaurant ingredients
-        </p>
+        <h2 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-egg-fried text-primary me-2"></i>Ingredients
+        </h2>
+        <p class="text-muted mb-0">Manage raw kitchen ingredients, suppliers, and stock units</p>
     </div>
 
     <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i>
+        <i class="bi bi-plus-lg me-1"></i>
         Add Ingredient
     </a>
 </div>
 
-<div class="card">
-    <div class="card-body">
-
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
         <div class="table-responsive">
-
-            <table class="table table-hover align-middle">
-
-                <thead class="table-light">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
                     <tr>
-                        <th>ID</th>
+                        <th class="ps-4">ID</th>
                         <th>Ingredient Name</th>
                         <th>Supplier</th>
-                        <th>Stock</th>
+                        <th>Stock Level</th>
                         <th>Unit</th>
-                        <th class="text-end">Actions</th>
+                        <th class="text-end pe-4">Actions</th>
                     </tr>
                 </thead>
-
                 <tbody>
-
                     @if (Model != null && Model.Any())
                     {
-                        @foreach (var item in Model)
+                        foreach (var item in Model)
                         {
                             <tr>
-
-                                <td>
-                                    @item.IngredientId
+                                <td class="ps-4">
+                                    <span class="badge bg-secondary">#@item.IngredientId</span>
                                 </td>
-
                                 <td>
-                                    <strong>
-                                        @item.IngredientName
-                                    </strong>
+                                    <strong class="text-dark">@item.IngredientName</strong>
                                 </td>
-
                                 <td>
-                                    @if (item.Supplier != null)
-                                    {
-                                        @item.Supplier.SupplierName
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">
-                                            No Supplier
-                                        </span>
-                                    }
+                                    <span class="text-muted">
+                                        <i class="bi bi-truck text-primary me-1"></i>
+                                        @(item.Supplier != null ? item.Supplier.SupplierName : "No Supplier")
+                                    </span>
                                 </td>
-
                                 <td>
                                     @if (item.Stock <= 0)
                                     {
                                         <span class="badge bg-danger">
-                                            Out of Stock
+                                            <i class="bi bi-exclamation-octagon me-1"></i> Out of Stock
                                         </span>
                                     }
                                     else if (item.Stock <= 10)
                                     {
                                         <span class="badge bg-warning text-dark">
-                                            @item.Stock
+                                            <i class="bi bi-exclamation-triangle me-1"></i> Low: @item.Stock
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="badge bg-success">
-                                            @item.Stock
+                                            <i class="bi bi-check2 me-1"></i> @item.Stock
                                         </span>
                                     }
                                 </td>
-
                                 <td>
-                                    <span class="badge bg-secondary">
-                                        @item.Unit
-                                    </span>
+                                    <span class="badge bg-light text-dark border">@item.Unit</span>
                                 </td>
-
-                                <td class="text-end">
-
-                                    <a asp-action="Details"
-                                       asp-route-id="@item.IngredientId"
-                                       class="btn btn-sm btn-info text-white"
-                                       title="Details">
+                                <td class="text-end pe-4">
+                                    <a asp-action="Details" asp-route-id="@item.IngredientId" class="btn btn-sm btn-outline-secondary" title="Details">
                                         <i class="bi bi-eye"></i>
                                     </a>
-
-                                    <a asp-action="Edit"
-                                       asp-route-id="@item.IngredientId"
-                                       class="btn btn-sm btn-warning"
-                                       title="Edit">
+                                    <a asp-action="Edit" asp-route-id="@item.IngredientId" class="btn btn-sm btn-outline-primary" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-
-                                    <a asp-action="Delete"
-                                       asp-route-id="@item.IngredientId"
-                                       class="btn btn-sm btn-danger"
-                                       title="Delete">
+                                    <a asp-action="Delete" asp-route-id="@item.IngredientId" class="btn btn-sm btn-outline-danger" title="Delete">
                                         <i class="bi bi-trash"></i>
                                     </a>
-
                                 </td>
-
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="6"
-                                class="text-center text-muted py-4">
-
-                                <i class="bi bi-box-seam fs-1"></i>
-
-                                <p class="mt-2 mb-0">
-                                    No ingredients found.
-                                </p>
-
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-egg display-6 d-block mb-2 text-primary opacity-50"></i>
+                                No ingredients recorded yet.
                             </td>
                         </tr>
                     }
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
 </div>

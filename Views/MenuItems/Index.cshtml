@@ -1,9 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
 @model IEnumerable<Restaurant_Management__System.Models.MenuItem>
-
 
 @{
     ViewData["Title"] = "Our Menu";
@@ -83,7 +78,7 @@
                                 </p>
                                 
                                 <div class="card-footer-action pt-3 mt-auto border-top d-flex justify-content-between align-items-center">
-                                    <a asp-controller="Orders" asp-action="AddToCart" asp-route-id="@item.ItemId" 
+                                    <a asp-controller="Orders" asp-action="Create" 
                                        class="btn btn-add-cart @(item.Status?.ToLower() == "unavailable" ? "disabled" : "")">
                                         <i class="bi bi-cart-plus me-1"></i> Order Now
                                     </a>
@@ -142,16 +137,41 @@
 
 <style>
     :root {
-        --primary-gold: #b8864b;
-        --primary-gold-dark: #9a6d36;
-        --dark-bg: #181818;
-        --border-color: #eee4d8;
+        --primary: #48beda;
+        --primary-dark: #35a8c2;
+        --dark-bg: #0f172a;
+        --border-color: #e2e8f0;
     }
 
     /* Header */
     .menu-page-header {
-        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4') center/cover no-repeat;
+        background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4') center/cover no-repeat;
         padding: 80px 0;
+        border-radius: 0 0 24px 24px;
+        margin-top: -1.5rem;
+    }
+
+    .sub-title {
+        color: var(--primary);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .main-title {
+        font-size: 38px;
+        font-weight: 800;
+    }
+
+    .title-line {
+        width: 60px;
+        height: 3px;
+        background: var(--primary);
+        border-radius: 4px;
+        margin-top: 12px;
     }
 
     /* Search Box */
@@ -159,31 +179,33 @@
         position: relative;
     }
 
-        .search-box .search-icon {
-            position: absolute;
-            top: 50%;
-            left: 15px;
-            transform: translateY(-50%);
-            color: var(--primary-gold);
-        }
+    .search-box .search-icon {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: var(--primary);
+        font-size: 16px;
+    }
 
-        .search-box input {
-            padding-left: 42px;
-            border-radius: 30px;
-            border: 1px solid var(--border-color);
-            height: 45px;
-        }
+    .search-box input {
+        padding-left: 44px;
+        border-radius: 30px;
+        border: 1px solid var(--border-color);
+        height: 46px;
+        background: #ffffff;
+    }
 
-            .search-box input:focus {
-                border-color: var(--primary-gold);
-                box-shadow: 0 0 8px rgba(184, 134, 75, 0.25);
-            }
+    .search-box input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.25rem rgba(72, 190, 218, 0.25);
+    }
 
     /* Category Filter Buttons */
     .btn-filter {
         border: 1px solid var(--border-color);
         background-color: #ffffff;
-        color: #444;
+        color: #475569;
         border-radius: 25px;
         padding: 8px 20px;
         font-size: 14px;
@@ -191,24 +213,27 @@
         transition: all 0.3s ease;
     }
 
-        .btn-filter:hover, .btn-filter.active {
-            background-color: var(--primary-gold);
-            color: #ffffff;
-            border-color: var(--primary-gold);
-        }
+    .btn-filter:hover, .btn-filter.active {
+        background-color: var(--primary);
+        color: #ffffff;
+        border-color: var(--primary);
+        box-shadow: 0 4px 14px rgba(72, 190, 218, 0.3);
+    }
 
     /* Card Styling */
     .menu-card {
-        border-radius: 15px;
+        border-radius: 16px;
         overflow: hidden;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         background: #ffffff;
+        border: 1px solid #eef2f6 !important;
     }
 
-        .menu-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.1) !important;
-        }
+    .menu-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 30px rgba(72, 190, 218, 0.16) !important;
+        border-color: rgba(72, 190, 218, 0.4) !important;
+    }
 
     .menu-img-wrapper {
         position: relative;
@@ -216,12 +241,12 @@
         overflow: hidden;
     }
 
-        .menu-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
+    .menu-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
 
     .menu-card:hover .menu-img-wrapper img {
         transform: scale(1.08);
@@ -231,7 +256,7 @@
         position: absolute;
         top: 15px;
         left: 15px;
-        background: rgba(24, 24, 24, 0.8);
+        background: rgba(15, 23, 42, 0.75);
         backdrop-filter: blur(4px);
         color: #ffffff;
         padding: 6px 12px;
@@ -253,39 +278,36 @@
     .price-tag {
         font-size: 1.25rem;
         font-weight: 800;
-        color: var(--primary-gold);
+        color: var(--primary);
     }
 
     /* Action Buttons */
     .btn-add-cart {
-        background-color: var(--primary-gold);
-        color: #ffffff;
-        border-radius: 8px;
+        background: linear-gradient(135deg, #48beda 0%, #2099b5 100%);
+        color: #ffffff !important;
+        border-radius: 10px;
         font-weight: 600;
         font-size: 13px;
-        padding: 8px 16px;
+        padding: 8px 18px;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(72, 190, 218, 0.3);
+        border: none;
     }
 
-        .btn-add-cart:hover {
-            background-color: var(--primary-gold-dark);
-            color: #ffffff;
-        }
+    .btn-add-cart:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(72, 190, 218, 0.45);
+    }
 
     .btn-details {
-        color: #666;
+        color: #64748b;
         text-decoration: none;
         font-size: 13px;
         font-weight: 600;
         transition: color 0.3s ease;
     }
 
-        .btn-details:hover {
-            color: var(--primary-gold);
-        }
-   
-
-
-    
-
+    .btn-details:hover {
+        color: var(--primary);
+    }
 </style>

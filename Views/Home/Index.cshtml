@@ -1,5 +1,6 @@
-﻿@{
+@{
     ViewData["Title"] = "Home";
+    ViewData["FullWidth"] = true;
 }
 
 <!-- HERO SECTION -->
@@ -16,7 +17,7 @@
                     <span>Culinary Experience</span>
                 </h1>
                 <p class="hero-desc">
-                    Enjoy delicious flavors, a luxurious atmosphere, and high-standard service. We are ready to serve you the best dining experience.
+                    Enjoy delicious flavors, a modern atmosphere, and high-standard service. We are ready to serve you the best dining and ordering experience.
                 </p>
                 <div class="hero-actions">
                     <a asp-controller="MenuItems" asp-action="Index" class="btn-hero-primary">
@@ -119,7 +120,7 @@
 </section>
 
 <!-- ABOUT SECTION -->
-<section class="about-section">
+<section class="about-section" id="about">
     <div class="container">
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
@@ -156,7 +157,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="#about" class="btn-resto-primary mt-4">Discover More</a>
+                    <a asp-controller="MenuItems" asp-action="Index" class="btn-resto-primary mt-4">Discover Menu</a>
                 </div>
             </div>
         </div>
@@ -187,7 +188,7 @@
                         </div>
                         <p class="menu-desc">Fresh seafood, rich Mozzarella cheese, and signature chef sauce.</p>
                         <div class="menu-card-footer">
-                            <a asp-controller="Reservations" asp-action="Create" class="btn-order-now">
+                            <a asp-controller="MenuItems" asp-action="Index" class="btn-order-now">
                                 <i class="bi bi-cart-plus"></i> Order Now
                             </a>
                         </div>
@@ -209,7 +210,7 @@
                         </div>
                         <p class="menu-desc">Double juicy beef patties with fresh vegetables and crispy bacon.</p>
                         <div class="menu-card-footer">
-                            <a asp-controller="Reservations" asp-action="Create" class="btn-order-now">
+                            <a asp-controller="MenuItems" asp-action="Index" class="btn-order-now">
                                 <i class="bi bi-cart-plus"></i> Order Now
                             </a>
                         </div>
@@ -231,7 +232,7 @@
                         </div>
                         <p class="menu-desc">Fresh organic greens, grilled chicken breast, and healthy Caesar dressing.</p>
                         <div class="menu-card-footer">
-                            <a asp-controller="Reservations" asp-action="Create" class="btn-order-now">
+                            <a asp-controller="MenuItems" asp-action="Index" class="btn-order-now">
                                 <i class="bi bi-cart-plus"></i> Order Now
                             </a>
                         </div>
@@ -254,7 +255,7 @@
     <div class="container position-relative z-2">
         <div class="row justify-content-center text-center">
             <div class="col-lg-8">
-                <span class="sub-title text-gold">ONLINE RESERVATION</span>
+                <span class="sub-title text-cyan">ONLINE RESERVATION</span>
                 <h2 class="cta-title">Book Your Table In Advance</h2>
                 <p class="cta-desc">
                     Secure the best seating for your family or loved ones with our fast and easy reservation process.
@@ -268,7 +269,7 @@
 </section>
 
 <!-- CONTACT SECTION -->
-<section class="contact-section">
+<section class="contact-section" id="contact">
     <div class="container">
         <div class="text-center section-header">
             <span class="sub-title">GET IN TOUCH</span>
@@ -301,19 +302,22 @@
         </div>
     </div>
 </section>
+
 <style>
     /* =========================================================
-       LUXURY RESTO HOME PAGE STYLES
+       MODERN RESTO HOME PAGE STYLES (#48beda)
     ========================================================= */
 
     :root {
-        --primary-gold: #b8864b;
-        --primary-gold-dark: #9a6d36;
-        --dark-bg: #181818;
-        --light-bg: #fcfbfa;
-        --text-dark: #222222;
-        --text-muted: #666666;
-        --border-color: #eee4d8;
+        --primary: #48beda;
+        --primary-dark: #35a8c2;
+        --primary-gradient: linear-gradient(135deg, #48beda 0%, #2099b5 100%);
+        --primary-glow: 0 8px 25px rgba(72, 190, 218, 0.35);
+        --dark-bg: #0f172a;
+        --light-bg: #f8fafc;
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
     }
 
     /* Common Section Header */
@@ -322,10 +326,10 @@
     }
 
     .sub-title {
-        color: var(--primary-gold);
+        color: var(--primary);
         font-size: 13px;
         font-weight: 700;
-        letter-spacing: 2px;
+        letter-spacing: 2.2px;
         text-transform: uppercase;
         display: block;
         margin-bottom: 8px;
@@ -335,14 +339,15 @@
         font-size: 36px;
         font-weight: 800;
         color: var(--text-dark);
+        letter-spacing: -0.5px;
     }
 
     .title-line {
         width: 60px;
         height: 3px;
-        background: var(--primary-gold);
+        background: var(--primary-gradient);
         margin-top: 12px;
-        border-radius: 2px;
+        border-radius: 4px;
     }
 
     /* =========================================================
@@ -359,7 +364,7 @@
     .hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 100%);
+        background: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.5) 100%);
     }
 
     .min-vh-80 {
@@ -371,30 +376,34 @@
         align-items: center;
         gap: 8px;
         padding: 6px 16px;
-        background: rgba(184, 134, 75, 0.2);
-        border: 1px solid var(--primary-gold);
-        color: var(--primary-gold);
+        background: rgba(72, 190, 218, 0.15);
+        border: 1px solid var(--primary);
+        color: var(--primary);
         border-radius: 30px;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
         letter-spacing: 2px;
         margin-bottom: 20px;
     }
 
     .hero-title {
         color: #ffffff;
-        font-size: 56px;
+        font-size: 54px;
         font-weight: 800;
         line-height: 1.15;
         margin-bottom: 20px;
+        letter-spacing: -1px;
     }
 
-        .hero-title span {
-            color: var(--primary-gold);
-        }
+    .hero-title span {
+        color: var(--primary);
+        background: linear-gradient(135deg, #48beda 0%, #8ae9fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
     .hero-desc {
-        color: #cccccc;
+        color: #cbd5e1;
         font-size: 16px;
         line-height: 1.7;
         margin-bottom: 35px;
@@ -409,31 +418,31 @@
 
     /* Buttons */
     .btn-hero-primary, .btn-resto-primary {
-        background: var(--primary-gold);
+        background: var(--primary-gradient);
         color: #ffffff !important;
         padding: 13px 30px;
-        border-radius: 8px;
-        font-weight: 600;
+        border-radius: 10px;
+        font-weight: 700;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
         transition: all 0.3s ease;
-        box-shadow: 0 6px 20px rgba(184, 134, 75, 0.3);
+        box-shadow: var(--primary-glow);
     }
 
-        .btn-hero-primary:hover, .btn-resto-primary:hover {
-            background: var(--primary-gold-dark);
-            transform: translateY(-2px);
-        }
+    .btn-hero-primary:hover, .btn-resto-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(72, 190, 218, 0.45);
+    }
 
     .btn-hero-outline {
         background: transparent;
         color: #ffffff !important;
         border: 1.5px solid rgba(255, 255, 255, 0.4);
         padding: 13px 30px;
-        border-radius: 8px;
-        font-weight: 600;
+        border-radius: 10px;
+        font-weight: 700;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
@@ -441,17 +450,18 @@
         transition: all 0.3s ease;
     }
 
-        .btn-hero-outline:hover {
-            background: #ffffff;
-            color: var(--text-dark) !important;
-        }
+    .btn-hero-outline:hover {
+        background: #ffffff;
+        color: var(--text-dark) !important;
+        transform: translateY(-2px);
+    }
 
     .btn-resto-outline {
-        border: 2px solid var(--primary-gold);
-        color: var(--primary-gold) !important;
+        border: 2px solid var(--primary);
+        color: var(--primary) !important;
         padding: 12px 28px;
-        border-radius: 8px;
-        font-weight: 600;
+        border-radius: 10px;
+        font-weight: 700;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
@@ -459,10 +469,12 @@
         transition: all 0.3s ease;
     }
 
-        .btn-resto-outline:hover {
-            background: var(--primary-gold);
-            color: #ffffff !important;
-        }
+    .btn-resto-outline:hover {
+        background: var(--primary);
+        color: #ffffff !important;
+        transform: translateY(-2px);
+        box-shadow: var(--primary-glow);
+    }
 
     /* =========================================================
        STATS SECTION
@@ -476,15 +488,15 @@
     .stats-wrapper {
         background: #ffffff;
         padding: 35px 20px;
-        border-radius: 15px;
-        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        border-radius: 16px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
         border: 1px solid var(--border-color);
     }
 
     .stat-number {
         font-size: 34px;
         font-weight: 800;
-        color: var(--primary-gold);
+        color: var(--primary);
         margin-bottom: 2px;
     }
 
@@ -506,36 +518,44 @@
     .feature-card {
         background: #ffffff;
         padding: 35px 25px;
-        border-radius: 12px;
+        border-radius: 16px;
         border: 1px solid var(--border-color);
         text-align: center;
         height: 100%;
         transition: all 0.3s ease;
     }
 
-        .feature-card:hover {
-            transform: translateY(-7px);
-            box-shadow: 0 12px 30px rgba(184, 134, 75, 0.12);
-            border-color: var(--primary-gold);
-        }
+    .feature-card:hover {
+        transform: translateY(-7px);
+        box-shadow: 0 14px 30px rgba(72, 190, 218, 0.16);
+        border-color: var(--primary);
+    }
 
     .feature-icon {
         width: 65px;
         height: 65px;
-        background: rgba(184, 134, 75, 0.1);
-        color: var(--primary-gold);
-        border-radius: 50%;
+        background: rgba(72, 190, 218, 0.12);
+        color: var(--primary);
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 28px;
         margin: 0 auto 20px;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+        background: var(--primary);
+        color: #ffffff;
+        transform: scale(1.05);
     }
 
     .feature-card h4 {
         font-size: 18px;
         font-weight: 700;
         margin-bottom: 12px;
+        color: var(--text-dark);
     }
 
     .feature-card p {
@@ -556,38 +576,38 @@
         position: relative;
     }
 
-        .about-image-wrapper .main-img {
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-        }
+    .about-image-wrapper .main-img {
+        border-radius: 20px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+    }
 
     .experience-badge {
         position: absolute;
         bottom: -20px;
         right: -20px;
-        background: var(--primary-gold);
+        background: var(--primary-gradient);
         color: #ffffff;
         padding: 20px 25px;
-        border-radius: 12px;
+        border-radius: 16px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        box-shadow: 0 10px 25px rgba(184, 134, 75, 0.3);
+        box-shadow: var(--primary-glow);
     }
 
-        .experience-badge .years {
-            font-size: 32px;
-            font-weight: 800;
-            line-height: 1;
-        }
+    .experience-badge .years {
+        font-size: 32px;
+        font-weight: 800;
+        line-height: 1;
+    }
 
-        .experience-badge .text {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 4px;
-        }
+    .experience-badge .text {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 4px;
+    }
 
     .about-content .desc {
         color: var(--text-muted);
@@ -605,9 +625,9 @@
         gap: 8px;
     }
 
-        .a-feat-item i {
-            color: var(--primary-gold);
-        }
+    .a-feat-item i {
+        color: var(--primary);
+    }
 
     /* =========================================================
        MENU SECTION
@@ -619,7 +639,7 @@
 
     .menu-card {
         background: #ffffff;
-        border-radius: 14px;
+        border-radius: 16px;
         overflow: hidden;
         border: 1px solid var(--border-color);
         height: 100%;
@@ -628,27 +648,28 @@
         transition: all 0.3s ease;
     }
 
-        .menu-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-        }
+    .menu-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 35px rgba(72, 190, 218, 0.15);
+        border-color: rgba(72, 190, 218, 0.4);
+    }
 
     .menu-card-img {
         position: relative;
         height: 220px;
     }
 
-        .menu-card-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .menu-card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
     .category-tag {
         position: absolute;
         top: 15px;
         left: 15px;
-        background: rgba(24, 24, 24, 0.75);
+        background: rgba(15, 23, 42, 0.8);
         backdrop-filter: blur(4px);
         color: #ffffff;
         padding: 4px 12px;
@@ -671,17 +692,18 @@
         margin-bottom: 10px;
     }
 
-        .menu-title-price h5 {
-            font-size: 17px;
-            font-weight: 700;
-            margin: 0;
-        }
+    .menu-title-price h5 {
+        font-size: 17px;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-dark);
+    }
 
-        .menu-title-price .price {
-            color: var(--primary-gold);
-            font-size: 18px;
-            font-weight: 800;
-        }
+    .menu-title-price .price {
+        color: var(--primary);
+        font-size: 18px;
+        font-weight: 800;
+    }
 
     .menu-desc {
         color: var(--text-muted);
@@ -698,16 +720,17 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        color: var(--primary-gold);
+        color: var(--primary);
         text-decoration: none;
         font-weight: 700;
         font-size: 13.5px;
-        transition: color 0.25s ease;
+        transition: all 0.25s ease;
     }
 
-        .btn-order-now:hover {
-            color: var(--primary-gold-dark);
-        }
+    .btn-order-now:hover {
+        color: var(--primary-dark);
+        transform: translateX(3px);
+    }
 
     /* =========================================================
        RESERVATION CTA
@@ -722,11 +745,11 @@
     .cta-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.75);
+        background: rgba(15, 23, 42, 0.85);
     }
 
-    .text-gold {
-        color: var(--primary-gold);
+    .text-cyan {
+        color: var(--primary);
     }
 
     .cta-title {
@@ -736,7 +759,7 @@
     }
 
     .cta-desc {
-        color: #dddddd;
+        color: #cbd5e1;
         font-size: 16px;
         margin-bottom: 35px;
     }
@@ -751,72 +774,72 @@
     .contact-info-card {
         text-align: center;
         padding: 35px 20px;
-        border-radius: 12px;
+        border-radius: 16px;
         border: 1px solid var(--border-color);
         background: #ffffff;
         height: 100%;
+        transition: all 0.3s ease;
     }
 
-        .contact-info-card .c-icon {
-            width: 55px;
-            height: 55px;
-            background: rgba(184, 134, 75, 0.1);
-            color: var(--primary-gold);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin: 0 auto 15px;
-        }
+    .contact-info-card:hover {
+        border-color: var(--primary);
+        box-shadow: 0 12px 30px rgba(72, 190, 218, 0.15);
+        transform: translateY(-4px);
+    }
 
-        .contact-info-card h5 {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
+    .contact-info-card .c-icon {
+        width: 58px;
+        height: 58px;
+        background: rgba(72, 190, 218, 0.12);
+        color: var(--primary);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin: 0 auto 15px;
+    }
 
-        .contact-info-card p {
-            color: var(--text-muted);
-            margin: 0;
-            font-size: 14px;
-        }
+    .contact-info-card h5 {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--text-dark);
+    }
 
-    /* =========================================================
-       RESPONSIVE
-    ========================================================= */
+    .contact-info-card p {
+        color: var(--text-muted);
+        margin: 0;
+        font-size: 14px;
+    }
+
+    /* Responsive */
     @@media (max-width: 992px) {
-        .hero-title
+        .hero-title {
+            font-size: 42px;
+        }
 
-    {
-        font-size: 42px;
-    }
-
-    .experience-badge {
-        right: 10px;
-        bottom: 10px;
-    }
-
+        .experience-badge {
+            right: 10px;
+            bottom: 10px;
+        }
     }
 
     @@media (max-width: 768px) {
-        .hero-title
+        .hero-title {
+            font-size: 34px;
+        }
 
-    {
-        font-size: 34px;
-    }
+        .cta-title {
+            font-size: 30px;
+        }
 
-    .cta-title {
-        font-size: 30px;
-    }
+        .main-title {
+            font-size: 28px;
+        }
 
-    .main-title {
-        font-size: 28px;
-    }
-
-    .stats-section {
-        margin-top: 20px;
-    }
-
+        .stats-section {
+            margin-top: 20px;
+        }
     }
 </style>

@@ -1,140 +1,101 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model IEnumerable<Restaurant_Management__System.Models.Inventory>
 
 @{
     ViewData["Title"] = "Inventories";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
-        <h2 class="fw-bold">Inventories</h2>
-        <p class="text-muted mb-0">
-            Manage restaurant inventory
-        </p>
+        <h2 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-boxes text-primary me-2"></i>Inventory Stocks
+        </h2>
+        <p class="text-muted mb-0">Track raw ingredient quantities and stock levels</p>
     </div>
 
     <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i>
-        Add Inventory
+        <i class="bi bi-plus-lg me-1"></i>
+        Add Inventory Record
     </a>
 </div>
 
-<div class="card">
-    <div class="card-body">
-
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
         <div class="table-responsive">
-
-            <table class="table table-hover align-middle">
-
-                <thead class="table-light">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
                     <tr>
-                        <th>ID</th>
+                        <th class="ps-4">ID</th>
                         <th>Ingredient</th>
-                        <th>Quantity</th>
+                        <th>Quantity in Stock</th>
                         <th>Last Updated</th>
-                        <th class="text-end">Actions</th>
+                        <th class="text-end pe-4">Actions</th>
                     </tr>
                 </thead>
-
                 <tbody>
-
                     @if (Model != null && Model.Any())
                     {
-                        @foreach (var item in Model)
+                        foreach (var item in Model)
                         {
                             <tr>
-
-                                <td>
-                                    @item.InventoryId
+                                <td class="ps-4">
+                                    <span class="badge bg-secondary">#@item.InventoryId</span>
                                 </td>
-
                                 <td>
-                                    @if (item.Ingredient != null)
-                                    {
-                                        <strong>
-                                            @item.Ingredient.IngredientName
-                                        </strong>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">
-                                            No Ingredient
-                                        </span>
-                                    }
+                                    <strong class="text-dark">
+                                        <i class="bi bi-egg-fried text-primary me-1"></i>
+                                        @(item.Ingredient != null ? item.Ingredient.IngredientName : "Unlinked Ingredient")
+                                    </strong>
                                 </td>
-
                                 <td>
                                     @if (item.Quantity <= 0)
                                     {
                                         <span class="badge bg-danger">
-                                            Out of Stock
+                                            <i class="bi bi-exclamation-octagon me-1"></i> Out of Stock
+                                        </span>
+                                    }
+                                    else if (item.Quantity < 10)
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-exclamation-triangle me-1"></i> Low: @item.Quantity
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="badge bg-success">
-                                            @item.Quantity
+                                            <i class="bi bi-check2 me-1"></i> @item.Quantity In Stock
                                         </span>
                                     }
                                 </td>
-
                                 <td>
-                                    @item.LastUpdated.ToString("dd MMM yyyy HH:mm")
+                                    <span class="text-muted font-monospace small">
+                                        @item.LastUpdated.ToString("dd MMM yyyy HH:mm")
+                                    </span>
                                 </td>
-
-                                <td class="text-end">
-
-                                    <a asp-action="Details"
-                                       asp-route-id="@item.InventoryId"
-                                       class="btn btn-sm btn-info text-white"
-                                       title="Details">
+                                <td class="text-end pe-4">
+                                    <a asp-action="Details" asp-route-id="@item.InventoryId" class="btn btn-sm btn-outline-secondary" title="Details">
                                         <i class="bi bi-eye"></i>
                                     </a>
-
-                                    <a asp-action="Edit"
-                                       asp-route-id="@item.InventoryId"
-                                       class="btn btn-sm btn-warning"
-                                       title="Edit">
+                                    <a asp-action="Edit" asp-route-id="@item.InventoryId" class="btn btn-sm btn-outline-primary" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-
-                                    <a asp-action="Delete"
-                                       asp-route-id="@item.InventoryId"
-                                       class="btn btn-sm btn-danger"
-                                       title="Delete">
+                                    <a asp-action="Delete" asp-route-id="@item.InventoryId" class="btn btn-sm btn-outline-danger" title="Delete">
                                         <i class="bi bi-trash"></i>
                                     </a>
-
                                 </td>
-
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="5"
-                                class="text-center text-muted py-5">
-
-                                <i class="bi bi-clipboard-data fs-1"></i>
-
-                                <p class="mt-2 mb-0">
-                                    No inventory records found.
-                                </p>
-
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-clipboard-x display-6 d-block mb-2 text-primary opacity-50"></i>
+                                No inventory records found.
                             </td>
                         </tr>
                     }
-
                 </tbody>
-
             </table>
-
         </div>
-
     </div>
 </div>
