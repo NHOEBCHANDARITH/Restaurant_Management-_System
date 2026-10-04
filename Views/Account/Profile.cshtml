@@ -1,0 +1,138 @@
+@model Restaurant_Management__System.Models.User
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+<div class="row g-4">
+    <!-- LEFT: PROFILE CARD -->
+    <div class="col-lg-4">
+        <div class="rms-card text-center p-4">
+            <div class="mx-auto mb-3 rms-user-avatar" style="width: 88px; height: 88px; font-size: 32px; border: 4px solid rgba(217, 119, 6, 0.3);">
+                @(string.IsNullOrEmpty(Model.FullName) ? "U" : Model.FullName.Substring(0, 1).ToUpper())
+            </div>
+            <h4 class="fw-bold text-dark mb-1">@Model.FullName</h4>
+            <span class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-3">
+                <i class="bi bi-shield-check me-1"></i> @(string.IsNullOrEmpty(Model.Role) ? "Staff Member" : Model.Role)
+            </span>
+
+            <div class="border-top pt-3 text-start small">
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span class="text-muted"><i class="bi bi-envelope me-1"></i> Email</span>
+                    <strong class="text-dark">@Model.Email</strong>
+                </div>
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span class="text-muted"><i class="bi bi-telephone me-1"></i> Phone</span>
+                    <strong class="text-dark">@(string.IsNullOrEmpty(Model.Phone) ? "Not provided" : Model.Phone)</strong>
+                </div>
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span class="text-muted"><i class="bi bi-clock me-1"></i> Timezone</span>
+                    <strong class="text-dark">Asia/Phnom_Penh (GMT+7)</strong>
+                </div>
+                <div class="d-flex justify-content-between py-2">
+                    <span class="text-muted"><i class="bi bi-geo-alt me-1"></i> Location</span>
+                    <strong class="text-dark">Phnom Penh, Cambodia</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT: DETAILS & TABS -->
+    <div class="col-lg-8">
+        <div class="rms-card">
+            <div class="rms-card-header bg-light">
+                <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active fw-bold" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab">
+                            <i class="bi bi-person me-1"></i> Personal Information
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link fw-bold" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
+                            <i class="bi bi-shield-lock me-1"></i> Security &amp; Password
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="rms-card-body p-4">
+                <div class="tab-content" id="profileTabsContent">
+                    <!-- 1. PERSONAL INFORMATION -->
+                    <div class="tab-pane fade show active" id="personal" role="tabpanel">
+                        <form asp-action="Profile" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="UserId" />
+                            <input type="hidden" asp-for="Role" />
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="rms-form-label">Full Name</label>
+                                    <div class="rms-input-group">
+                                        <i class="bi bi-person rms-input-icon"></i>
+                                        <input asp-for="FullName" class="rms-form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="rms-form-label">Email Address (Read-only)</label>
+                                    <div class="rms-input-group">
+                                        <i class="bi bi-envelope rms-input-icon"></i>
+                                        <input asp-for="Email" class="rms-form-control bg-light" readonly />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="rms-form-label">Phone Contact</label>
+                                    <div class="rms-input-group">
+                                        <i class="bi bi-telephone rms-input-icon"></i>
+                                        <input asp-for="Phone" class="rms-form-control" placeholder="+855 12 345 678" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="rms-form-label">Role Classification</label>
+                                    <div class="rms-input-group">
+                                        <i class="bi bi-award rms-input-icon"></i>
+                                        <input value="@Model.Role" class="rms-form-control bg-light" readonly />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn rms-btn-primary">
+                                <i class="bi bi-check-lg"></i> Update Personal Info
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- 2. SECURITY & PASSWORD -->
+                    <div class="tab-pane fade" id="security" role="tabpanel">
+                        <form asp-action="Profile" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="UserId" />
+                            <input type="hidden" asp-for="FullName" />
+                            <input type="hidden" asp-for="Email" />
+                            <input type="hidden" asp-for="Role" />
+                            <input type="hidden" asp-for="Phone" />
+
+                            <div class="mb-3">
+                                <label class="rms-form-label">New Password</label>
+                                <div class="rms-input-group">
+                                    <i class="bi bi-lock rms-input-icon"></i>
+                                    <input type="password" name="Password" class="rms-form-control" placeholder="Enter new secure password" />
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="rms-form-label">Confirm New Password</label>
+                                <div class="rms-input-group">
+                                    <i class="bi bi-lock-fill rms-input-icon"></i>
+                                    <input type="password" class="rms-form-control" placeholder="Re-type new password" />
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn rms-btn-primary">
+                                <i class="bi bi-shield-check"></i> Save New Password
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

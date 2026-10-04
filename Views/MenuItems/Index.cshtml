@@ -1,313 +1,254 @@
 @model IEnumerable<Restaurant_Management__System.Models.MenuItem>
-
 @{
-    ViewData["Title"] = "Our Menu";
+    ViewData["Title"] = "Menu Management";
+    var categories = ViewBag.Categories as List<Restaurant_Management__System.Models.Category> ?? new List<Restaurant_Management__System.Models.Category>();
+    int totalItems = Model?.Count() ?? 0;
 }
 
-<!-- PAGE HEADER -->
-<section class="menu-page-header">
-    <div class="container text-center">
-        <span class="sub-title">EXPLORE OUR DELICACIES</span>
-        <h1 class="main-title text-white">Our Delicious Menu</h1>
-        <div class="title-line mx-auto"></div>
+<!-- PAGE HEADER & ACTION -->
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-cup-hot-fill text-warning me-2"></i>Menu Items &amp; Culinary Catalog
+        </h2>
+        <p class="text-muted mb-0">Manage food dishes, beverages, pricing, photos, and kitchen availability.</p>
     </div>
-</section>
 
-<!-- MAIN MENU CONTENT -->
-<section class="menu-display-section py-5">
-    <div class="container">
-        
-        <!-- SEARCH & FILTER BAR -->
-        <div class="menu-filter-wrapper mb-5">
-            <div class="row g-3 align-items-center justify-content-between">
-                <div class="col-md-6 col-lg-4">
-                    <div class="search-box">
-                        <i class="bi bi-search search-icon"></i>
-                        <input type="text" id="menuSearchInput" class="form-control" placeholder="Search menu items..." onkeyup="filterMenu()">
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-8">
-                    <div class="category-tabs d-flex flex-wrap gap-2 justify-content-md-end">
-                        <button class="btn btn-filter active" onclick="filterCategory('all')">All Items</button>
-                        @if (ViewBag.Categories != null)
-                        {
-                            foreach (var cat in ViewBag.Categories)
-                            {
-                                <button class="btn btn-filter" onclick="filterCategory('@cat.CategoryName.ToLower()')">@cat.CategoryName</button>
-                            }
-                        }
-                    </div>
-                </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn rms-btn-primary">
+            <i class="bi bi-plus-lg"></i> Add New Menu Item
+        </a>
+    </div>
+</div>
+
+<!-- CATEGORY FILTER TABS & SEARCH -->
+<div class="rms-card p-3 mb-4">
+    <div class="row g-3 align-items-center justify-content-between">
+        <div class="col-md-5 col-lg-4">
+            <div class="rms-input-group">
+                <i class="bi bi-search rms-input-icon"></i>
+                <input type="text" id="menuItemSearch" class="rms-form-control" placeholder="Search dish name, ingredient..." onkeyup="filterMenuCards()" />
             </div>
         </div>
 
-        <!-- MENU GRID -->
-        <div class="row g-4" id="menuGrid">
-            @if (Model != null && Model.Any())
-            {
-                foreach (var item in Model)
+        <div class="col-md-7 col-lg-8">
+            <div class="d-flex flex-wrap gap-2 justify-content-md-end align-items-center">
+                <button class="btn btn-sm btn-outline-secondary active category-filter-btn rounded-pill px-3" onclick="filterCategoryTab('all')">
+                    All Dishes (@totalItems)
+                </button>
+                @foreach (var cat in categories)
                 {
-                    <div class="col-lg-4 col-md-6 menu-item-card" 
-                         data-category="@(item.Category?.CategoryName?.ToLower() ?? "uncategorized")"
-                         data-name="@item.ItemName.ToLower()">
-                        <div class="card h-100 menu-card border-0 shadow-sm">
-                            <div class="menu-img-wrapper">
-                                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" : item.ImageUrl)" 
-                                     class="card-img-top" alt="@item.ItemName">
-                                
-                                <span class="badge category-badge">
-                                    @(item.Category != null ? item.Category.CategoryName : "General")
-                                </span>
-
-                                @if (!string.IsNullOrEmpty(item.Status))
-                                {
-                                    <span class="badge status-badge @(item.Status.ToLower() == "available" ? "bg-success" : "bg-danger")">
-                                        @item.Status
-                                    </span>
-                                }
-                            </div>
-                            
-                            <div class="card-body d-flex flex-column p-4">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="card-title fw-bold text-dark mb-0">@item.ItemName</h5>
-                                    <span class="price-tag">$@item.Price.ToString("F2")</span>
-                                </div>
-                                
-                                <p class="card-text text-muted small flex-grow-1">
-                                    @item.Description
-                                </p>
-                                
-                                <div class="card-footer-action pt-3 mt-auto border-top d-flex justify-content-between align-items-center">
-                                    <a asp-controller="Orders" asp-action="Create" 
-                                       class="btn btn-add-cart @(item.Status?.ToLower() == "unavailable" ? "disabled" : "")">
-                                        <i class="bi bi-cart-plus me-1"></i> Order Now
-                                    </a>
-                                    <a asp-action="Details" asp-route-id="@item.ItemId" class="btn-details">
-                                        Details <i class="bi bi-arrow-right"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <button class="btn btn-sm btn-outline-secondary category-filter-btn rounded-pill px-3" onclick="filterCategoryTab('@cat.CategoryName.ToLower()')">
+                        @cat.CategoryName
+                    </button>
                 }
-            }
-            else
-            {
-                <div class="col-12 text-center py-5">
-                    <i class="bi bi-inbox text-muted display-4"></i>
-                    <p class="mt-3 text-muted">No menu items available at the moment.</p>
+
+                <div class="btn-group ms-2" role="group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary active" id="btnMenuCardView" onclick="setMenuDisplayView('grid')">
+                        <i class="bi bi-grid-fill"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnMenuTableView" onclick="setMenuDisplayView('table')">
+                        <i class="bi bi-list-ul"></i>
+                    </button>
                 </div>
-            }
+            </div>
         </div>
     </div>
-</section>
+</div>
 
-<!-- JAVASCRIPT FOR FILTERING -->
+<!-- 1. FOOD CARDS GRID VIEW -->
+<div class="row g-4" id="menuCardGrid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            string fallbackImg = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c";
+            string imgUrl = string.IsNullOrWhiteSpace(item.ImageUrl) ? fallbackImg : item.ImageUrl;
+            string categoryName = item.Category != null ? item.Category.CategoryName : "Specialty";
+            bool isAvailable = string.IsNullOrEmpty(item.Status) || item.Status.Equals("Available", StringComparison.OrdinalIgnoreCase);
+
+            <div class="col-xl-4 col-md-6 menu-card-col" 
+                 data-category="@categoryName.ToLower()" 
+                 data-name="@item.ItemName.ToLower()">
+                <div class="rms-food-card rms-searchable-card shadow-sm">
+                    <div class="rms-food-img-wrap">
+                        <img src="@imgUrl" alt="@item.ItemName" loading="lazy" onerror="this.src='@fallbackImg';" />
+                        
+                        <span class="badge position-absolute top-0 start-0 m-3 bg-dark bg-opacity-75 rounded-pill px-3 py-1">
+                            @categoryName
+                        </span>
+
+                        <span class="rms-food-price-badge">
+                            $@item.Price.ToString("F2")
+                            <small>@((item.Price * 4100).ToString("N0")) ៛</small>
+                        </span>
+                    </div>
+
+                    <div class="rms-food-card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="fw-bold text-dark mb-0">@item.ItemName</h5>
+                            @if (isAvailable)
+                            {
+                                <span class="rms-badge rms-badge-success py-1 px-2"><span class="rms-badge-dot"></span> Available</span>
+                            }
+                            else
+                            {
+                                <span class="rms-badge rms-badge-danger py-1 px-2"><span class="rms-badge-dot"></span> Sold Out</span>
+                            }
+                        </div>
+
+                        <p class="text-muted small flex-grow-1 mb-3" style="min-height: 40px;">
+                            @(string.IsNullOrWhiteSpace(item.Description) ? "Traditional freshly prepared dish made with quality Cambodian ingredients and spices." : item.Description)
+                        </p>
+
+                        <div class="border-top pt-3 mt-auto d-flex justify-content-between align-items-center">
+                            <div class="rms-action-btn-group">
+                                <a asp-action="Details" asp-route-id="@item.ItemId" class="rms-action-btn" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.ItemId" class="rms-action-btn" title="Edit Item">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.ItemId" class="rms-action-btn delete" title="Delete Item">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+
+                            <a asp-controller="Orders" asp-action="Create" class="btn btn-sm rms-btn-outline py-1 px-2">
+                                <i class="bi bi-cart-plus"></i> Order
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="rms-empty-state rms-card">
+                <div class="rms-empty-icon"><i class="bi bi-cup-hot"></i></div>
+                <h4 class="rms-empty-title">No Menu Items Listed</h4>
+                <p class="rms-empty-desc">Create your signature dishes, set prices, and attach appetizing food photos.</p>
+                <a asp-action="Create" class="btn rms-btn-primary">
+                    <i class="bi bi-plus-lg"></i> Add First Dish
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- 2. DATA TABLE VIEW -->
+<div class="rms-table-wrapper d-none" id="menuTableGrid">
+    <div class="table-responsive">
+        <table class="rms-table align-middle">
+            <thead>
+                <tr>
+                    <th class="ps-4">Dish</th>
+                    <th>Category</th>
+                    <th>Price (USD / KHR)</th>
+                    <th>Status</th>
+                    <th>Description</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" : item.ImageUrl)" 
+                                         alt="@item.ItemName" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;" />
+                                    <div>
+                                        <strong class="text-dark d-block">@item.ItemName</strong>
+                                        <small class="text-muted font-monospace">#ITEM-@item.ItemId</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    @(item.Category != null ? item.Category.CategoryName : "Specialty")
+                                </span>
+                            </td>
+                            <td>
+                                <strong class="text-dark font-monospace">$@item.Price.ToString("F2")</strong>
+                                <small class="text-muted d-block">@((item.Price * 4100).ToString("N0")) ៛</small>
+                            </td>
+                            <td>
+                                @if (string.IsNullOrEmpty(item.Status) || item.Status.Equals("Available", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="rms-badge rms-badge-success"><span class="rms-badge-dot"></span> Available</span>
+                                }
+                                else
+                                {
+                                    <span class="rms-badge rms-badge-danger"><span class="rms-badge-dot"></span> Sold Out</span>
+                                }
+                            </td>
+                            <td>
+                                <small class="text-muted text-truncate d-inline-block" style="max-width: 250px;">
+                                    @item.Description
+                                </small>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="rms-action-btn-group">
+                                    <a asp-action="Details" asp-route-id="@item.ItemId" class="rms-action-btn" title="View"><i class="bi bi-eye"></i></a>
+                                    <a asp-action="Edit" asp-route-id="@item.ItemId" class="rms-action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@item.ItemId" class="rms-action-btn delete" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <script>
-    function filterCategory(category) {
-        let buttons = document.querySelectorAll('.btn-filter');
+    function setMenuDisplayView(view) {
+        const cardView = document.getElementById('menuCardGrid');
+        const tableView = document.getElementById('menuTableGrid');
+        const btnCard = document.getElementById('btnMenuCardView');
+        const btnTable = document.getElementById('btnMenuTableView');
+
+        if (view === 'grid') {
+            cardView.classList.remove('d-none');
+            tableView.classList.add('d-none');
+            btnCard.classList.add('active');
+            btnTable.classList.remove('active');
+        } else {
+            cardView.classList.add('d-none');
+            tableView.classList.remove('d-none');
+            btnTable.classList.add('active');
+            btnCard.classList.remove('active');
+        }
+    }
+
+    function filterCategoryTab(category) {
+        const buttons = document.querySelectorAll('.category-filter-btn');
         buttons.forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
 
-        let cards = document.querySelectorAll('.menu-item-card');
+        const cards = document.querySelectorAll('.menu-card-col');
         cards.forEach(card => {
-            let cardCategory = card.getAttribute('data-category');
-            if (category === 'all' || cardCategory === category) {
-                card.style.display = 'block';
+            const cat = card.getAttribute('data-category');
+            if (category === 'all' || cat === category) {
+                card.style.display = '';
             } else {
                 card.style.display = 'none';
             }
         });
     }
 
-    function filterMenu() {
-        let input = document.getElementById('menuSearchInput').value.toLowerCase();
-        let cards = document.querySelectorAll('.menu-item-card');
-
+    function filterMenuCards() {
+        const query = document.getElementById('menuItemSearch').value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.menu-card-col');
         cards.forEach(card => {
-            let name = card.getAttribute('data-name');
-            if (name.includes(input)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
+            const name = card.getAttribute('data-name');
+            card.style.display = name.includes(query) ? '' : 'none';
         });
     }
 </script>
-
-<style>
-    :root {
-        --primary: #48beda;
-        --primary-dark: #35a8c2;
-        --dark-bg: #0f172a;
-        --border-color: #e2e8f0;
-    }
-
-    /* Header */
-    .menu-page-header {
-        background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4') center/cover no-repeat;
-        padding: 80px 0;
-        border-radius: 0 0 24px 24px;
-        margin-top: -1.5rem;
-    }
-
-    .sub-title {
-        color: var(--primary);
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    .main-title {
-        font-size: 38px;
-        font-weight: 800;
-    }
-
-    .title-line {
-        width: 60px;
-        height: 3px;
-        background: var(--primary);
-        border-radius: 4px;
-        margin-top: 12px;
-    }
-
-    /* Search Box */
-    .search-box {
-        position: relative;
-    }
-
-    .search-box .search-icon {
-        position: absolute;
-        top: 50%;
-        left: 15px;
-        transform: translateY(-50%);
-        color: var(--primary);
-        font-size: 16px;
-    }
-
-    .search-box input {
-        padding-left: 44px;
-        border-radius: 30px;
-        border: 1px solid var(--border-color);
-        height: 46px;
-        background: #ffffff;
-    }
-
-    .search-box input:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 0.25rem rgba(72, 190, 218, 0.25);
-    }
-
-    /* Category Filter Buttons */
-    .btn-filter {
-        border: 1px solid var(--border-color);
-        background-color: #ffffff;
-        color: #475569;
-        border-radius: 25px;
-        padding: 8px 20px;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-filter:hover, .btn-filter.active {
-        background-color: var(--primary);
-        color: #ffffff;
-        border-color: var(--primary);
-        box-shadow: 0 4px 14px rgba(72, 190, 218, 0.3);
-    }
-
-    /* Card Styling */
-    .menu-card {
-        border-radius: 16px;
-        overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        background: #ffffff;
-        border: 1px solid #eef2f6 !important;
-    }
-
-    .menu-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 16px 30px rgba(72, 190, 218, 0.16) !important;
-        border-color: rgba(72, 190, 218, 0.4) !important;
-    }
-
-    .menu-img-wrapper {
-        position: relative;
-        height: 220px;
-        overflow: hidden;
-    }
-
-    .menu-img-wrapper img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-
-    .menu-card:hover .menu-img-wrapper img {
-        transform: scale(1.08);
-    }
-
-    .category-badge {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        background: rgba(15, 23, 42, 0.75);
-        backdrop-filter: blur(4px);
-        color: #ffffff;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-    }
-
-    .status-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-    }
-
-    .price-tag {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: var(--primary);
-    }
-
-    /* Action Buttons */
-    .btn-add-cart {
-        background: linear-gradient(135deg, #48beda 0%, #2099b5 100%);
-        color: #ffffff !important;
-        border-radius: 10px;
-        font-weight: 600;
-        font-size: 13px;
-        padding: 8px 18px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(72, 190, 218, 0.3);
-        border: none;
-    }
-
-    .btn-add-cart:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 18px rgba(72, 190, 218, 0.45);
-    }
-
-    .btn-details {
-        color: #64748b;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 600;
-        transition: color 0.3s ease;
-    }
-
-    .btn-details:hover {
-        color: var(--primary);
-    }
-</style>

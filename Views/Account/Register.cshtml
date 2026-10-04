@@ -1,0 +1,139 @@
+@model Restaurant_Management__System.Models.User
+@{
+    ViewData["Title"] = "Staff Registration";
+    ViewData["NoSidebar"] = true;
+}
+
+<div class="rms-auth-wrapper">
+    <!-- LEFT SIDE: BRANDING -->
+    <div class="rms-auth-left">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rms-brand-logo-icon" style="width: 50px; height: 50px; font-size: 26px;">
+                <i class="bi bi-fire"></i>
+            </div>
+            <div>
+                <h4 class="fw-bold mb-0 text-white">Sovannaphum</h4>
+                <small class="text-warning text-uppercase" style="font-size: 11px; font-weight: 700;">
+                    <i class="bi bi-stars"></i> Khmer Culinary &amp; RMS
+                </small>
+            </div>
+        </div>
+
+        <div class="my-auto py-5">
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3">
+                <i class="bi bi-person-plus-fill me-1"></i> Staff Onboarding
+            </span>
+            <h1 class="display-5 fw-extrabold text-white mb-3" style="font-weight: 800; line-height: 1.15;">
+                Join the Team at <br />
+                <span style="color: #fbbf24;">Sovannaphum.</span>
+            </h1>
+            <p class="text-light opacity-75 fs-6 mb-4" style="max-width: 480px; line-height: 1.7;">
+                Register staff credentials to process orders, assign tables, coordinate kitchen ingredients, and manage daily fine dining hospitality service.
+            </p>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center text-white-50 small">
+            <span>&copy; 2026 Sovannaphum RMS. All rights reserved.</span>
+            <a asp-action="Login" class="text-warning text-decoration-none fw-semibold">
+                <i class="bi bi-arrow-left me-1"></i> Back to Login
+            </a>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE: REGISTRATION FORM -->
+    <div class="rms-auth-right">
+        <div class="rms-auth-card">
+            <div class="text-center text-md-start mb-4">
+                <h3 class="fw-bold text-dark mb-1">Create Staff Account</h3>
+                <p class="text-muted small">Enter your professional details to establish your restaurant profile.</p>
+            </div>
+
+            <div asp-validation-summary="All" class="rms-alert rms-alert-danger py-2 px-3 small @(ViewData.ModelState.IsValid ? "d-none" : "")"></div>
+
+            <form asp-action="Register" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Full Name -->
+                <div class="mb-3">
+                    <label class="rms-form-label">
+                        Full Name <span class="required-dot">*</span>
+                    </label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-person rms-input-icon"></i>
+                        <input asp-for="FullName" class="rms-form-control" placeholder="e.g. Sothea Meas" required />
+                    </div>
+                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                </div>
+
+                <!-- Email & Phone Grid -->
+                <div class="row g-2 mb-3">
+                    <div class="col-sm-6">
+                        <label class="rms-form-label">
+                            Email <span class="required-dot">*</span>
+                        </label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-envelope rms-input-icon"></i>
+                            <input asp-for="Email" type="email" class="rms-form-control" placeholder="staff@sovannaphum.com" required />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="rms-form-label">Phone Number</label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-telephone rms-input-icon"></i>
+                            <input asp-for="Phone" class="rms-form-control" placeholder="+855 12 345 678" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role Selection -->
+                <div class="mb-3">
+                    <label class="rms-form-label">Staff Role</label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-person-badge rms-input-icon"></i>
+                        <select asp-for="Role" class="form-select rms-form-control">
+                            <option value="Staff">Floor Staff / Waiter</option>
+                            <option value="Manager">Restaurant Manager</option>
+                            <option value="Admin">System Administrator</option>
+                            <option value="Chef">Kitchen Executive Chef</option>
+                            <option value="Cashier">POS Cashier</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Password & Confirm -->
+                <div class="row g-2 mb-4">
+                    <div class="col-sm-6">
+                        <label class="rms-form-label">
+                            Password <span class="required-dot">*</span>
+                        </label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-lock rms-input-icon"></i>
+                            <input asp-for="Password" type="password" class="rms-form-control" placeholder="••••••••" required />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="rms-form-label">
+                            Confirm Password <span class="required-dot">*</span>
+                        </label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-shield-check rms-input-icon"></i>
+                            <input type="password" name="confirmPassword" class="rms-form-control" placeholder="••••••••" required />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn rms-btn-primary w-100 justify-content-center py-2 fs-6 mb-3">
+                    <i class="bi bi-check-circle"></i> Complete Registration
+                </button>
+
+                <div class="text-center small text-muted">
+                    Already registered? 
+                    <a asp-action="Login" class="text-primary fw-bold text-decoration-none">Sign In Here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

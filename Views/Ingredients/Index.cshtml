@@ -1,103 +1,107 @@
 @model IEnumerable<Restaurant_Management__System.Models.Ingredient>
-
 @{
-    ViewData["Title"] = "Ingredients";
+    ViewData["Title"] = "Kitchen Ingredients";
+    int count = Model?.Count() ?? 0;
+    int lowCount = Model?.Count(i => i.Stock < 10) ?? 0;
 }
 
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
         <h2 class="fw-bold mb-1 text-dark">
-            <i class="bi bi-egg-fried text-primary me-2"></i>Ingredients
+            <i class="bi bi-egg-fried text-warning me-2"></i>Kitchen Ingredients &amp; Raw Stock
         </h2>
-        <p class="text-muted mb-0">Manage raw kitchen ingredients, suppliers, and stock units</p>
+        <p class="text-muted mb-0">Track raw meats, spices, vegetables, seafood, and supplier procurement.</p>
     </div>
 
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>
-        Add Ingredient
-    </a>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn rms-btn-primary">
+            <i class="bi bi-plus-lg"></i> Add Ingredient
+        </a>
+    </div>
 </div>
 
-<div class="card shadow-sm border-0">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Ingredient Name</th>
-                        <th>Supplier</th>
-                        <th>Stock Level</th>
-                        <th>Unit</th>
-                        <th class="text-end pe-4">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td class="ps-4">
-                                    <span class="badge bg-secondary">#@item.IngredientId</span>
-                                </td>
-                                <td>
-                                    <strong class="text-dark">@item.IngredientName</strong>
-                                </td>
-                                <td>
-                                    <span class="text-muted">
-                                        <i class="bi bi-truck text-primary me-1"></i>
-                                        @(item.Supplier != null ? item.Supplier.SupplierName : "No Supplier")
-                                    </span>
-                                </td>
-                                <td>
-                                    @if (item.Stock <= 0)
-                                    {
-                                        <span class="badge bg-danger">
-                                            <i class="bi bi-exclamation-octagon me-1"></i> Out of Stock
-                                        </span>
-                                    }
-                                    else if (item.Stock <= 10)
-                                    {
-                                        <span class="badge bg-warning text-dark">
-                                            <i class="bi bi-exclamation-triangle me-1"></i> Low: @item.Stock
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check2 me-1"></i> @item.Stock
-                                        </span>
-                                    }
-                                </td>
-                                <td>
-                                    <span class="badge bg-light text-dark border">@item.Unit</span>
-                                </td>
-                                <td class="text-end pe-4">
-                                    <a asp-action="Details" asp-route-id="@item.IngredientId" class="btn btn-sm btn-outline-secondary" title="Details">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.IngredientId" class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.IngredientId" class="btn btn-sm btn-outline-danger" title="Delete">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
+<div class="rms-table-wrapper">
+    <div class="table-responsive">
+        <table class="rms-table align-middle">
+            <thead>
+                <tr>
+                    <th class="ps-4">Ingredient</th>
+                    <th>Supplier Vendor</th>
+                    <th>Current Stock</th>
+                    <th>Unit</th>
+                    <th>Stock Health Status</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
                     {
                         <tr>
-                            <td colspan="6" class="text-center py-5 text-muted">
-                                <i class="bi bi-egg display-6 d-block mb-2 text-primary opacity-50"></i>
-                                No ingredients recorded yet.
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rms-brand-logo-icon" style="width: 36px; height: 36px; font-size: 16px;">
+                                        <i class="bi bi-egg-fried"></i>
+                                    </div>
+                                    <div>
+                                        <strong class="text-dark d-block">@item.IngredientName</strong>
+                                        <small class="text-muted font-monospace">#ING-@item.IngredientId</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    <i class="bi bi-truck text-warning me-1"></i>
+                                    @(item.Supplier?.SupplierName ?? $"Supplier #{item.SupplierId}")
+                                </span>
+                            </td>
+                            <td>
+                                <strong class="fs-6 font-monospace @(item.Stock < 10 ? "text-danger" : "text-dark")">@item.Stock</strong>
+                            </td>
+                            <td>
+                                <span class="text-muted text-uppercase small fw-bold">@item.Unit</span>
+                            </td>
+                            <td>
+                                @if (item.Stock <= 0)
+                                {
+                                    <span class="rms-badge rms-badge-danger"><span class="rms-badge-dot"></span> Out of Stock</span>
+                                }
+                                else if (item.Stock < 10)
+                                {
+                                    <span class="rms-badge rms-badge-warning"><span class="rms-badge-dot"></span> Low Stock</span>
+                                }
+                                else
+                                {
+                                    <span class="rms-badge rms-badge-success"><span class="rms-badge-dot"></span> Adequate Stock</span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="rms-action-btn-group">
+                                    <a asp-action="Details" asp-route-id="@item.IngredientId" class="rms-action-btn" title="View Details"><i class="bi bi-eye"></i></a>
+                                    <a asp-action="Edit" asp-route-id="@item.IngredientId" class="rms-action-btn" title="Edit Ingredient"><i class="bi bi-pencil"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@item.IngredientId" class="rms-action-btn delete" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6">
+                            <div class="rms-empty-state">
+                                <div class="rms-empty-icon"><i class="bi bi-egg-fried"></i></div>
+                                <h4 class="rms-empty-title">No Ingredients Registered</h4>
+                                <p class="rms-empty-desc">Add raw ingredients (Kampot pepper, coconut milk, lemongrass, beef) to track inventory.</p>
+                                <a asp-action="Create" class="btn rms-btn-primary">
+                                    <i class="bi bi-plus-lg"></i> Add First Ingredient
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

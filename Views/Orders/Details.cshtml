@@ -1,186 +1,190 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model Restaurant_Management__System.Models.Order
-
 @{
-    ViewData["Title"] = "Order Details";
+    ViewData["Title"] = "Order Bill #" + Model.OrderId;
+    var orderItems = ViewBag.OrderItems as List<Restaurant_Management__System.Models.OrderDetail> ?? new List<Restaurant_Management__System.Models.OrderDetail>();
+    var payment = ViewBag.Payment as Restaurant_Management__System.Models.Payment;
+
+    decimal subtotal = orderItems.Any() ? orderItems.Sum(i => i.Subtotal) : Model.TotalAmount;
+    decimal vatTax = subtotal * 0.10m; // 10% Khmer VAT
+    decimal grandTotal = Model.TotalAmount > 0 ? Model.TotalAmount : (subtotal + vatTax);
+    decimal khrTotal = grandTotal * 4100;
 }
 
 <div class="row justify-content-center">
-
-    <div class="col-md-9">
-
-        <div class="card">
-
-            <div class="card-body p-4">
-
-                <div class="d-flex justify-content-between align-items-center mb-4">
-
-                    <h3 class="fw-bold mb-0">
-                        <i class="bi bi-cart-check text-info"></i>
-                        Order Details
-                    </h3>
-
-                    <span class="badge bg-primary fs-6">
-                        Order #@Model.OrderId
-                    </span>
-
-                </div>
-
-                <div class="row">
-
-                    <!-- Customer -->
-                    <div class="col-md-6 mb-4">
-
-                        <small class="text-muted">
-                            Customer
-                        </small>
-
-                        <h5>
-                            <i class="bi bi-person text-primary"></i>
-                            @Model.Customer?.CustomerName
-                        </h5>
-
-                    </div>
-
-                    <!-- Table -->
-                    <div class="col-md-6 mb-4">
-
-                        <small class="text-muted">
-                            Dining Table
-                        </small>
-
-                        <h5>
-                            <i class="bi bi-table text-primary"></i>
-                            Table @Model.DiningTable?.TableNumber
-                        </h5>
-
-                    </div>
-
-                    <!-- User -->
-                    <div class="col-md-6 mb-4">
-
-                        <small class="text-muted">
-                            Staff / User
-                        </small>
-
-                        <h5>
-                            <i class="bi bi-person-badge text-primary"></i>
-                            @Model.User?.FullName
-                        </h5>
-
-                    </div>
-
-                    <!-- Date -->
-                    <div class="col-md-6 mb-4">
-
-                        <small class="text-muted">
-                            Order Date
-                        </small>
-
-                        <h5>
-                            <i class="bi bi-calendar-event text-primary"></i>
-                            @Model.OrderDate.ToString("dd/MM/yyyy")
-                            <br />
-                            <small class="text-muted">
-                                @Model.OrderDate.ToString("hh:mm tt")
-                            </small>
-                        </h5>
-
-                    </div>
-
-                    <!-- Total -->
-                    <div class="col-md-6 mb-4">
-
-                        <small class="text-muted">
-                            Total Amount
-                        </small>
-
-                        <h4 class="fw-bold text-success">
-                            $@Model.TotalAmount.ToString("N2")
-                        </h4>
-
-                    </div>
-
-                    <!-- Status -->
-                    <div class="col-md-6 mb-4">
-
-                        <small class="text-muted">
-                            Status
-                        </small>
-
-                        <div class="mt-2">
-
-                            @if (Model.Status == "Pending")
-                            {
-                                <span class="badge bg-warning text-dark fs-6">
-                                    Pending
-                                </span>
-                            }
-                            else if (Model.Status == "Processing")
-                            {
-                                <span class="badge bg-primary fs-6">
-                                    Processing
-                                </span>
-                            }
-                            else if (Model.Status == "Completed")
-                            {
-                                <span class="badge bg-success fs-6">
-                                    Completed
-                                </span>
-                            }
-                            else if (Model.Status == "Cancelled")
-                            {
-                                <span class="badge bg-danger fs-6">
-                                    Cancelled
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-secondary fs-6">
-                                    @Model.Status
-                                </span>
-                            }
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <hr />
-
-                <div class="mt-3">
-
-                    <a asp-action="Edit"
-                       asp-route-id="@Model.OrderId"
-                       class="btn btn-warning">
-                        <i class="bi bi-pencil"></i>
-                        Edit
-                    </a>
-
-                    <a asp-action="Delete"
-                       asp-route-id="@Model.OrderId"
-                       class="btn btn-danger">
-                        <i class="bi bi-trash"></i>
-                        Delete
-                    </a>
-
-                    <a asp-action="Index"
-                       class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i>
-                        Back
-                    </a>
-
-                </div>
-
+    <div class="col-lg-8">
+        <!-- TOP ACTIONS (DO NOT PRINT) -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a asp-action="Index" class="btn rms-btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Orders
+            </a>
+            <div class="d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.OrderId" class="btn rms-btn-secondary">
+                    <i class="bi bi-pencil"></i> Edit Order
+                </a>
+                <button type="button" class="btn rms-btn-primary" onclick="window.print()">
+                    <i class="bi bi-printer"></i> Print Guest Bill / Receipt
+                </button>
             </div>
-
         </div>
 
-    </div>
+        <!-- POS GUEST BILL / RECEIPT CONTAINER -->
+        <div class="rms-receipt-container">
+            <!-- RESTAURANT RECEIPT HEADER -->
+            <div class="rms-receipt-header">
+                <div class="rms-receipt-logo">
+                    <i class="bi bi-fire"></i>
+                </div>
+                <h3 class="rms-receipt-title">Sovannaphum Restaurant</h3>
+                <div class="rms-receipt-meta">
+                    #128 Preah Sisowath Quay, Phnom Penh, Cambodia<br />
+                    Tel: +855 12 345 678 • VAT TIN: K008-9923812
+                </div>
+                <div class="badge bg-warning text-dark px-3 py-1 rounded-pill mt-2">
+                    Official Dining Receipt / វិក្កយបត្រ
+                </div>
+            </div>
 
+            <!-- TICKET METADATA -->
+            <div class="row g-3 mb-4 small">
+                <div class="col-6">
+                    <span class="text-muted d-block">Order Reference</span>
+                    <strong class="text-dark fs-6 font-monospace">#ORD-@Model.OrderId</strong>
+                </div>
+                <div class="col-6 text-end">
+                    <span class="text-muted d-block">Date &amp; Time</span>
+                    <strong class="text-dark">@Model.OrderDate.ToString("dd/MM/yyyy hh:mm tt")</strong>
+                </div>
+                <div class="col-6">
+                    <span class="text-muted d-block">Guest / Customer</span>
+                    <strong class="text-dark">
+                        <i class="bi bi-person me-1"></i>@(Model.Customer?.CustomerName ?? "Walk-in Guest")
+                    </strong>
+                    @if (!string.IsNullOrEmpty(Model.Customer?.Phone))
+                    {
+                        <div class="text-muted">Tel: @Model.Customer.Phone</div>
+                    }
+                </div>
+                <div class="col-6 text-end">
+                    <span class="text-muted d-block">Seating Station</span>
+                    <strong class="text-dark">
+                        <i class="bi bi-table text-warning me-1"></i>
+                        @(Model.DiningTable != null ? $"Table {Model.DiningTable.TableNumber}" : "Takeaway Order")
+                    </strong>
+                    <div class="text-muted">Server: @(Model.User?.FullName ?? "Staff")</div>
+                </div>
+            </div>
+
+            <!-- ITEMIZED DISHES TABLE -->
+            <div class="table-responsive mb-4">
+                <table class="table table-sm align-middle">
+                    <thead class="table-light">
+                        <tr class="small text-muted text-uppercase">
+                            <th>Item Description</th>
+                            <th class="text-center">Qty</th>
+                            <th class="text-end">Price</th>
+                            <th class="text-end pe-2">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (orderItems.Any())
+                        {
+                            foreach (var item in orderItems)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong class="text-dark d-block">@(item.MenuItem?.ItemName ?? $"Dish #{item.ItemId}")</strong>
+                                        <small class="text-muted">@(item.MenuItem?.Category?.CategoryName ?? "Specialty")</small>
+                                    </td>
+                                    <td class="text-center font-monospace">@item.Quantity</td>
+                                    <td class="text-end font-monospace">$@item.UnitPrice.ToString("N2")</td>
+                                    <td class="text-end pe-2 font-monospace fw-bold">$@item.Subtotal.ToString("N2")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>
+                                    <strong class="text-dark">Dining Service Package</strong>
+                                    <small class="text-muted d-block">Full course meal &amp; beverages</small>
+                                </td>
+                                <td class="text-center font-monospace">1</td>
+                                <td class="text-end font-monospace">$@Model.TotalAmount.ToString("N2")</td>
+                                <td class="text-end pe-2 font-monospace fw-bold">$@Model.TotalAmount.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TOTALS SUMMARY BREAKDOWN -->
+            <div class="rms-receipt-total-box">
+                <div class="d-flex justify-content-between py-1 text-muted small">
+                    <span>Subtotal / សរុប</span>
+                    <span class="font-monospace">$@subtotal.ToString("N2")</span>
+                </div>
+                <div class="d-flex justify-content-between py-1 text-muted small">
+                    <span>Khmer VAT (10%) / ពន្ធអាករ</span>
+                    <span class="font-monospace">$@vatTax.ToString("N2")</span>
+                </div>
+                <div class="d-flex justify-content-between py-1 text-muted small border-bottom pb-2">
+                    <span>Discount / បញ្ចុះតម្លៃ</span>
+                    <span class="font-monospace text-success">-$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center pt-2">
+                    <div>
+                        <strong class="fs-5 text-dark d-block">Grand Total / សរុបរួម</strong>
+                        <small class="text-muted font-monospace">@khrTotal.ToString("N0") ៛ (Khmer Riel)</small>
+                    </div>
+                    <strong class="fs-4 text-warning font-monospace">$@grandTotal.ToString("N2")</strong>
+                </div>
+            </div>
+
+            <!-- STATUS & PAYMENT METHOD FOOTER -->
+            <div class="row g-2 align-items-center border-top pt-3 small text-muted">
+                <div class="col-sm-6">
+                    <span>Order Status: </span>
+                    @if (Model.Status == "Completed")
+                    {
+                        <span class="rms-badge rms-badge-success py-1 px-2"><span class="rms-badge-dot"></span> Completed</span>
+                    }
+                    else if (Model.Status == "Pending")
+                    {
+                        <span class="rms-badge rms-badge-warning py-1 px-2"><span class="rms-badge-dot"></span> Pending</span>
+                    }
+                    else
+                    {
+                        <span class="rms-badge rms-badge-info py-1 px-2"><span class="rms-badge-dot"></span> @Model.Status</span>
+                    }
+                </div>
+                <div class="col-sm-6 text-sm-end">
+                    <span>Payment Status: </span>
+                    @if (payment != null)
+                    {
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-circle me-1"></i> Paid (@payment.PaymentMethod)
+                        </span>
+                    }
+                    else if (Model.Status == "Completed")
+                    {
+                        <span class="badge bg-success">
+                            <i class="bi bi-check-circle me-1"></i> Paid (Settled)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">
+                            <i class="bi bi-hourglass me-1"></i> Unsettled / Open
+                        </span>
+                    }
+                </div>
+            </div>
+
+            <!-- KHQR SCANNER / THANK YOU NOTE -->
+            <div class="text-center pt-4 mt-3 border-top border-dashed small text-muted">
+                <p class="mb-1 fw-bold text-dark">សូមអរគុណ! Thank you for dining at Sovannaphum!</p>
+                <small>Please keep this receipt for your records. Wi-Fi: Sovanna_Guest / Pass: khmerdelight</small>
+            </div>
+        </div>
+    </div>
 </div>

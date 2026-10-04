@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Restaurant_Management__System.Data;
 using Restaurant_Management__System.Models;
@@ -16,7 +17,13 @@ namespace RestaurantManagementSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Reservations.ToListAsync());
+            var reservations = await _context.Reservations
+                .Include(r => r.Customer)
+                .Include(r => r.DiningTable)
+                .OrderByDescending(r => r.ReservationDate)
+                .ToListAsync();
+
+            return View(reservations);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -24,6 +31,8 @@ namespace RestaurantManagementSystem.Controllers
             if (id == null) return NotFound();
 
             var reservation = await _context.Reservations
+                .Include(r => r.Customer)
+                .Include(r => r.DiningTable)
                 .FirstOrDefaultAsync(x => x.ReservationId == id);
 
             if (reservation == null) return NotFound();
@@ -33,6 +42,7 @@ namespace RestaurantManagementSystem.Controllers
 
         public IActionResult Create()
         {
+            LoadDropdowns();
             return View();
         }
 
@@ -44,9 +54,11 @@ namespace RestaurantManagementSystem.Controllers
             {
                 _context.Reservations.Add(reservation);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Table reservation booked successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
+            LoadDropdowns(reservation.CustomerId, reservation.TableId);
             return View(reservation);
         }
 
@@ -55,9 +67,9 @@ namespace RestaurantManagementSystem.Controllers
             if (id == null) return NotFound();
 
             var reservation = await _context.Reservations.FindAsync(id);
-
             if (reservation == null) return NotFound();
 
+            LoadDropdowns(reservation.CustomerId, reservation.TableId);
             return View(reservation);
         }
 
@@ -69,11 +81,24 @@ namespace RestaurantManagementSystem.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Reservations.Update(reservation);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Reservations.Update(reservation);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Reservation updated successfully!";
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ReservationExists(reservation.ReservationId))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
                 return RedirectToAction(nameof(Index));
             }
 
+            LoadDropdowns(reservation.CustomerId, reservation.TableId);
             return View(reservation);
         }
 
@@ -82,6 +107,8 @@ namespace RestaurantManagementSystem.Controllers
             if (id == null) return NotFound();
 
             var reservation = await _context.Reservations
+                .Include(r => r.Customer)
+                .Include(r => r.DiningTable)
                 .FirstOrDefaultAsync(x => x.ReservationId == id);
 
             if (reservation == null) return NotFound();
@@ -94,14 +121,36 @@ namespace RestaurantManagementSystem.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var reservation = await _context.Reservations.FindAsync(id);
-
             if (reservation != null)
             {
                 _context.Reservations.Remove(reservation);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Reservation cancelled/removed successfully.";
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool ReservationExists(int id)
+        {
+            return _context.Reservations.Any(e => e.ReservationId == id);
+        }
+
+        private void LoadDropdowns(int? selectedCustomerId = null, int? selectedTableId = null)
+        {
+            ViewBag.CustomerId = new SelectList(
+                _context.Customers.OrderBy(c => c.CustomerName).ToList(),
+                "CustomerId",
+                "CustomerName",
+                selectedCustomerId
+            );
+
+            ViewBag.TableId = new SelectList(
+                _context.DiningTables.OrderBy(t => t.TableNumber).ToList(),
+                "TableId",
+                "TableNumber",
+                selectedTableId
+            );
         }
     }
 }

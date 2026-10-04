@@ -1,112 +1,67 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model Restaurant_Management__System.Models.Customer
-
 @{
-    ViewData["Title"] = "Create Customer";
+    ViewData["Title"] = "Add Customer";
 }
 
 <div class="row justify-content-center">
-
-    <div class="col-md-8">
-
-        <div class="card">
-            <div class="card-body p-4">
-
-                <h3 class="fw-bold mb-4">
-                    <i class="bi bi-person-plus text-primary"></i>
-                    Create Customer
-                </h3>
-
-                <form asp-action="Create" method="post">
-
-                    <div asp-validation-summary="ModelOnly"
-                         class="alert alert-danger">
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label asp-for="CustomerName"
-                               class="form-label">
-                            Customer Name
-                        </label>
-
-                        <input asp-for="CustomerName"
-                               class="form-control"
-                               placeholder="Enter customer name" />
-
-                        <span asp-validation-for="CustomerName"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label asp-for="Phone"
-                               class="form-label">
-                            Phone
-                        </label>
-
-                        <input asp-for="Phone"
-                               class="form-control"
-                               placeholder="Enter phone number" />
-
-                        <span asp-validation-for="Phone"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label asp-for="Address"
-                               class="form-label">
-                            Address
-                        </label>
-
-                        <textarea asp-for="Address"
-                                  class="form-control"
-                                  rows="3"
-                                  placeholder="Enter address">
-                        </textarea>
-
-                        <span asp-validation-for="Address"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="mt-4">
-
-                        <button type="submit"
-                                class="btn btn-primary">
-                            <i class="bi bi-save"></i>
-                            Save Customer
-                        </button>
-
-                        <a asp-action="Index"
-                           class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i>
-                            Back
-                        </a>
-
-                    </div>
-
-                </form>
-
+    <div class="col-lg-6">
+        <div class="rms-form-card">
+            <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
+                <div class="rms-brand-logo-icon" style="width: 44px; height: 44px; font-size: 20px;">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <div>
+                    <h4 class="fw-bold text-dark mb-0">Register Guest / Customer</h4>
+                    <small class="text-muted">Create a guest profile for table reservations and billing</small>
+                </div>
             </div>
+
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="rms-alert rms-alert-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="CustomerName" class="rms-form-label">
+                        Guest Full Name <span class="required-dot">*</span>
+                    </label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-person rms-input-icon"></i>
+                        <input asp-for="CustomerName" class="rms-form-control" placeholder="e.g. Lok Socheata" required autofocus />
+                    </div>
+                    <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Phone" class="rms-form-label">
+                        Phone Contact <span class="required-dot">*</span>
+                    </label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-telephone rms-input-icon"></i>
+                        <input asp-for="Phone" class="rms-form-control" placeholder="+855 12 345 678" required />
+                    </div>
+                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Address" class="rms-form-label">Address / District</label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-geo-alt rms-input-icon"></i>
+                        <input asp-for="Address" class="rms-form-control" placeholder="e.g. Daun Penh, Phnom Penh" />
+                    </div>
+                    <span asp-validation-for="Address" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn rms-btn-primary">
+                        <i class="bi bi-save"></i> Save Customer
+                    </button>
+                    <a asp-action="Index" class="btn rms-btn-secondary">Cancel</a>
+                </div>
+            </form>
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -1,215 +1,121 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model Restaurant_Management__System.Models.Order
-
 @{
-    ViewData["Title"] = "Create Order";
+    ViewData["Title"] = "Create Dining Order";
 }
 
 <div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="rms-form-card">
+            <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
+                <div class="rms-brand-logo-icon" style="width: 44px; height: 44px; font-size: 20px;">
+                    <i class="bi bi-receipt-cutoff"></i>
+                </div>
+                <div>
+                    <h4 class="fw-bold text-dark mb-0">Create Dining Ticket</h4>
+                    <small class="text-muted">Initiate a live guest order or takeaway ticket</small>
+                </div>
+            </div>
 
-    <div class="col-md-8">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="rms-alert rms-alert-danger mb-3"></div>
 
-        <div class="card">
-
-            <div class="card-body p-4">
-
-                <h3 class="fw-bold mb-4">
-                    <i class="bi bi-cart-plus text-primary"></i>
-                    Create Order
-                </h3>
-
-                <form asp-action="Create" method="post">
-
-                    <div asp-validation-summary="ModelOnly"
-                         class="alert alert-danger">
-                    </div>
-
-                    <!-- Customer -->
-                    <div class="mb-3">
-
-                        <label asp-for="CustomerId"
-                               class="form-label">
-                            Customer
+                <div class="row g-3">
+                    <!-- Customer Selection -->
+                    <div class="col-md-6">
+                        <label asp-for="CustomerId" class="rms-form-label">
+                            Guest / Customer <span class="required-dot">*</span>
                         </label>
-
-                        <select asp-for="CustomerId"
-                                class="form-select"
-                                asp-items="ViewBag.CustomerId">
-
-                            <option value="">
-                                -- Select Customer --
-                            </option>
-
-                        </select>
-
-                        <span asp-validation-for="CustomerId"
-                              class="text-danger">
-                        </span>
-
+                        <div class="rms-input-group">
+                            <i class="bi bi-person rms-input-icon"></i>
+                            <select asp-for="CustomerId" class="form-select rms-form-control" asp-items="ViewBag.CustomerId" required>
+                                <option value="">-- Select Guest --</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="CustomerId" class="text-danger small"></span>
                     </div>
 
                     <!-- Dining Table -->
-                    <div class="mb-3">
-
-                        <label asp-for="TableId"
-                               class="form-label">
-                            Dining Table
+                    <div class="col-md-6">
+                        <label asp-for="TableId" class="rms-form-label">
+                            Dining Table <span class="required-dot">*</span>
                         </label>
-
-                        <select asp-for="TableId"
-                                class="form-select"
-                                asp-items="ViewBag.TableId">
-
-                            <option value="">
-                                -- Select Table --
-                            </option>
-
-                        </select>
-
-                        <span asp-validation-for="TableId"
-                              class="text-danger">
-                        </span>
-
+                        <div class="rms-input-group">
+                            <i class="bi bi-table rms-input-icon"></i>
+                            <select asp-for="TableId" class="form-select rms-form-control" asp-items="ViewBag.TableId" required>
+                                <option value="">-- Select Table --</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="TableId" class="text-danger small"></span>
                     </div>
 
-                    <!-- User -->
-                    <div class="mb-3">
-
-                        <label asp-for="UserId"
-                               class="form-label">
-                            Staff / User
+                    <!-- Staff Server -->
+                    <div class="col-md-6">
+                        <label asp-for="UserId" class="rms-form-label">
+                            Assigned Server / Staff <span class="required-dot">*</span>
                         </label>
-
-                        <select asp-for="UserId"
-                                class="form-select"
-                                asp-items="ViewBag.UserId">
-
-                            <option value="">
-                                -- Select User --
-                            </option>
-
-                        </select>
-
-                        <span asp-validation-for="UserId"
-                              class="text-danger">
-                        </span>
-
+                        <div class="rms-input-group">
+                            <i class="bi bi-person-badge rms-input-icon"></i>
+                            <select asp-for="UserId" class="form-select rms-form-control" asp-items="ViewBag.UserId" required>
+                                <option value="">-- Select Staff --</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="UserId" class="text-danger small"></span>
                     </div>
 
-                    <!-- Order Date -->
-                    <div class="mb-3">
-
-                        <label asp-for="OrderDate"
-                               class="form-label">
-                            Order Date & Time
-                        </label>
-
-                        <input asp-for="OrderDate"
-                               type="datetime-local"
-                               class="form-control" />
-
-                        <span asp-validation-for="OrderDate"
-                              class="text-danger">
-                        </span>
-
+                    <!-- Date & Time -->
+                    <div class="col-md-6">
+                        <label asp-for="OrderDate" class="rms-form-label">Order Timestamp</label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-calendar-event rms-input-icon"></i>
+                            <input asp-for="OrderDate" type="datetime-local" class="rms-form-control" 
+                                   value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
+                        </div>
+                        <span asp-validation-for="OrderDate" class="text-danger small"></span>
                     </div>
 
                     <!-- Total Amount -->
-                    <div class="mb-3">
-
-                        <label asp-for="TotalAmount"
-                               class="form-label">
-                            Total Amount
+                    <div class="col-md-6">
+                        <label asp-for="TotalAmount" class="rms-form-label">
+                            Order Total Amount ($ USD) <span class="required-dot">*</span>
                         </label>
-
-                        <div class="input-group">
-                            <span class="input-group-text">$</span>
-
-                            <input asp-for="TotalAmount"
-                                   type="number"
-                                   step="0.01"
-                                   min="0"
-                                   class="form-control"
-                                   placeholder="0.00" />
+                        <div class="rms-input-group">
+                            <i class="bi bi-currency-dollar rms-input-icon"></i>
+                            <input asp-for="TotalAmount" type="number" step="0.01" min="0" class="rms-form-control" placeholder="0.00" required />
                         </div>
-
-                        <span asp-validation-for="TotalAmount"
-                              class="text-danger">
-                        </span>
-
+                        <span asp-validation-for="TotalAmount" class="text-danger small"></span>
                     </div>
 
-                    <!-- Status -->
-                    <div class="mb-3">
-
-                        <label asp-for="Status"
-                               class="form-label">
-                            Status
-                        </label>
-
-                        <select asp-for="Status"
-                                class="form-select">
-
-                            <option value="">
-                                -- Select Status --
-                            </option>
-
-                            <option value="Pending">
-                                Pending
-                            </option>
-
-                            <option value="Processing">
-                                Processing
-                            </option>
-
-                            <option value="Completed">
-                                Completed
-                            </option>
-
-                            <option value="Cancelled">
-                                Cancelled
-                            </option>
-
-                        </select>
-
-                        <span asp-validation-for="Status"
-                              class="text-danger">
-                        </span>
-
+                    <!-- Order Status -->
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="rms-form-label">Ticket Status</label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-flag rms-input-icon"></i>
+                            <select asp-for="Status" class="form-select rms-form-control">
+                                <option value="Pending" selected>Pending (Order Received)</option>
+                                <option value="Preparing">Preparing (Kitchen Fired)</option>
+                                <option value="Ready">Ready (Ready for Service)</option>
+                                <option value="Completed">Completed (Served &amp; Paid)</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Status" class="text-danger small"></span>
                     </div>
+                </div>
 
-                    <div class="mt-4">
+                <hr class="my-4" />
 
-                        <button type="submit"
-                                class="btn btn-primary">
-                            <i class="bi bi-save"></i>
-                            Save Order
-                        </button>
-
-                        <a asp-action="Index"
-                           class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i>
-                            Back
-                        </a>
-
-                    </div>
-
-                </form>
-
-            </div>
-
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn rms-btn-primary">
+                        <i class="bi bi-check-lg"></i> Open Order Ticket
+                    </button>
+                    <a asp-action="Index" class="btn rms-btn-secondary">Cancel</a>
+                </div>
+            </form>
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

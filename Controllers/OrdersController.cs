@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Restaurant_Management__System.Data;
@@ -50,6 +50,14 @@ namespace RestaurantManagementSystem.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.OrderItems = await _context.OrderDetails
+                .Include(d => d.MenuItem)
+                .Where(d => d.OrderId == id)
+                .ToListAsync();
+
+            ViewBag.Payment = await _context.Payments
+                .FirstOrDefaultAsync(p => p.OrderId == id);
 
             return View(order);
         }

@@ -1,129 +1,189 @@
 @model IEnumerable<Restaurant_Management__System.Models.Order>
-
 @{
-    ViewData["Title"] = "Orders";
+    ViewData["Title"] = "Orders Management";
+
+    int totalOrders = Model?.Count() ?? 0;
+    decimal totalSales = Model?.Sum(o => o.TotalAmount) ?? 0m;
+    int pendingCount = Model?.Count(o => o.Status == "Pending") ?? 0;
+    int preparingCount = Model?.Count(o => o.Status == "Preparing" || o.Status == "Processing") ?? 0;
+    int completedCount = Model?.Count(o => o.Status == "Completed") ?? 0;
 }
 
+<!-- HEADER -->
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
         <h2 class="fw-bold mb-1 text-dark">
-            <i class="bi bi-receipt text-primary me-2"></i>Orders Management
+            <i class="bi bi-receipt-cutoff text-warning me-2"></i>Orders &amp; POS Billing
         </h2>
-        <p class="text-muted mb-0">Track and manage dining and takeaway customer orders</p>
+        <p class="text-muted mb-0">Track live dining floor tickets, takeaway orders, and customer billing status.</p>
     </div>
 
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>
-        New Order
-    </a>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn rms-btn-primary">
+            <i class="bi bi-plus-lg"></i> New Dining Order
+        </a>
+    </div>
 </div>
 
-<div class="card shadow-sm border-0">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th class="ps-4">Order ID</th>
-                        <th>Customer</th>
-                        <th>Table</th>
-                        <th>Served By</th>
-                        <th>Date & Time</th>
-                        <th>Total Amount</th>
-                        <th>Status</th>
-                        <th class="text-end pe-4">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td class="ps-4">
-                                    <span class="badge bg-primary">#@item.OrderId</span>
-                                </td>
-                                <td>
-                                    <strong class="text-dark">
-                                        <i class="bi bi-person text-muted me-1"></i>
-                                        @(item.Customer?.CustomerName ?? "Walk-in Guest")
-                                    </strong>
-                                </td>
-                                <td>
-                                    <span class="text-muted">
-                                        <i class="bi bi-table text-primary me-1"></i>
-                                        @(item.DiningTable != null ? $"Table {item.DiningTable.TableNumber}" : "Takeaway")
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="text-muted small">
-                                        <i class="bi bi-person-badge me-1"></i>
-                                        @(item.User?.FullName ?? "Staff")
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="text-dark font-monospace small">@item.OrderDate.ToString("dd/MM/yyyy")</span>
-                                    <br />
-                                    <small class="text-muted font-monospace">@item.OrderDate.ToString("hh:mm tt")</small>
-                                </td>
-                                <td>
-                                    <strong class="text-primary fs-6">$@item.TotalAmount.ToString("N2")</strong>
-                                </td>
-                                <td>
-                                    @if (item.Status == "Pending")
-                                    {
-                                        <span class="badge bg-warning text-dark">
-                                            <i class="bi bi-hourglass-split me-1"></i> Pending
-                                        </span>
-                                    }
-                                    else if (item.Status == "Processing" || item.Status == "Preparing")
-                                    {
-                                        <span class="badge bg-primary">
-                                            <i class="bi bi-fire me-1"></i> @item.Status
-                                        </span>
-                                    }
-                                    else if (item.Status == "Completed")
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle me-1"></i> Completed
-                                        </span>
-                                    }
-                                    else if (item.Status == "Cancelled")
-                                    {
-                                        <span class="badge bg-danger">
-                                            <i class="bi bi-x-circle me-1"></i> Cancelled
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">@item.Status</span>
-                                    }
-                                </td>
-                                <td class="text-end pe-4">
-                                    <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-sm btn-outline-secondary" title="Details">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.OrderId" class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.OrderId" class="btn btn-sm btn-outline-danger" title="Delete">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
+<!-- METRIC CARDS -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="p-3 bg-white border rounded-3 d-flex align-items-center gap-3 shadow-sm">
+            <div class="rounded-circle p-2 bg-warning bg-opacity-10 text-warning fs-4">
+                <i class="bi bi-receipt"></i>
+            </div>
+            <div>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 11px;">Total Orders</small>
+                <h4 class="fw-bold text-dark mb-0">@totalOrders</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="p-3 bg-white border rounded-3 d-flex align-items-center gap-3 shadow-sm">
+            <div class="rounded-circle p-2 bg-primary bg-opacity-10 text-primary fs-4">
+                <i class="bi bi-fire"></i>
+            </div>
+            <div>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 11px;">Kitchen Prep</small>
+                <h4 class="fw-bold text-dark mb-0">@preparingCount</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="p-3 bg-white border rounded-3 d-flex align-items-center gap-3 shadow-sm">
+            <div class="rounded-circle p-2 bg-success bg-opacity-10 text-success fs-4">
+                <i class="bi bi-check-all"></i>
+            </div>
+            <div>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 11px;">Completed</small>
+                <h4 class="fw-bold text-dark mb-0">@completedCount</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="p-3 bg-white border rounded-3 d-flex align-items-center gap-3 shadow-sm">
+            <div class="rounded-circle p-2 bg-warning bg-opacity-10 text-warning fs-4">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+            <div>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 11px;">Gross Total</small>
+                <h4 class="fw-bold text-dark mb-0">$@totalSales.ToString("N0")</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER LIST TABLE -->
+<div class="rms-table-wrapper">
+    <div class="table-responsive">
+        <table class="rms-table align-middle">
+            <thead>
+                <tr>
+                    <th class="ps-4">Ticket</th>
+                    <th>Customer</th>
+                    <th>Table / Dining</th>
+                    <th>Server</th>
+                    <th>Date &amp; Time</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
                     {
                         <tr>
-                            <td colspan="8" class="text-center py-5 text-muted">
-                                <i class="bi bi-receipt display-6 d-block mb-2 text-primary opacity-50"></i>
-                                No orders placed yet.
+                            <td class="ps-4">
+                                <span class="badge rms-badge-primary">#ORD-@item.OrderId</span>
+                            </td>
+                            <td>
+                                <strong class="text-dark">
+                                    <i class="bi bi-person text-muted me-1"></i>
+                                    @(item.Customer?.CustomerName ?? "Walk-in Guest")
+                                </strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border px-2 py-1">
+                                    <i class="bi bi-table text-warning me-1"></i>
+                                    @(item.DiningTable != null ? $"Table {item.DiningTable.TableNumber}" : "Takeaway")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-muted small">
+                                    <i class="bi bi-person-badge me-1"></i>
+                                    @(item.User?.FullName ?? "Staff")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-dark font-monospace small">@item.OrderDate.ToString("dd MMM yyyy")</span>
+                                <br />
+                                <small class="text-muted font-monospace">@item.OrderDate.ToString("hh:mm tt")</small>
+                            </td>
+                            <td>
+                                <strong class="text-dark font-monospace fs-6">$@item.TotalAmount.ToString("N2")</strong>
+                                <br />
+                                <small class="text-muted">@((item.TotalAmount * 4100).ToString("N0")) ៛</small>
+                            </td>
+                            <td>
+                                @if (item.Status == "Pending")
+                                {
+                                    <span class="rms-badge rms-badge-warning"><span class="rms-badge-dot"></span> Pending</span>
+                                }
+                                else if (item.Status == "Preparing" || item.Status == "Processing")
+                                {
+                                    <span class="rms-badge rms-badge-info"><span class="rms-badge-dot"></span> Preparing</span>
+                                }
+                                else if (item.Status == "Ready")
+                                {
+                                    <span class="rms-badge rms-badge-primary"><span class="rms-badge-dot"></span> Ready</span>
+                                }
+                                else if (item.Status == "Completed")
+                                {
+                                    <span class="rms-badge rms-badge-success"><span class="rms-badge-dot"></span> Completed</span>
+                                }
+                                else if (item.Status == "Cancelled")
+                                {
+                                    <span class="rms-badge rms-badge-danger"><span class="rms-badge-dot"></span> Cancelled</span>
+                                }
+                                else
+                                {
+                                    <span class="rms-badge rms-badge-secondary"><span class="rms-badge-dot"></span> @item.Status</span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="rms-action-btn-group">
+                                    <a asp-action="Details" asp-route-id="@item.OrderId" class="btn btn-sm rms-btn-outline py-1 px-2" title="View Guest Bill / Receipt">
+                                        <i class="bi bi-receipt"></i> Bill
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.OrderId" class="rms-action-btn" title="Edit Order">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.OrderId" class="rms-action-btn delete" title="Cancel/Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8">
+                            <div class="rms-empty-state">
+                                <div class="rms-empty-icon"><i class="bi bi-receipt"></i></div>
+                                <h4 class="rms-empty-title">No Orders Recorded</h4>
+                                <p class="rms-empty-desc">Create your first dining ticket to start processing restaurant orders.</p>
+                                <a asp-action="Create" class="btn rms-btn-primary">
+                                    <i class="bi bi-plus-lg"></i> Create New Order
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

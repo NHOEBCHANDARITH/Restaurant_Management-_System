@@ -23,6 +23,11 @@ namespace Restaurant_Management__System.Controllers
             return View();
         }
 
+        public IActionResult Dashboard()
+        {
+            return RedirectToAction("Index", "Dashboard");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -1,79 +1,96 @@
 @model IEnumerable<Restaurant_Management__System.Models.Customer>
-
 @{
-    ViewData["Title"] = "Customers";
+    ViewData["Title"] = "Customer Directory";
+    int count = Model?.Count() ?? 0;
 }
 
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
         <h2 class="fw-bold mb-1 text-dark">
-            <i class="bi bi-people text-primary me-2"></i>Customers
+            <i class="bi bi-people-fill text-warning me-2"></i>Customer Directory &amp; Guests
         </h2>
-        <p class="text-muted mb-0">Manage customer records and contact information</p>
+        <p class="text-muted mb-0">Maintain guest contact records, dining preferences, and table reservation history.</p>
     </div>
 
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>
-        Add Customer
-    </a>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn rms-btn-primary">
+            <i class="bi bi-person-plus"></i> Add New Customer
+        </a>
+    </div>
 </div>
 
-<div class="card shadow-sm border-0">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Customer Name</th>
-                        <th>Phone</th>
-                        <th>Address</th>
-                        <th class="text-end pe-4">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td class="ps-4">
-                                    <span class="badge bg-primary">#@item.CustomerId</span>
-                                </td>
-                                <td>
-                                    <strong class="text-dark">@item.CustomerName</strong>
-                                </td>
-                                <td>
-                                    <span class="text-muted"><i class="bi bi-telephone text-primary me-1"></i>@item.Phone</span>
-                                </td>
-                                <td>
-                                    <span class="text-muted"><i class="bi bi-geo-alt text-primary me-1"></i>@item.Address</span>
-                                </td>
-                                <td class="text-end pe-4">
-                                    <a asp-action="Details" asp-route-id="@item.CustomerId" class="btn btn-sm btn-outline-secondary" title="Details">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.CustomerId" class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.CustomerId" class="btn btn-sm btn-outline-danger" title="Delete">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
+<div class="rms-table-wrapper">
+    <div class="table-responsive">
+        <table class="rms-table align-middle">
+            <thead>
+                <tr>
+                    <th class="ps-4">Guest</th>
+                    <th>Phone Contact</th>
+                    <th>Address / Location</th>
+                    <th>VIP Status</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var customer in Model)
                     {
                         <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="bi bi-people display-6 d-block mb-2 text-primary opacity-50"></i>
-                                No customers registered yet.
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rms-user-avatar" style="width: 40px; height: 40px; font-size: 15px;">
+                                        @(string.IsNullOrEmpty(customer.CustomerName) ? "G" : customer.CustomerName.Substring(0, 1).ToUpper())
+                                    </div>
+                                    <div>
+                                        <strong class="text-dark d-block">@customer.CustomerName</strong>
+                                        <small class="text-muted font-monospace">#CUST-@customer.CustomerId</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-dark">
+                                    <i class="bi bi-telephone text-warning me-1"></i>
+                                    @(string.IsNullOrEmpty(customer.Phone) ? "No phone" : customer.Phone)
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-muted">
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    @(string.IsNullOrEmpty(customer.Address) ? "Phnom Penh, Cambodia" : customer.Address)
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark px-2 py-1 rounded-pill">
+                                    <i class="bi bi-star-fill text-dark me-1" style="font-size: 10px;"></i> Valued Guest
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="rms-action-btn-group">
+                                    <a asp-action="Details" asp-route-id="@customer.CustomerId" class="rms-action-btn" title="View Profile"><i class="bi bi-eye"></i></a>
+                                    <a asp-action="Edit" asp-route-id="@customer.CustomerId" class="rms-action-btn" title="Edit Contact"><i class="bi bi-pencil"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@customer.CustomerId" class="rms-action-btn delete" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="rms-empty-state">
+                                <div class="rms-empty-icon"><i class="bi bi-people"></i></div>
+                                <h4 class="rms-empty-title">No Customers Registered</h4>
+                                <p class="rms-empty-desc">Add recurring guests and loyal diners to track their bookings and orders.</p>
+                                <a asp-action="Create" class="btn rms-btn-primary">
+                                    <i class="bi bi-person-plus"></i> Add First Customer
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

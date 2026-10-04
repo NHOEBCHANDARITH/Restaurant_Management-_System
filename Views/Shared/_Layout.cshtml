@@ -1,399 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>@ViewData["Title"] - Restaurant Management System</title>
+    <title>@ViewData["Title"] - Sovannaphum Restaurant Management System</title>
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- Site CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-
 <body>
 
-    <!-- ================= FLOATING GLASS NAVBAR ================= -->
-    <header class="public-navbar-wrapper sticky-top">
-        <nav class="public-navbar">
-            <div class="public-navbar-container">
-
-                <!-- LOGO BRAND -->
-                <a class="public-brand" asp-controller="Home" asp-action="Index">
-                    <div class="public-brand-icon">
-                        <i class="bi bi-shop"></i>
-                    </div>
-                    <div class="public-brand-text">
-                        <div class="brand-title">
-                            <strong>Resto</strong><span class="brand-dot">.</span>
-                        </div>
-                        <span class="brand-sub">CULINARY &amp; BAR</span>
-                    </div>
-                </a>
-
-                <!-- MOBILE TOGGLE BUTTON -->
-                <button class="public-mobile-btn" type="button" data-bs-toggle="collapse" data-bs-target="#publicNavbar" aria-controls="publicNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <i class="bi bi-grid-fill"></i>
-                </button>
-
-                <!-- NAVIGATION LINKS -->
-                <div class="collapse navbar-collapse" id="publicNavbar">
-                    <ul class="public-nav-menu">
-
-                        <!-- HOME -->
-                        <li>
-                            <a asp-controller="Home" asp-action="Index" class="public-nav-link">
-                                <i class="bi bi-house"></i>
-                                <span>Home</span>
-                            </a>
-                        </li>
-
-                        <!-- MENU -->
-                        <li>
-                            <a asp-controller="MenuItems" asp-action="Index" class="public-nav-link">
-                                <i class="bi bi-cup-hot"></i>
-                                <span>Menu</span>
-                            </a>
-                        </li>
-
-                        <!-- RESERVATIONS -->
-                        <li>
-                            <a asp-controller="Reservations" asp-action="Index" class="public-nav-link">
-                                <i class="bi bi-calendar2-check"></i>
-                                <span>Reservations</span>
-                            </a>
-                        </li>
-
-                        <!-- MANAGEMENT MEGA DROPDOWN -->
-                        <li class="nav-item dropdown">
-                            <a class="public-nav-link dropdown-toggle" href="#" id="manageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-grid"></i>
-                                <span>Management</span>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-mega shadow-lg border-0" aria-labelledby="manageDropdown">
-                                <div class="mega-menu-grid">
-
-                                    <!-- 1. FOOD & MENU -->
-                                    <div class="mega-menu-col">
-                                        <div class="mega-col-header">
-                                            <i class="bi bi-cup-hot"></i>
-                                            <span>Food &amp; Menu</span>
-                                        </div>
-                                        <a class="mega-item" asp-controller="MenuItems" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-card-list"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Menu Items</strong>
-                                                <small>Dishes, pricing &amp; status</small>
-                                            </div>
-                                        </a>
-                                        <a class="mega-item" asp-controller="Categories" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-tags"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Categories</strong>
-                                                <small>Cuisine &amp; dish types</small>
-                                            </div>
-                                        </a>
-                                    </div>
-
-                                    <!-- 2. ORDERS & BILLING -->
-                                    <div class="mega-menu-col">
-                                        <div class="mega-col-header">
-                                            <i class="bi bi-receipt"></i>
-                                            <span>Orders &amp; Billing</span>
-                                        </div>
-                                        <a class="mega-item" asp-controller="Orders" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-bag-check"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Orders List</strong>
-                                                <small>Track live dining orders</small>
-                                            </div>
-                                        </a>
-                                        <a class="mega-item" asp-controller="OrderDetails" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-list-check"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Order Details</strong>
-                                                <small>Portions &amp; item totals</small>
-                                            </div>
-                                        </a>
-                                        <a class="mega-item" asp-controller="Payments" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-credit-card"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Payments</strong>
-                                                <small>Invoices &amp; transactions</small>
-                                            </div>
-                                        </a>
-                                    </div>
-
-                                    <!-- 3. TABLES & GUESTS -->
-                                    <div class="mega-menu-col">
-                                        <div class="mega-col-header">
-                                            <i class="bi bi-calendar2-week"></i>
-                                            <span>Dining &amp; Guests</span>
-                                        </div>
-                                        <a class="mega-item" asp-controller="Reservations" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-calendar-check"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Reservations</strong>
-                                                <small>Bookings &amp; schedules</small>
-                                            </div>
-                                        </a>
-                                        <a class="mega-item" asp-controller="DiningTables" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-table"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Dining Tables</strong>
-                                                <small>Seating layout &amp; status</small>
-                                            </div>
-                                        </a>
-                                        <a class="mega-item" asp-controller="Customers" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-people"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Customers</strong>
-                                                <small>Guest directory &amp; phones</small>
-                                            </div>
-                                        </a>
-                                    </div>
-
-                                    <!-- 4. STOCK & STAFF -->
-                                    <div class="mega-menu-col">
-                                        <div class="mega-col-header">
-                                            <i class="bi bi-box-seam"></i>
-                                            <span>Stock &amp; Staff</span>
-                                        </div>
-                                        <a class="mega-item" asp-controller="Inventories" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-boxes"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Inventories</strong>
-                                                <small>Stock levels &amp; warnings</small>
-                                            </div>
-                                        </a>
-                                        <a class="mega-item" asp-controller="Ingredients" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-egg-fried"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Ingredients</strong>
-                                                <small>Kitchen raw ingredients</small>
-                                            </div>
-                                        </a>
-                                        <a class="mega-item" asp-controller="Suppliers" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-truck"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Suppliers</strong>
-                                                <small>Food vendors &amp; distributors</small>
-                                            </div>
-                                        </a>
-                                        <a class="mega-item" asp-controller="Users" asp-action="Index">
-                                            <div class="mega-item-icon"><i class="bi bi-person-badge"></i></div>
-                                            <div class="mega-item-text">
-                                                <strong>Staff Users</strong>
-                                                <small>Roles &amp; user accounts</small>
-                                            </div>
-                                        </a>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </li>
-
-                        <!-- ABOUT -->
-                        <li>
-                            <a href="/#about" class="public-nav-link">
-                                <i class="bi bi-info-circle"></i>
-                                <span>About</span>
-                            </a>
-                        </li>
-
-                        <!-- CONTACT -->
-                        <li>
-                            <a href="/#contact" class="public-nav-link">
-                                <i class="bi bi-telephone"></i>
-                                <span>Contact</span>
-                            </a>
-                        </li>
-
-                    </ul>
-
-                    <!-- NAVBAR RIGHT ACTION HUB -->
-                    <div class="public-navbar-right">
-
-                        <!-- LIVE ORDERS SHORTCUT -->
-                        <a asp-controller="Orders" asp-action="Index" class="public-icon-btn position-relative" title="Orders">
-                            <i class="bi bi-bag"></i>
-                            <span class="nav-pulse-badge"></span>
-                        </a>
-
-                        <!-- STAFF PORTAL -->
-                        <a asp-controller="Users" asp-action="Index" class="public-login-btn">
-                            <i class="bi bi-person-circle"></i>
-                            <span>Staff</span>
-                        </a>
-
-                        <!-- BOOK A TABLE BUTTON -->
-                        <a asp-controller="Reservations" asp-action="Create" class="public-book-btn">
-                            <i class="bi bi-calendar-plus"></i>
-                            <span>Book a Table</span>
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </div>
-        </nav>
-    </header>
-
-    <!-- ================= MAIN CONTENT ================= -->
-    @if (ViewData["FullWidth"] != null && (bool)ViewData["FullWidth"])
+    @if (ViewData["NoSidebar"] != null && (bool)ViewData["NoSidebar"])
     {
-        <main class="public-main-content">
+        <!-- STANDALONE / AUTH / FULL-WIDTH VIEW -->
+        <main>
             @RenderBody()
         </main>
     }
     else
     {
-        <main class="public-main-content py-4">
-            <div class="container py-2">
-                @RenderBody()
+        <!-- PROFESSIONAL RESTAURANT ADMIN LAYOUT -->
+        <div class="rms-layout-wrapper">
+            
+            <!-- MOBILE SIDEBAR BACKDROP -->
+            <div class="rms-sidebar-backdrop" id="rmsSidebarBackdrop"></div>
+
+            <!-- 1. SIDEBAR -->
+            <aside class="rms-sidebar" id="rmsSidebar">
+                <!-- Brand Header -->
+                <a asp-controller="Dashboard" asp-action="Index" class="rms-sidebar-brand">
+                    <div class="rms-brand-logo-icon">
+                        <i class="bi bi-fire"></i>
+                    </div>
+                    <div class="rms-brand-info">
+                        <span class="rms-brand-title">Sovanna<span>phum</span></span>
+                        <span class="rms-brand-subtitle">
+                            <i class="bi bi-stars"></i> Khmer Dining RMS
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Navigation List -->
+                <div class="rms-sidebar-nav">
+                    <!-- SECTION: OVERVIEW -->
+                    <div class="rms-nav-section-title">Overview</div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Dashboard" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-grid-1x2-fill nav-icon"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Reports" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-bar-chart-line-fill nav-icon"></i>
+                            <span>Reports &amp; Sales</span>
+                        </a>
+                    </div>
+
+                    <!-- SECTION: OPERATIONS -->
+                    <div class="rms-nav-section-title">Dining &amp; Orders</div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Orders" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-receipt-cutoff nav-icon"></i>
+                            <span>Orders Management</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Reservations" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-calendar2-check-fill nav-icon"></i>
+                            <span>Reservations</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="DiningTables" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-grid-3x3-gap-fill nav-icon"></i>
+                            <span>Dining Tables</span>
+                        </a>
+                    </div>
+
+                    <!-- SECTION: KITCHEN & STOCK -->
+                    <div class="rms-nav-section-title">Kitchen &amp; Inventory</div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="MenuItems" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-cup-hot-fill nav-icon"></i>
+                            <span>Menu Dishes</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Categories" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-tags-fill nav-icon"></i>
+                            <span>Categories</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Inventories" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-boxes nav-icon"></i>
+                            <span>Inventory Stock</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Ingredients" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-egg-fried nav-icon"></i>
+                            <span>Ingredients</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Suppliers" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-truck nav-icon"></i>
+                            <span>Suppliers</span>
+                        </a>
+                    </div>
+
+                    <!-- SECTION: MANAGEMENT -->
+                    <div class="rms-nav-section-title">Guests &amp; Finances</div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Customers" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-people-fill nav-icon"></i>
+                            <span>Customer Directory</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Payments" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-credit-card-2-front-fill nav-icon"></i>
+                            <span>Payments &amp; Bills</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="OrderDetails" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-card-checklist nav-icon"></i>
+                            <span>Order Items Log</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Users" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-person-badge-fill nav-icon"></i>
+                            <span>Staff Users</span>
+                        </a>
+                    </div>
+
+                    <!-- SECTION: SYSTEM -->
+                    <div class="rms-nav-section-title">System &amp; Portal</div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Settings" asp-action="Index" class="rms-nav-link">
+                            <i class="bi bi-gear-fill nav-icon"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                    <div class="rms-nav-item">
+                        <a asp-controller="Home" asp-action="Index" class="rms-nav-link" target="_blank">
+                            <i class="bi bi-box-arrow-up-right nav-icon"></i>
+                            <span>Guest Landing Page</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sidebar Footer -->
+                <div class="rms-sidebar-footer">
+                    <a asp-controller="Account" asp-action="Profile" class="rms-sidebar-user">
+                        <div class="rms-user-avatar">SC</div>
+                        <div class="rms-user-meta">
+                            <span class="rms-user-name">Sokha Chea</span>
+                            <span class="rms-user-role">Manager</span>
+                        </div>
+                    </a>
+                    <a asp-controller="Account" asp-action="Logout" class="rms-sidebar-logout-btn" title="Sign Out">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </a>
+                </div>
+            </aside>
+
+            <!-- 2. MAIN CONTENT WRAPPER -->
+            <div class="rms-main-wrapper">
+                
+                <!-- TOP NAVBAR -->
+                <header class="rms-topbar">
+                    <div class="rms-topbar-left">
+                        <!-- Sidebar Toggle Button -->
+                        <button type="button" class="rms-sidebar-toggle-btn" id="rmsSidebarToggle" title="Toggle Sidebar">
+                            <i class="bi bi-list"></i>
+                        </button>
+
+                        <div class="rms-page-heading">
+                            <h1 class="rms-page-title">@(ViewData["Title"] ?? "Dashboard")</h1>
+                            <div class="rms-breadcrumb">
+                                <span>Sovannaphum</span>
+                                <i class="bi bi-chevron-right"></i>
+                                <span>@(ViewData["Title"] ?? "Management")</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rms-topbar-right">
+                        <!-- Quick Instant Search -->
+                        <div class="rms-search-input-wrapper">
+                            <i class="bi bi-search"></i>
+                            <input type="text" id="rmsGlobalSearch" class="rms-search-input" placeholder="Quick filter items..." />
+                        </div>
+
+                        <!-- Live Phnom Penh Clock -->
+                        <div class="rms-live-time" title="Phnom Penh Local Time (GMT+7)">
+                            <i class="bi bi-clock-history"></i>
+                            <span id="rmsLiveClock">--:--:--</span>
+                        </div>
+
+                        <!-- Quick Actions Button Group -->
+                        <a asp-controller="Orders" asp-action="Create" class="btn btn-sm rms-btn-primary d-none d-md-inline-flex">
+                            <i class="bi bi-plus-lg"></i>
+                            <span>New Order</span>
+                        </a>
+
+                        <a asp-controller="Reservations" asp-action="Create" class="btn btn-sm rms-btn-secondary d-none d-lg-inline-flex">
+                            <i class="bi bi-calendar-plus"></i>
+                            <span>Book Table</span>
+                        </a>
+
+                        <!-- Notifications Dropdown -->
+                        <div class="dropdown">
+                            <button class="rms-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                                <i class="bi bi-bell"></i>
+                                <span class="rms-notification-dot"></span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-0 rounded-4" style="width: 320px;">
+                                <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center rounded-top-4">
+                                    <strong class="text-dark"><i class="bi bi-bell-fill text-warning me-1"></i> Notifications</strong>
+                                    <span class="badge bg-warning text-dark">3 New</span>
+                                </div>
+                                <div class="list-group list-group-flush small">
+                                    <a asp-controller="Reservations" asp-action="Index" class="list-group-item list-group-item-action py-3">
+                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                            <strong class="text-dark">New Reservation</strong>
+                                            <span class="text-muted" style="font-size: 10px;">Just now</span>
+                                        </div>
+                                        <p class="text-muted mb-0">Table T-04 booked for 4 guests tonight.</p>
+                                    </a>
+                                    <a asp-controller="Inventories" asp-action="Index" class="list-group-item list-group-item-action py-3">
+                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                            <strong class="text-danger">Low Stock Warning</strong>
+                                            <span class="text-muted" style="font-size: 10px;">10m ago</span>
+                                        </div>
+                                        <p class="text-muted mb-0">Fresh Kampot Pepper is below minimum stock.</p>
+                                    </a>
+                                    <a asp-controller="Orders" asp-action="Index" class="list-group-item list-group-item-action py-3">
+                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                            <strong class="text-success">Payment Received</strong>
+                                            <span class="text-muted" style="font-size: 10px;">25m ago</span>
+                                        </div>
+                                        <p class="text-muted mb-0">$85.50 received via KHQR / Bakong.</p>
+                                    </a>
+                                </div>
+                                <div class="p-2 text-center border-top">
+                                    <a asp-controller="Orders" asp-action="Index" class="text-primary small fw-semibold text-decoration-none">
+                                        View All Activity <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profile Dropdown -->
+                        <div class="dropdown">
+                            <button class="rms-profile-dropdown-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="rms-user-avatar">SC</div>
+                                <div class="rms-profile-info">
+                                    <span class="rms-profile-name">Sokha Chea</span>
+                                    <span class="rms-profile-role">Manager</span>
+                                </div>
+                                <i class="bi bi-chevron-down text-muted small pe-1"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2">
+                                <li>
+                                    <div class="px-3 py-2 border-bottom mb-1">
+                                        <strong class="d-block text-dark">Sokha Chea</strong>
+                                        <small class="text-muted">sokha@sovannaphum.com</small>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item rounded-3 py-2" asp-controller="Account" asp-action="Profile">
+                                        <i class="bi bi-person me-2 text-primary"></i> My Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item rounded-3 py-2" asp-controller="Settings" asp-action="Index">
+                                        <i class="bi bi-gear me-2 text-secondary"></i> Restaurant Settings
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item rounded-3 py-2" asp-controller="Home" asp-action="Index" target="_blank">
+                                        <i class="bi bi-shop me-2 text-success"></i> Customer Portal
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item rounded-3 py-2 text-danger" asp-controller="Account" asp-action="Logout">
+                                        <i class="bi bi-box-arrow-right me-2"></i> Log Out
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </header>
+
+                <!-- 3. PAGE BODY CONTENT -->
+                <main class="rms-content-body">
+                    <!-- FLASH MESSAGES -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="rms-alert rms-alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill fs-5"></i>
+                            <div class="flex-grow-1">@TempData["SuccessMessage"]</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="rms-alert rms-alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                            <div class="flex-grow-1">@TempData["ErrorMessage"]</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @if (TempData["InfoMessage"] != null)
+                    {
+                        <div class="rms-alert rms-alert-info alert-dismissible fade show" role="alert">
+                            <i class="bi bi-info-circle-fill fs-5"></i>
+                            <div class="flex-grow-1">@TempData["InfoMessage"]</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    @RenderBody()
+                </main>
+
             </div>
-        </main>
+        </div>
     }
 
-    <!-- ================= FOOTER ================= -->
-    <footer class="public-footer">
-        <div class="container">
-            <div class="row g-4">
-
-                <!-- 1. BRAND & ABOUT -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="footer-brand mb-3">
-                        <div class="footer-brand-icon">
-                            <i class="bi bi-shop"></i>
-                        </div>
-                        <div class="footer-brand-text">
-                            <strong>Resto</strong>
-                            <span>Restaurant</span>
-                        </div>
+    <!-- UNIVERSAL DELETE CONFIRMATION MODAL -->
+    <div class="modal fade" id="rmsDeleteModal" tabindex="-1" aria-labelledby="rmsDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-body text-center p-4 pt-5">
+                    <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: rgba(239, 68, 68, 0.12); color: #ef4444; font-size: 32px;">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
-                    <p class="footer-desc">
-                        Exquisite dining experience and outstanding service. We are ready to serve you delicious dishes, seamless table bookings, and smooth dining management.
+                    <h4 class="fw-bold text-dark mb-2">Confirm Delete Action</h4>
+                    <p class="text-muted mb-4">
+                        Are you sure you want to delete <strong class="text-dark" id="rmsDeleteModalItemName">this record</strong>? 
+                        This action cannot be undone.
                     </p>
-                    <!-- SOCIAL LINKS -->
-                    <div class="footer-socials">
-                        <a href="#" class="social-link" title="Facebook"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="social-link" title="Instagram"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="social-link" title="Telegram"><i class="bi bi-telegram"></i></a>
-                        <a href="#" class="social-link" title="TikTok"><i class="bi bi-tiktok"></i></a>
-                    </div>
-                </div>
-
-                <!-- 2. QUICK LINKS -->
-                <div class="col-lg-2 col-md-6">
-                    <h6 class="footer-title">Quick Links</h6>
-                    <ul class="footer-links">
-                        <li><a asp-controller="Home" asp-action="Index"><i class="bi bi-chevron-right"></i> Home</a></li>
-                        <li><a asp-controller="MenuItems" asp-action="Index"><i class="bi bi-chevron-right"></i> Our Menu</a></li>
-                        <li><a asp-controller="Reservations" asp-action="Create"><i class="bi bi-chevron-right"></i> Book a Table</a></li>
-                        <li><a asp-controller="Orders" asp-action="Index"><i class="bi bi-chevron-right"></i> Track Orders</a></li>
-                        <li><a href="/#about"><i class="bi bi-chevron-right"></i> About Us</a></li>
-                    </ul>
-                </div>
-
-                <!-- 3. MANAGEMENT & SYSTEM -->
-                <div class="col-lg-3 col-md-6">
-                    <h6 class="footer-title">Management</h6>
-                    <ul class="footer-links">
-                        <li><a asp-controller="Orders" asp-action="Index"><i class="bi bi-chevron-right"></i> Orders Management</a></li>
-                        <li><a asp-controller="Payments" asp-action="Index"><i class="bi bi-chevron-right"></i> Payments &amp; Bills</a></li>
-                        <li><a asp-controller="DiningTables" asp-action="Index"><i class="bi bi-chevron-right"></i> Dining Tables</a></li>
-                        <li><a asp-controller="Categories" asp-action="Index"><i class="bi bi-chevron-right"></i> Food Categories</a></li>
-                        <li><a asp-controller="Users" asp-action="Index"><i class="bi bi-chevron-right"></i> Staff Users</a></li>
-                    </ul>
-                </div>
-
-                <!-- 4. CONTACT & WORKING HOURS -->
-                <div class="col-lg-3 col-md-6">
-                    <h6 class="footer-title">Contact Us</h6>
-                    <ul class="footer-contact">
-                        <li>
-                            <i class="bi bi-geo-alt"></i>
-                            <span>Phnom Penh, Cambodia</span>
-                        </li>
-                        <li>
-                            <i class="bi bi-telephone"></i>
-                            <span>+855 12 345 678</span>
-                        </li>
-                        <li>
-                            <i class="bi bi-envelope"></i>
-                            <span>info@restorst.com</span>
-                        </li>
-                        <li>
-                            <i class="bi bi-clock"></i>
-                            <span>Mon - Sun: 08:00 AM - 10:00 PM</span>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <!-- FOOTER BOTTOM -->
-            <div class="footer-bottom">
-                <div class="row align-items-center">
-                    <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
-                        &copy; 2026 <strong>Resto Restaurant Management System</strong>. All rights reserved.
-                    </div>
-                    <div class="col-md-6 text-center text-md-end">
-                        <span class="footer-badge"><i class="bi bi-shield-check"></i> Powered by #48beda Modern UI</span>
-                    </div>
+                    <form id="rmsDeleteModalForm" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button" class="btn rms-btn-secondary px-4" data-bs-dismiss="modal">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn rms-btn-danger px-4">
+                                <i class="bi bi-trash me-1"></i> Delete Permanently
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
 
-    <!-- ================= SCRIPTS ================= -->
+    <!-- SCRIPTS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
-    <!-- AUTOMATIC NAVBAR ACTIVE STATE HIGHLIGHTER -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const currentPath = window.location.pathname.toLowerCase();
-            const navLinks = document.querySelectorAll(".public-nav-link:not(.dropdown-toggle), .mega-item");
-            
-            navLinks.forEach(link => {
-                const href = link.getAttribute("href");
-                if (href) {
-                    const linkPath = href.toLowerCase();
-                    const isHome = (linkPath === "/" || linkPath === "/home" || linkPath === "/home/index") && 
-                                   (currentPath === "/" || currentPath === "/home" || currentPath === "/home/index" || currentPath === "");
-                    const isMatch = linkPath !== "/" && !linkPath.startsWith("/#") && currentPath.startsWith(linkPath);
-
-                    if (isHome || isMatch) {
-                        link.classList.add("active");
-                        const parentDropdown = link.closest(".nav-item.dropdown");
-                        if (parentDropdown) {
-                            const toggle = parentDropdown.querySelector(".dropdown-toggle");
-                            if (toggle) toggle.classList.add("active");
-                        }
-                    }
-                }
-            });
-        });
-    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
-
 </html>

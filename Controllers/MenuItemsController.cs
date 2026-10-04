@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Restaurant_Management__System.Data;
 using Restaurant_Management__System.Models;
@@ -16,7 +17,17 @@ namespace RestaurantManagementSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.MenuItems.ToListAsync());
+            var menuItems = await _context.MenuItems
+                .Include(m => m.Category)
+                .OrderBy(m => m.Category != null ? m.Category.CategoryName : "")
+                .ThenBy(m => m.ItemName)
+                .ToListAsync();
+
+            ViewBag.Categories = await _context.Categories
+                .OrderBy(c => c.CategoryName)
+                .ToListAsync();
+
+            return View(menuItems);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -24,6 +35,7 @@ namespace RestaurantManagementSystem.Controllers
             if (id == null) return NotFound();
 
             var menuItem = await _context.MenuItems
+                .Include(m => m.Category)
                 .FirstOrDefaultAsync(x => x.ItemId == id);
 
             if (menuItem == null) return NotFound();
@@ -31,8 +43,9 @@ namespace RestaurantManagementSystem.Controllers
             return View(menuItem);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await LoadCategoryDropdown();
             return View();
         }
 
@@ -44,9 +57,11 @@ namespace RestaurantManagementSystem.Controllers
             {
                 _context.MenuItems.Add(menuItem);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Menu item '{menuItem.ItemName}' created successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
+            await LoadCategoryDropdown(menuItem.CategoryId);
             return View(menuItem);
         }
 
@@ -58,6 +73,7 @@ namespace RestaurantManagementSystem.Controllers
 
             if (menuItem == null) return NotFound();
 
+            await LoadCategoryDropdown(menuItem.CategoryId);
             return View(menuItem);
         }
 
@@ -69,11 +85,24 @@ namespace RestaurantManagementSystem.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.MenuItems.Update(menuItem);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.MenuItems.Update(menuItem);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = $"Menu item '{menuItem.ItemName}' updated successfully!";
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MenuItemExists(menuItem.ItemId))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
                 return RedirectToAction(nameof(Index));
             }
 
+            await LoadCategoryDropdown(menuItem.CategoryId);
             return View(menuItem);
         }
 
@@ -82,6 +111,7 @@ namespace RestaurantManagementSystem.Controllers
             if (id == null) return NotFound();
 
             var menuItem = await _context.MenuItems
+                .Include(m => m.Category)
                 .FirstOrDefaultAsync(x => x.ItemId == id);
 
             if (menuItem == null) return NotFound();
@@ -99,9 +129,29 @@ namespace RestaurantManagementSystem.Controllers
             {
                 _context.MenuItems.Remove(menuItem);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Menu item '{menuItem.ItemName}' removed.";
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool MenuItemExists(int id)
+        {
+            return _context.MenuItems.Any(e => e.ItemId == id);
+        }
+
+        private async Task LoadCategoryDropdown(int? selectedCategoryId = null)
+        {
+            var categories = await _context.Categories
+                .OrderBy(c => c.CategoryName)
+                .ToListAsync();
+
+            ViewBag.CategoryId = new SelectList(
+                categories,
+                "CategoryId",
+                "CategoryName",
+                selectedCategoryId
+            );
         }
     }
 }

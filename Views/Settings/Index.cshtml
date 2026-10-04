@@ -1,0 +1,182 @@
+@{
+    ViewData["Title"] = "System Settings";
+}
+
+<div class="row g-4">
+    <div class="col-lg-3">
+        <!-- SETTINGS NAV PILLS -->
+        <div class="rms-card p-3">
+            <div class="nav flex-column nav-pills" id="settingsPills" role="tablist">
+                <button class="nav-link active text-start fw-bold mb-1" id="tab-general" data-bs-toggle="pill" data-bs-target="#content-general" type="button" role="tab">
+                    <i class="bi bi-shop me-2"></i> Restaurant Info
+                </button>
+                <button class="nav-link text-start fw-bold mb-1" id="tab-billing" data-bs-toggle="pill" data-bs-target="#content-billing" type="button" role="tab">
+                    <i class="bi bi-receipt me-2"></i> Taxes &amp; Currency
+                </button>
+                <button class="nav-link text-start fw-bold mb-1" id="tab-appearance" data-bs-toggle="pill" data-bs-target="#content-appearance" type="button" role="tab">
+                    <i class="bi bi-palette me-2"></i> Appearance
+                </button>
+                <button class="nav-link text-start fw-bold" id="tab-notifications" data-bs-toggle="pill" data-bs-target="#content-notifications" type="button" role="tab">
+                    <i class="bi bi-bell me-2"></i> Alerts &amp; Printing
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-9">
+        <div class="tab-content" id="settingsPillsContent">
+            <!-- 1. RESTAURANT INFO -->
+            <div class="tab-pane fade show active" id="content-general" role="tabpanel">
+                <div class="rms-form-card">
+                    <h4 class="fw-bold text-dark mb-1">Restaurant Profile</h4>
+                    <p class="text-muted small mb-4">Manage public establishment branding, contact info, and business hours.</p>
+
+                    <form asp-action="Save" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="rms-form-label">Restaurant Business Name</label>
+                                <input type="text" name="restaurantName" class="rms-form-control" value="Sovannaphum Khmer Fine Dining &amp; Lounge" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="rms-form-label">Phone Contact</label>
+                                <input type="text" name="phone" class="rms-form-control" value="+855 12 345 678" />
+                            </div>
+                            <div class="col-md-12">
+                                <label class="rms-form-label">Physical Address</label>
+                                <input type="text" name="address" class="rms-form-control" value="#128 Preah Sisowath Quay, Phnom Penh, Cambodia" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="rms-form-label">Operating Hours</label>
+                                <input type="text" class="rms-form-control" value="Mon - Sun: 08:00 AM - 10:00 PM" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="rms-form-label">Kitchen Order Cut-off</label>
+                                <input type="text" class="rms-form-control" value="09:30 PM" />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn rms-btn-primary">
+                            <i class="bi bi-save"></i> Save Restaurant Info
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 2. TAXES & CURRENCY -->
+            <div class="tab-pane fade" id="content-billing" role="tabpanel">
+                <div class="rms-form-card">
+                    <h4 class="fw-bold text-dark mb-1">Currency &amp; Cambodian Taxation</h4>
+                    <p class="text-muted small mb-4">Configure dual-currency exchange rate and VAT invoicing defaults.</p>
+
+                    <form asp-action="Save" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="rms-form-label">Primary Billing Currency</label>
+                                <select class="form-select rms-form-control">
+                                    <option value="USD" selected>US Dollar ($ USD)</option>
+                                    <option value="KHR">Khmer Riel (៛ KHR)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="rms-form-label">Riel Exchange Peg Rate ($1 = ៛)</label>
+                                <input type="number" class="rms-form-control" value="4100" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="rms-form-label">Cambodia VAT Rate (%)</label>
+                                <input type="number" class="rms-form-control" value="10" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="rms-form-label">Hospitality Service Charge (%)</label>
+                                <input type="number" class="rms-form-control" value="5" />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn rms-btn-primary">
+                            <i class="bi bi-save"></i> Save Billing Preferences
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 3. APPEARANCE -->
+            <div class="tab-pane fade" id="content-appearance" role="tabpanel">
+                <div class="rms-form-card">
+                    <h4 class="fw-bold text-dark mb-1">Visual Theme &amp; Accent</h4>
+                    <p class="text-muted small mb-4">Customize colors and layout behavior for the staff management portal.</p>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="rms-form-label">Primary Color Theme</label>
+                            <div class="p-3 border rounded-3 bg-light d-flex align-items-center gap-3">
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: #d97706;"></div>
+                                <div>
+                                    <strong class="d-block text-dark">Angkor Amber Gold</strong>
+                                    <small class="text-muted">Modern Khmer Hospitality Default</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="rms-form-label">Sidebar Theme</label>
+                            <div class="p-3 border rounded-3 bg-light d-flex align-items-center gap-3">
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: #0b1120;"></div>
+                                <div>
+                                    <strong class="d-block text-dark">Royal Obsidian</strong>
+                                    <small class="text-muted">High-contrast Dark Navigation</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="sidebarCollapsePref" checked />
+                        <label class="form-check-label" for="sidebarCollapsePref">
+                            Remember desktop sidebar collapse preference
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="kbachMotifPref" checked />
+                        <label class="form-check-label" for="kbachMotifPref">
+                            Display subtle Cambodian kbach lotus watermarks on KPI cards
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. ALERTS & PRINTING -->
+            <div class="tab-pane fade" id="content-notifications" role="tabpanel">
+                <div class="rms-form-card">
+                    <h4 class="fw-bold text-dark mb-1">Alerts &amp; Kitchen Printing</h4>
+                    <p class="text-muted small mb-4">Automate inventory alerts and POS receipt printing.</p>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="lowStockAlert" checked />
+                        <label class="form-check-label" for="lowStockAlert">
+                            Send topbar notification when raw ingredients drop below 10 units
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="tableAutoReserve" checked />
+                        <label class="form-check-label" for="tableAutoReserve">
+                            Automatically mark dining tables as "Reserved" 1 hour before scheduled booking
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" id="autoPrintReceipt" checked />
+                        <label class="form-check-label" for="autoPrintReceipt">
+                            Prompt POS thermal print dialog upon order completion
+                        </label>
+                    </div>
+
+                    <button type="button" class="btn rms-btn-primary" onclick="alert('Notification & POS printer preferences saved!')">
+                        <i class="bi bi-save"></i> Save Notification Preferences
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

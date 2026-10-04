@@ -1,131 +1,69 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model Restaurant_Management__System.Models.Inventory
-
 @{
-    ViewData["Title"] = "Edit Inventory";
+    ViewData["Title"] = "Update Stock #" + Model.InventoryId;
 }
 
 <div class="row justify-content-center">
-
-    <div class="col-lg-7">
-
-        <div class="card">
-
-            <div class="card-body p-4">
-
-                <h3 class="fw-bold mb-4">
-                    <i class="bi bi-pencil text-warning"></i>
-                    Edit Inventory
-                </h3>
-
-                <form asp-action="Edit" method="post">
-
-                    <input type="hidden"
-                           asp-for="InventoryId" />
-
-                    <div asp-validation-summary="ModelOnly"
-                         class="alert alert-danger">
-                    </div>
-
-                    <!-- Ingredient -->
-                    <div class="mb-3">
-
-                        <label asp-for="IngredientId"
-                               class="form-label fw-semibold">
-                            Ingredient
-                        </label>
-
-                        <select asp-for="IngredientId"
-                                class="form-select"
-                                asp-items="ViewBag.IngredientId">
-
-                            <option value="">
-                                -- Select Ingredient --
-                            </option>
-
-                        </select>
-
-                        <span asp-validation-for="IngredientId"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <!-- Quantity -->
-                    <div class="mb-3">
-
-                        <label asp-for="Quantity"
-                               class="form-label fw-semibold">
-                            Quantity
-                        </label>
-
-                        <input asp-for="Quantity"
-                               type="number"
-                               min="0"
-                               class="form-control" />
-
-                        <span asp-validation-for="Quantity"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <!-- Last Updated -->
-                    <div class="mb-4">
-
-                        <label asp-for="LastUpdated"
-                               class="form-label fw-semibold">
-                            Last Updated
-                        </label>
-
-                        <input asp-for="LastUpdated"
-                               type="datetime-local"
-                               class="form-control" />
-
-                        <span asp-validation-for="LastUpdated"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <hr />
-
-                    <div class="d-flex gap-2">
-
-                        <button type="submit"
-                                class="btn btn-warning">
-
-                            <i class="bi bi-check-circle"></i>
-                            Update
-
-                        </button>
-
-                        <a asp-action="Index"
-                           class="btn btn-secondary">
-
-                            <i class="bi bi-arrow-left"></i>
-                            Back
-
-                        </a>
-
-                    </div>
-
-                </form>
-
+    <div class="col-lg-6">
+        <div class="rms-form-card">
+            <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
+                <div class="rms-brand-logo-icon" style="width: 44px; height: 44px; font-size: 20px;">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <div>
+                    <h4 class="fw-bold text-dark mb-0">Adjust Inventory Stock</h4>
+                    <small class="text-muted">Update stock quantity after kitchen usage or replenishment</small>
+                </div>
             </div>
 
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="InventoryId" />
+                <div asp-validation-summary="ModelOnly" class="rms-alert rms-alert-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="IngredientId" class="rms-form-label">
+                        Ingredient Raw Material <span class="required-dot">*</span>
+                    </label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-egg-fried rms-input-icon"></i>
+                        <select asp-for="IngredientId" class="form-select rms-form-control" asp-items="ViewBag.IngredientId" required></select>
+                    </div>
+                    <span asp-validation-for="IngredientId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Quantity" class="rms-form-label">
+                        Updated Quantity in Stock <span class="required-dot">*</span>
+                    </label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-stack rms-input-icon"></i>
+                        <input asp-for="Quantity" type="number" min="0" class="rms-form-control" required />
+                    </div>
+                    <span asp-validation-for="Quantity" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="LastUpdated" class="rms-form-label">Audit Timestamp</label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-calendar-check rms-input-icon"></i>
+                        <input asp-for="LastUpdated" type="datetime-local" class="rms-form-control" 
+                               value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
+                    </div>
+                    <span asp-validation-for="LastUpdated" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn rms-btn-primary">
+                        <i class="bi bi-check-lg"></i> Update Stock
+                    </button>
+                    <a asp-action="Index" class="btn rms-btn-secondary">Cancel</a>
+                </div>
+            </form>
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

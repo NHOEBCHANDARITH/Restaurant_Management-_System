@@ -1,201 +1,101 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model Restaurant_Management__System.Models.MenuItem
-
 @{
-    ViewData["Title"] = "Edit Menu Item";
+    ViewData["Title"] = "Edit Menu Item - " + Model.ItemName;
 }
 
 <div class="row justify-content-center">
-
     <div class="col-lg-8">
-
-        <div class="card">
-
-            <div class="card-body p-4">
-
-                <h3 class="fw-bold mb-4">
-
-                    <i class="bi bi-pencil text-warning"></i>
-                    Edit Menu Item
-
-                </h3>
-
-                <form asp-action="Edit" method="post">
-
-                    <input type="hidden"
-                           asp-for="ItemId" />
-
-                    <div asp-validation-summary="ModelOnly"
-                         class="alert alert-danger">
-                    </div>
-
-                    <div class="row">
-
-                        <!-- Item Name -->
-                        <div class="col-md-6 mb-3">
-
-                            <label asp-for="ItemName"
-                                   class="form-label fw-semibold">
-
-                                Item Name
-
-                            </label>
-
-                            <input asp-for="ItemName"
-                                   class="form-control" />
-
-                            <span asp-validation-for="ItemName"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                        <!-- Category -->
-                        <div class="col-md-6 mb-3">
-
-                            <label asp-for="CategoryId"
-                                   class="form-label fw-semibold">
-
-                                Category
-
-                            </label>
-
-                            <select asp-for="CategoryId"
-                                    class="form-select"
-                                    asp-items="ViewBag.CategoryId">
-
-                                <option value="">
-                                    -- Select Category --
-                                </option>
-
-                            </select>
-
-                            <span asp-validation-for="CategoryId"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                        <!-- Price -->
-                        <div class="col-md-6 mb-3">
-
-                            <label asp-for="Price"
-                                   class="form-label fw-semibold">
-
-                                Price
-
-                            </label>
-
-                            <div class="input-group">
-
-                                <span class="input-group-text">
-                                    $
-                                </span>
-
-                                <input asp-for="Price"
-                                       type="number"
-                                       step="0.01"
-                                       min="0"
-                                       class="form-control" />
-
-                            </div>
-
-                            <span asp-validation-for="Price"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                        <!-- Status -->
-                        <div class="col-md-6 mb-3">
-
-                            <label asp-for="Status"
-                                   class="form-label fw-semibold">
-
-                                Status
-
-                            </label>
-
-                            <select asp-for="Status"
-                                    class="form-select">
-
-                                <option value="Available">
-                                    Available
-                                </option>
-
-                                <option value="Unavailable">
-                                    Unavailable
-                                </option>
-
-                            </select>
-
-                            <span asp-validation-for="Status"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                        <!-- Description -->
-                        <div class="col-12 mb-4">
-
-                            <label asp-for="Description"
-                                   class="form-label fw-semibold">
-
-                                Description
-
-                            </label>
-
-                            <textarea asp-for="Description"
-                                      class="form-control"
-                                      rows="4">
-                            </textarea>
-
-                            <span asp-validation-for="Description"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <hr />
-
-                    <div class="d-flex gap-2">
-
-                        <button type="submit"
-                                class="btn btn-warning">
-
-                            <i class="bi bi-check-circle"></i>
-                            Update
-
-                        </button>
-
-                        <a asp-action="Index"
-                           class="btn btn-secondary">
-
-                            <i class="bi bi-arrow-left"></i>
-                            Back
-
-                        </a>
-
-                    </div>
-
-                </form>
-
+        <div class="rms-form-card">
+            <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
+                <div class="rms-brand-logo-icon" style="width: 44px; height: 44px; font-size: 20px;">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <div>
+                    <h4 class="fw-bold text-dark mb-0">Edit Dish: @Model.ItemName</h4>
+                    <small class="text-muted">Update pricing, description, or kitchen availability</small>
+                </div>
             </div>
 
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ItemId" />
+                <div asp-validation-summary="ModelOnly" class="rms-alert rms-alert-danger mb-3"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="ItemName" class="rms-form-label">
+                            Dish / Item Name <span class="required-dot">*</span>
+                        </label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-card-heading rms-input-icon"></i>
+                            <input asp-for="ItemName" class="rms-form-control" required />
+                        </div>
+                        <span asp-validation-for="ItemName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="CategoryId" class="rms-form-label">
+                            Food Category <span class="required-dot">*</span>
+                        </label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-tags rms-input-icon"></i>
+                            <select asp-for="CategoryId" class="form-select rms-form-control" asp-items="ViewBag.CategoryId" required></select>
+                        </div>
+                        <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Price" class="rms-form-label">
+                            Price ($ USD) <span class="required-dot">*</span>
+                        </label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-currency-dollar rms-input-icon"></i>
+                            <input asp-for="Price" type="number" step="0.01" min="0" class="rms-form-control" required />
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="rms-form-label">Availability Status</label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-check2-circle rms-input-icon"></i>
+                            <select asp-for="Status" class="form-select rms-form-control">
+                                <option value="Available">Available (Ready to Serve)</option>
+                                <option value="Unavailable">Unavailable / Sold Out</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Status" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label asp-for="ImageUrl" class="rms-form-label">Image URL</label>
+                        <div class="rms-input-group">
+                            <i class="bi bi-image rms-input-icon"></i>
+                            <input asp-for="ImageUrl" type="url" class="rms-form-control" />
+                        </div>
+                        <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label asp-for="Description" class="rms-form-label">Dish Description &amp; Flavors</label>
+                        <textarea asp-for="Description" rows="3" class="rms-form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn rms-btn-primary">
+                        <i class="bi bi-check-lg"></i> Update Menu Dish
+                    </button>
+                    <a asp-action="Index" class="btn rms-btn-secondary">Cancel</a>
+                </div>
+            </form>
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

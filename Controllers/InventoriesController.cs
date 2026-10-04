@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Restaurant_Management__System.Data;
 using Restaurant_Management__System.Models;
@@ -16,7 +17,17 @@ namespace RestaurantManagementSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Inventories.ToListAsync());
+            var inventories = await _context.Inventories
+                .Include(i => i.Ingredient)
+                .OrderBy(i => i.Quantity)
+                .ToListAsync();
+
+            ViewBag.TotalItems = inventories.Count;
+            ViewBag.LowStockCount = inventories.Count(i => i.Quantity < 10);
+            ViewBag.OutOfStockCount = inventories.Count(i => i.Quantity <= 0);
+            ViewBag.HealthyCount = inventories.Count(i => i.Quantity >= 10);
+
+            return View(inventories);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -24,6 +35,7 @@ namespace RestaurantManagementSystem.Controllers
             if (id == null) return NotFound();
 
             var inventory = await _context.Inventories
+                .Include(i => i.Ingredient)
                 .FirstOrDefaultAsync(x => x.InventoryId == id);
 
             if (inventory == null) return NotFound();
@@ -31,8 +43,9 @@ namespace RestaurantManagementSystem.Controllers
             return View(inventory);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await LoadIngredientDropdown();
             return View();
         }
 
@@ -42,11 +55,18 @@ namespace RestaurantManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (inventory.LastUpdated == default)
+                {
+                    inventory.LastUpdated = DateTime.Now;
+                }
+
                 _context.Inventories.Add(inventory);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Inventory stock record created successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
+            await LoadIngredientDropdown(inventory.IngredientId);
             return View(inventory);
         }
 
@@ -58,6 +78,7 @@ namespace RestaurantManagementSystem.Controllers
 
             if (inventory == null) return NotFound();
 
+            await LoadIngredientDropdown(inventory.IngredientId);
             return View(inventory);
         }
 
@@ -69,11 +90,25 @@ namespace RestaurantManagementSystem.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Inventories.Update(inventory);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    inventory.LastUpdated = DateTime.Now;
+                    _context.Inventories.Update(inventory);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Inventory stock updated successfully!";
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!InventoryExists(inventory.InventoryId))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
                 return RedirectToAction(nameof(Index));
             }
 
+            await LoadIngredientDropdown(inventory.IngredientId);
             return View(inventory);
         }
 
@@ -82,6 +117,7 @@ namespace RestaurantManagementSystem.Controllers
             if (id == null) return NotFound();
 
             var inventory = await _context.Inventories
+                .Include(i => i.Ingredient)
                 .FirstOrDefaultAsync(x => x.InventoryId == id);
 
             if (inventory == null) return NotFound();
@@ -99,9 +135,29 @@ namespace RestaurantManagementSystem.Controllers
             {
                 _context.Inventories.Remove(inventory);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Inventory record deleted.";
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool InventoryExists(int id)
+        {
+            return _context.Inventories.Any(e => e.InventoryId == id);
+        }
+
+        private async Task LoadIngredientDropdown(int? selectedIngredientId = null)
+        {
+            var ingredients = await _context.Ingredients
+                .OrderBy(i => i.IngredientName)
+                .ToListAsync();
+
+            ViewBag.IngredientId = new SelectList(
+                ingredients,
+                "IngredientId",
+                "IngredientName",
+                selectedIngredientId
+            );
         }
     }
 }

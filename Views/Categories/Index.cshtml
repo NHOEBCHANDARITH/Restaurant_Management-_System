@@ -1,110 +1,69 @@
 @model IEnumerable<Restaurant_Management__System.Models.Category>
-
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "Food Categories";
+    int count = Model?.Count() ?? 0;
 }
 
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
         <h2 class="fw-bold mb-1 text-dark">
-            <i class="bi bi-tags text-primary me-2"></i>Food Categories
+            <i class="bi bi-tags-fill text-warning me-2"></i>Food &amp; Beverage Categories
         </h2>
-        <p class="text-muted mb-0">Organize and manage dishes by category</p>
+        <p class="text-muted mb-0">Organize dishes into culinary groups (Appetizers, Mains, Soups, Desserts, Drinks).</p>
     </div>
 
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>
-        Add Category
-    </a>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn rms-btn-primary">
+            <i class="bi bi-plus-lg"></i> Add Category
+        </a>
+    </div>
 </div>
 
 <div class="row g-4">
-    @foreach (var item in Model)
+    @if (Model != null && Model.Any())
     {
-        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-            <div class="card h-100 border-0 shadow-sm category-card">
-                <div class="card-body p-4">
+        foreach (var item in Model)
+        {
+            <div class="col-xl-3 col-lg-4 col-md-6">
+                <div class="rms-card h-100 rms-searchable-card p-4 d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="category-icon">
+                        <div class="rms-brand-logo-icon" style="width: 48px; height: 48px; font-size: 22px;">
                             <i class="bi bi-grid-fill"></i>
                         </div>
-                        <span class="badge bg-primary">
-                            #@item.CategoryId
-                        </span>
+                        <span class="badge bg-light text-muted border font-monospace">#CAT-@item.CategoryId</span>
                     </div>
 
-                    <h5 class="fw-bold mb-1 text-dark">
-                        @item.CategoryName
-                    </h5>
-
-                    <p class="text-muted small mb-4">
-                        Food & Beverage Category
+                    <h4 class="fw-bold text-dark mb-1">@item.CategoryName</h4>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Culinary specialty section containing handcrafted authentic dishes and beverages.
                     </p>
 
-                    <div class="d-flex gap-2">
-                        <a asp-action="Details" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-secondary flex-fill">
-                            <i class="bi bi-eye me-1"></i> View
+                    <div class="border-top pt-3 d-flex justify-content-between align-items-center">
+                        <a asp-controller="MenuItems" asp-action="Index" class="small text-muted text-decoration-none">
+                            <i class="bi bi-cup-hot text-warning me-1"></i> View Dishes
                         </a>
-                        <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-primary" title="Edit">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-danger" title="Delete">
-                            <i class="bi bi-trash"></i>
-                        </a>
+
+                        <div class="rms-action-btn-group">
+                            <a asp-action="Details" asp-route-id="@item.CategoryId" class="rms-action-btn" title="View"><i class="bi bi-eye"></i></a>
+                            <a asp-action="Edit" asp-route-id="@item.CategoryId" class="rms-action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
+                            <a asp-action="Delete" asp-route-id="@item.CategoryId" class="rms-action-btn delete" title="Delete"><i class="bi bi-trash"></i></a>
+                        </div>
                     </div>
                 </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="rms-empty-state rms-card">
+                <div class="rms-empty-icon"><i class="bi bi-tags"></i></div>
+                <h4 class="rms-empty-title">No Categories Found</h4>
+                <p class="rms-empty-desc">Create food categories such as "Appetizers", "Main Course", "Seafood", or "Desserts".</p>
+                <a asp-action="Create" class="btn rms-btn-primary">
+                    <i class="bi bi-plus-lg"></i> Add First Category
+                </a>
             </div>
         </div>
     }
 </div>
-
-@if (!Model.Any())
-{
-    <div class="text-center py-5 card shadow-sm border-0 my-4">
-        <div class="mb-3">
-            <div class="category-icon mx-auto" style="width: 70px; height: 70px; font-size: 32px;">
-                <i class="bi bi-grid"></i>
-            </div>
-        </div>
-        <h5 class="fw-bold text-dark">No Categories Found</h5>
-        <p class="text-muted">Start by creating your first food category.</p>
-        <div>
-            <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-lg me-1"></i> Add Category
-            </a>
-        </div>
-    </div>
-}
-
-<style>
-    .category-card {
-        border-radius: 16px;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        border: 1px solid rgba(226, 232, 240, 0.9) !important;
-    }
-
-    .category-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 16px 30px rgba(72, 190, 218, 0.16) !important;
-        border-color: rgba(72, 190, 218, 0.4) !important;
-    }
-
-    .category-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 14px;
-        background: rgba(72, 190, 218, 0.12);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        color: #48beda;
-        transition: all 0.3s ease;
-    }
-
-    .category-card:hover .category-icon {
-        background: #48beda;
-        color: #ffffff;
-        transform: scale(1.05);
-    }
-</style>

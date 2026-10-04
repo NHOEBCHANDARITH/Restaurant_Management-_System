@@ -1,101 +1,206 @@
 @model IEnumerable<Restaurant_Management__System.Models.Inventory>
-
 @{
-    ViewData["Title"] = "Inventories";
+    ViewData["Title"] = "Inventory Management";
+
+    int totalItems = ViewBag.TotalItems ?? (Model?.Count() ?? 0);
+    int lowStockCount = ViewBag.LowStockCount ?? (Model?.Count(i => i.Quantity < 10 && i.Quantity > 0) ?? 0);
+    int outOfStockCount = ViewBag.OutOfStockCount ?? (Model?.Count(i => i.Quantity <= 0) ?? 0);
+    int healthyCount = ViewBag.HealthyCount ?? (Model?.Count(i => i.Quantity >= 10) ?? 0);
 }
 
+<!-- HEADER -->
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
         <h2 class="fw-bold mb-1 text-dark">
-            <i class="bi bi-boxes text-primary me-2"></i>Inventory Stocks
+            <i class="bi bi-boxes text-warning me-2"></i>Inventory &amp; Kitchen Stocks Dashboard
         </h2>
-        <p class="text-muted mb-0">Track raw ingredient quantities and stock levels</p>
+        <p class="text-muted mb-0">Live stock level monitoring, replenishment triggers, and raw materials audit.</p>
     </div>
 
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>
-        Add Inventory Record
-    </a>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn rms-btn-primary">
+            <i class="bi bi-plus-lg"></i> Add Stock Record
+        </a>
+    </div>
 </div>
 
-<div class="card shadow-sm border-0">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Ingredient</th>
-                        <th>Quantity in Stock</th>
-                        <th>Last Updated</th>
-                        <th class="text-end pe-4">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td class="ps-4">
-                                    <span class="badge bg-secondary">#@item.InventoryId</span>
-                                </td>
-                                <td>
-                                    <strong class="text-dark">
-                                        <i class="bi bi-egg-fried text-primary me-1"></i>
-                                        @(item.Ingredient != null ? item.Ingredient.IngredientName : "Unlinked Ingredient")
-                                    </strong>
-                                </td>
-                                <td>
-                                    @if (item.Quantity <= 0)
-                                    {
-                                        <span class="badge bg-danger">
-                                            <i class="bi bi-exclamation-octagon me-1"></i> Out of Stock
-                                        </span>
-                                    }
-                                    else if (item.Quantity < 10)
-                                    {
-                                        <span class="badge bg-warning text-dark">
-                                            <i class="bi bi-exclamation-triangle me-1"></i> Low: @item.Quantity
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check2 me-1"></i> @item.Quantity In Stock
-                                        </span>
-                                    }
-                                </td>
-                                <td>
-                                    <span class="text-muted font-monospace small">
-                                        @item.LastUpdated.ToString("dd MMM yyyy HH:mm")
-                                    </span>
-                                </td>
-                                <td class="text-end pe-4">
-                                    <a asp-action="Details" asp-route-id="@item.InventoryId" class="btn btn-sm btn-outline-secondary" title="Details">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.InventoryId" class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.InventoryId" class="btn btn-sm btn-outline-danger" title="Delete">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
+<!-- INVENTORY KPI DASHBOARD CARDS -->
+<div class="row g-3 mb-4">
+    <!-- Total Items -->
+    <div class="col-xl-3 col-md-6">
+        <div class="rms-stat-card">
+            <div>
+                <div class="rms-stat-label">Total Catalogued Items</div>
+                <div class="rms-stat-value text-dark">@totalItems</div>
+                <div class="rms-stat-subtext text-muted">
+                    <i class="bi bi-tag"></i> Active SKU Tracking
+                </div>
+            </div>
+            <div class="rms-stat-icon-wrapper rms-icon-blue">
+                <i class="bi bi-boxes"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Healthy Stock -->
+    <div class="col-xl-3 col-md-6">
+        <div class="rms-stat-card">
+            <div>
+                <div class="rms-stat-label">Healthy Stock</div>
+                <div class="rms-stat-value text-success">@healthyCount</div>
+                <div class="rms-stat-subtext text-success">
+                    <i class="bi bi-shield-check"></i> Above Minimum Par
+                </div>
+            </div>
+            <div class="rms-stat-icon-wrapper rms-icon-emerald">
+                <i class="bi bi-check-circle"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Stock -->
+    <div class="col-xl-3 col-md-6">
+        <div class="rms-stat-card">
+            <div>
+                <div class="rms-stat-label">Low Stock Warning</div>
+                <div class="rms-stat-value text-warning">@lowStockCount</div>
+                <div class="rms-stat-subtext text-warning">
+                    <i class="bi bi-exclamation-triangle"></i> Reorder Required
+                </div>
+            </div>
+            <div class="rms-stat-icon-wrapper rms-icon-gold">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Out of Stock -->
+    <div class="col-xl-3 col-md-6">
+        <div class="rms-stat-card">
+            <div>
+                <div class="rms-stat-label">Out of Stock</div>
+                <div class="rms-stat-value text-danger">@outOfStockCount</div>
+                <div class="rms-stat-subtext text-danger">
+                    <i class="bi bi-x-octagon"></i> Depleted Inventory
+                </div>
+            </div>
+            <div class="rms-stat-icon-wrapper rms-icon-rose">
+                <i class="bi bi-dash-circle"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LOW STOCK WARNING ALERT SECTION -->
+@if (lowStockCount > 0 || outOfStockCount > 0)
+{
+    <div class="rms-alert rms-alert-warning mb-4">
+        <i class="bi bi-exclamation-triangle-fill fs-4 text-warning"></i>
+        <div class="flex-grow-1">
+            <strong>Urgent Kitchen Attention:</strong> 
+            There are @(lowStockCount + outOfStockCount) items that have breached safety thresholds. Please issue purchase orders to suppliers.
+        </div>
+        <a asp-controller="Suppliers" asp-action="Index" class="btn btn-sm btn-warning text-dark fw-bold px-3">
+            Contact Suppliers
+        </a>
+    </div>
+}
+
+<!-- INVENTORY AUDIT TABLE -->
+<div class="rms-table-wrapper">
+    <div class="table-responsive">
+        <table class="rms-table align-middle">
+            <thead>
+                <tr>
+                    <th class="ps-4">Stock ID</th>
+                    <th>Ingredient Material</th>
+                    <th>Current Quantity</th>
+                    <th>Par Target</th>
+                    <th>Stock Health Status</th>
+                    <th>Last Audited</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
                     {
                         <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="bi bi-clipboard-x display-6 d-block mb-2 text-primary opacity-50"></i>
-                                No inventory records found.
+                            <td class="ps-4">
+                                <span class="badge rms-badge-primary">#INV-@item.InventoryId</span>
+                            </td>
+                            <td>
+                                <strong class="text-dark">
+                                    <i class="bi bi-egg-fried text-warning me-1"></i>
+                                    @(item.Ingredient != null ? item.Ingredient.IngredientName : $"Ingredient #{item.IngredientId}")
+                                </strong>
+                            </td>
+                            <td>
+                                <strong class="fs-6 font-monospace @(item.Quantity <= 0 ? "text-danger" : (item.Quantity < 10 ? "text-warning" : "text-dark"))">
+                                    @item.Quantity @(item.Ingredient?.Unit ?? "units")
+                                </strong>
+                            </td>
+                            <td>
+                                <span class="text-muted small">Min 10 units</span>
+                            </td>
+                            <td>
+                                @if (item.Quantity <= 0)
+                                {
+                                    <span class="rms-badge rms-badge-danger">
+                                        <span class="rms-badge-dot"></span> Out of Stock
+                                    </span>
+                                }
+                                else if (item.Quantity < 10)
+                                {
+                                    <span class="rms-badge rms-badge-warning">
+                                        <span class="rms-badge-dot"></span> Low Stock (@item.Quantity)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="rms-badge rms-badge-success">
+                                        <span class="rms-badge-dot"></span> Healthy Stock
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <span class="text-dark font-monospace small">@item.LastUpdated.ToString("dd MMM yyyy")</span>
+                                <br />
+                                <small class="text-muted font-monospace">@item.LastUpdated.ToString("hh:mm tt")</small>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="rms-action-btn-group">
+                                    <a asp-action="Details" asp-route-id="@item.InventoryId" class="rms-action-btn" title="View Audit Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.InventoryId" class="rms-action-btn" title="Adjust Stock">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.InventoryId" class="rms-action-btn delete" title="Delete Record">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="rms-empty-state">
+                                <div class="rms-empty-icon"><i class="bi bi-boxes"></i></div>
+                                <h4 class="rms-empty-title">No Inventory Stock Logged</h4>
+                                <p class="rms-empty-desc">Create your first stock entry to track ingredient inventory levels.</p>
+                                <a asp-action="Create" class="btn rms-btn-primary">
+                                    <i class="bi bi-plus-lg"></i> Add Stock Entry
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

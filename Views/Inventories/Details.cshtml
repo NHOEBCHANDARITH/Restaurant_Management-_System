@@ -1,142 +1,63 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model Restaurant_Management__System.Models.Inventory
-
 @{
-    ViewData["Title"] = "Inventory Details";
+    ViewData["Title"] = "Stock Audit #" + Model.InventoryId;
 }
 
 <div class="row justify-content-center">
-
-    <div class="col-lg-8">
-
-        <div class="card">
-
-            <div class="card-body p-4">
-
-                <div class="d-flex justify-content-between align-items-center mb-4">
-
-                    <div>
-                        <h3 class="fw-bold mb-1">
-                            Inventory Details
-                        </h3>
-
-                        <p class="text-muted mb-0">
-                            View inventory information
-                        </p>
-                    </div>
-
-                    <i class="bi bi-clipboard-data text-primary"
-                       style="font-size:45px;">
-                    </i>
-
+    <div class="col-lg-6">
+        <div class="rms-card">
+            <div class="rms-card-header bg-light">
+                <h5 class="rms-card-title">
+                    <i class="bi bi-boxes text-warning"></i>
+                    Inventory Stock Audit Details
+                </h5>
+                <span class="badge bg-secondary font-monospace">#INV-@Model.InventoryId</span>
+            </div>
+            <div class="rms-card-body p-4 text-center">
+                <div class="rms-brand-logo-icon mx-auto my-3" style="width: 72px; height: 72px; font-size: 32px;">
+                    <i class="bi bi-box-seam"></i>
                 </div>
+                <h3 class="fw-bold text-dark mb-1">@(Model.Ingredient?.IngredientName ?? $"Ingredient #{Model.IngredientId}")</h3>
+                <p class="text-muted mb-4">Stock Audit Record</p>
 
-                <table class="table table-bordered">
-
-                    <tr>
-                        <th style="width:35%;">
-                            Inventory ID
-                        </th>
-
-                        <td>
-                            @Model.InventoryId
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <th>
-                            Ingredient
-                        </th>
-
-                        <td>
-                            @if (Model.Ingredient != null)
-                            {
-                                <strong>
-                                    @Model.Ingredient.IngredientName
-                                </strong>
-                            }
-                            else
-                            {
-                                <span class="text-muted">
-                                    No Ingredient
-                                </span>
-                            }
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <th>
-                            Quantity
-                        </th>
-
-                        <td>
+                <div class="border rounded-3 p-3 bg-light text-start mb-4 small">
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted"><i class="bi bi-stack me-2"></i> Quantity in Hand</span>
+                        <strong class="text-dark font-monospace fs-6">@Model.Quantity @(Model.Ingredient?.Unit ?? "units")</strong>
+                    </div>
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted"><i class="bi bi-calendar-check me-2"></i> Last Audit Timestamp</span>
+                        <strong class="text-dark">@Model.LastUpdated.ToString("dd MMM yyyy, hh:mm tt")</strong>
+                    </div>
+                    <div class="d-flex justify-content-between py-2">
+                        <span class="text-muted"><i class="bi bi-shield-check me-2"></i> Health Status</span>
+                        <span>
                             @if (Model.Quantity <= 0)
                             {
-                                <span class="badge bg-danger">
-                                    Out of Stock
-                                </span>
+                                <span class="rms-badge rms-badge-danger"><span class="rms-badge-dot"></span> Out of Stock</span>
+                            }
+                            else if (Model.Quantity < 10)
+                            {
+                                <span class="rms-badge rms-badge-warning"><span class="rms-badge-dot"></span> Low Stock Warning</span>
                             }
                             else
                             {
-                                <span class="badge bg-success">
-                                    @Model.Quantity
-                                </span>
+                                <span class="rms-badge rms-badge-success"><span class="rms-badge-dot"></span> Healthy Level</span>
                             }
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <th>
-                            Last Updated
-                        </th>
-
-                        <td>
-                            @Model.LastUpdated.ToString("dd MMM yyyy HH:mm")
-                        </td>
-                    </tr>
-
-                </table>
-
-                <hr />
-
-                <div class="d-flex gap-2">
-
-                    <a asp-action="Edit"
-                       asp-route-id="@Model.InventoryId"
-                       class="btn btn-warning">
-
-                        <i class="bi bi-pencil"></i>
-                        Edit
-
-                    </a>
-
-                    <a asp-action="Delete"
-                       asp-route-id="@Model.InventoryId"
-                       class="btn btn-danger">
-
-                        <i class="bi bi-trash"></i>
-                        Delete
-
-                    </a>
-
-                    <a asp-action="Index"
-                       class="btn btn-secondary">
-
-                        <i class="bi bi-arrow-left"></i>
-                        Back
-
-                    </a>
-
+                        </span>
+                    </div>
                 </div>
 
+                <div class="d-flex justify-content-center gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.InventoryId" class="btn rms-btn-primary">
+                        <i class="bi bi-pencil"></i> Adjust Stock
+                    </a>
+                    <a asp-controller="Suppliers" asp-action="Index" class="btn rms-btn-outline">
+                        <i class="bi bi-truck"></i> Suppliers
+                    </a>
+                    <a asp-action="Index" class="btn rms-btn-secondary">Back to Stock List</a>
+                </div>
             </div>
-
         </div>
-
     </div>
-
 </div>

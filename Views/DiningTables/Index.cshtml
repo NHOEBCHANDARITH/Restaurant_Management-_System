@@ -1,106 +1,271 @@
 @model IEnumerable<Restaurant_Management__System.Models.DiningTable>
-
 @{
     ViewData["Title"] = "Dining Tables";
+
+    int totalTables = Model?.Count() ?? 0;
+    int availableCount = Model?.Count(t => t.Status == "Available") ?? 0;
+    int occupiedCount = Model?.Count(t => t.Status == "Occupied") ?? 0;
+    int reservedCount = Model?.Count(t => t.Status == "Reserved") ?? 0;
+    int cleaningCount = Model?.Count(t => t.Status == "Cleaning") ?? 0;
 }
 
+<!-- HEADER & ACTIONS -->
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
         <h2 class="fw-bold mb-1 text-dark">
-            <i class="bi bi-table text-primary me-2"></i>Dining Tables
+            <i class="bi bi-grid-3x3-gap-fill text-warning me-2"></i>Dining Tables &amp; Seating Floor
         </h2>
-        <p class="text-muted mb-0">Manage restaurant seating capacity and table availability</p>
+        <p class="text-muted mb-0">Live restaurant floor status, guest capacity, and table management.</p>
     </div>
 
-    <a asp-action="Create" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-1"></i>
-        Add Table
-    </a>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn rms-btn-primary">
+            <i class="bi bi-plus-lg"></i> Add Dining Table
+        </a>
+    </div>
 </div>
 
-<div class="card shadow-sm border-0">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th class="ps-4">ID</th>
-                        <th>Table Number</th>
-                        <th>Capacity</th>
-                        <th>Status</th>
-                        <th class="text-end pe-4">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td class="ps-4">
-                                    <span class="badge bg-primary">#@item.TableId</span>
-                                </td>
-                                <td>
-                                    <strong class="text-dark">
-                                        <i class="bi bi-grid-3x3 text-primary me-1"></i> Table @item.TableNumber
-                                    </strong>
-                                </td>
-                                <td>
-                                    <span class="text-muted">
-                                        <i class="bi bi-people me-1"></i> @item.Capacity Persons
-                                    </span>
-                                </td>
-                                <td>
-                                    @if (item.Status == "Available")
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle me-1"></i> Available
-                                        </span>
-                                    }
-                                    else if (item.Status == "Occupied")
-                                    {
-                                        <span class="badge bg-danger">
-                                            <i class="bi bi-dash-circle me-1"></i> Occupied
-                                        </span>
-                                    }
-                                    else if (item.Status == "Reserved")
-                                    {
-                                        <span class="badge bg-warning text-dark">
-                                            <i class="bi bi-clock me-1"></i> Reserved
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">
-                                            @item.Status
-                                        </span>
-                                    }
-                                </td>
-                                <td class="text-end pe-4">
-                                    <a asp-action="Details" asp-route-id="@item.TableId" class="btn btn-sm btn-outline-secondary" title="Details">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@item.TableId" class="btn btn-sm btn-outline-primary" title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.TableId" class="btn btn-sm btn-outline-danger" title="Delete">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="bi bi-table display-6 d-block mb-2 text-primary opacity-50"></i>
-                                No dining tables configured yet.
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+<!-- SEATING SUMMARY PILLS -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="p-3 bg-white border rounded-3 d-flex align-items-center gap-3 shadow-sm">
+            <div class="rounded-circle p-2 bg-success bg-opacity-10 text-success fs-4">
+                <i class="bi bi-check2-circle"></i>
+            </div>
+            <div>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 11px;">Available</small>
+                <h4 class="fw-bold text-dark mb-0">@availableCount</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="p-3 bg-white border rounded-3 d-flex align-items-center gap-3 shadow-sm">
+            <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger fs-4">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 11px;">Occupied</small>
+                <h4 class="fw-bold text-dark mb-0">@occupiedCount</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="p-3 bg-white border rounded-3 d-flex align-items-center gap-3 shadow-sm">
+            <div class="rounded-circle p-2 bg-warning bg-opacity-10 text-warning fs-4">
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <div>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 11px;">Reserved</small>
+                <h4 class="fw-bold text-dark mb-0">@reservedCount</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="p-3 bg-white border rounded-3 d-flex align-items-center gap-3 shadow-sm">
+            <div class="rounded-circle p-2 bg-info bg-opacity-10 text-info fs-4">
+                <i class="bi bi-stars"></i>
+            </div>
+            <div>
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 11px;">Cleaning</small>
+                <h4 class="fw-bold text-dark mb-0">@cleaningCount</h4>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- VIEW SWITCHER & FILTER TABS -->
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <ul class="nav nav-pills" id="tableFilterTabs">
+        <li class="nav-item">
+            <button class="nav-link active rounded-pill px-3 py-1 btn-sm" onclick="filterTables('all')">All Tables (@totalTables)</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link rounded-pill px-3 py-1 btn-sm text-success" onclick="filterTables('available')">Available</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link rounded-pill px-3 py-1 btn-sm text-danger" onclick="filterTables('occupied')">Occupied</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link rounded-pill px-3 py-1 btn-sm text-warning" onclick="filterTables('reserved')">Reserved</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link rounded-pill px-3 py-1 btn-sm text-info" onclick="filterTables('cleaning')">Cleaning</button>
+        </li>
+    </ul>
+
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-sm btn-outline-secondary active" id="btnFloorView" onclick="setTableView('floor')">
+            <i class="bi bi-grid-fill me-1"></i> Floor Map
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" id="btnListView" onclick="setTableView('list')">
+            <i class="bi bi-list-ul me-1"></i> Table List
+        </button>
+    </div>
+</div>
+
+<!-- 1. VISUAL RESTAURANT FLOOR MAP (CARDS) -->
+<div class="row g-4" id="floorViewContainer">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var table in Model)
+        {
+            string statusClass = (table.Status ?? "Available").ToLower();
+            <div class="col-xl-3 col-lg-4 col-md-6 table-item-wrapper" data-status="@statusClass">
+                <div class="rms-table-card @statusClass rms-searchable-card">
+                    <div class="rms-table-card-header">
+                        <span class="badge bg-light text-muted border">ID #@table.TableId</span>
+                        @if (table.Status == "Available")
+                        {
+                            <span class="rms-badge rms-badge-success"><span class="rms-badge-dot"></span> Available</span>
+                        }
+                        else if (table.Status == "Occupied")
+                        {
+                            <span class="rms-badge rms-badge-danger"><span class="rms-badge-dot"></span> Occupied</span>
+                        }
+                        else if (table.Status == "Reserved")
+                        {
+                            <span class="rms-badge rms-badge-warning"><span class="rms-badge-dot"></span> Reserved</span>
+                        }
+                        else
+                        {
+                            <span class="rms-badge rms-badge-info"><span class="rms-badge-dot"></span> Cleaning</span>
+                        }
+                    </div>
+
+                    <div class="rms-table-visual-circle">
+                        <i class="bi bi-table"></i>
+                    </div>
+
+                    <div class="text-center mb-3">
+                        <h4 class="fw-bold text-dark mb-1">Table @table.TableNumber</h4>
+                        <span class="badge bg-light text-dark border px-3 py-1 rounded-pill">
+                            <i class="bi bi-people text-warning me-1"></i> @table.Capacity Seats
+                        </span>
+                    </div>
+
+                    <div class="border-top pt-3 mt-auto d-flex justify-content-between align-items-center">
+                        <div class="rms-action-btn-group">
+                            <a asp-action="Details" asp-route-id="@table.TableId" class="rms-action-btn" title="View Details">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@table.TableId" class="rms-action-btn" title="Edit Table">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@table.TableId" class="rms-action-btn delete" title="Delete Table">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                        <a asp-controller="Orders" asp-action="Create" class="btn btn-sm rms-btn-outline py-1 px-2" style="font-size: 11px;">
+                            <i class="bi bi-receipt"></i> Order
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="rms-empty-state rms-card">
+                <div class="rms-empty-icon"><i class="bi bi-table"></i></div>
+                <h4 class="rms-empty-title">No Dining Tables Configured</h4>
+                <p class="rms-empty-desc">Create tables with their seat capacity to start assigning guest dining orders.</p>
+                <a asp-action="Create" class="btn rms-btn-primary">
+                    <i class="bi bi-plus-lg"></i> Add First Table
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- 2. DATA TABLE LIST VIEW -->
+<div class="rms-table-wrapper d-none" id="listViewContainer">
+    <div class="table-responsive">
+        <table class="rms-table align-middle">
+            <thead>
+                <tr>
+                    <th class="ps-4">ID</th>
+                    <th>Table Number</th>
+                    <th>Capacity (Guests)</th>
+                    <th>Status</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var table in Model)
+                    {
+                        <tr>
+                            <td class="ps-4"><span class="badge rms-badge-primary">#@table.TableId</span></td>
+                            <td><strong class="text-dark"><i class="bi bi-table text-warning me-2"></i>Table @table.TableNumber</strong></td>
+                            <td><span class="badge bg-light text-dark border px-2 py-1"><i class="bi bi-people me-1"></i>@table.Capacity Persons</span></td>
+                            <td>
+                                @if (table.Status == "Available")
+                                {
+                                    <span class="rms-badge rms-badge-success"><span class="rms-badge-dot"></span> Available</span>
+                                }
+                                else if (table.Status == "Occupied")
+                                {
+                                    <span class="rms-badge rms-badge-danger"><span class="rms-badge-dot"></span> Occupied</span>
+                                }
+                                else if (table.Status == "Reserved")
+                                {
+                                    <span class="rms-badge rms-badge-warning"><span class="rms-badge-dot"></span> Reserved</span>
+                                }
+                                else
+                                {
+                                    <span class="rms-badge rms-badge-info"><span class="rms-badge-dot"></span> @table.Status</span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="rms-action-btn-group">
+                                    <a asp-action="Details" asp-route-id="@table.TableId" class="rms-action-btn" title="View"><i class="bi bi-eye"></i></a>
+                                    <a asp-action="Edit" asp-route-id="@table.TableId" class="rms-action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@table.TableId" class="rms-action-btn delete" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function setTableView(view) {
+        const floor = document.getElementById('floorViewContainer');
+        const list = document.getElementById('listViewContainer');
+        const btnFloor = document.getElementById('btnFloorView');
+        const btnList = document.getElementById('btnListView');
+
+        if (view === 'floor') {
+            floor.classList.remove('d-none');
+            list.classList.add('d-none');
+            btnFloor.classList.add('active');
+            btnList.classList.remove('active');
+        } else {
+            floor.classList.add('d-none');
+            list.classList.remove('d-none');
+            btnList.classList.add('active');
+            btnFloor.classList.remove('active');
+        }
+    }
+
+    function filterTables(status) {
+        const buttons = document.querySelectorAll('#tableFilterTabs .nav-link');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        const items = document.querySelectorAll('.table-item-wrapper');
+        items.forEach(item => {
+            const itemStatus = item.getAttribute('data-status');
+            if (status === 'all' || itemStatus === status) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+</script>

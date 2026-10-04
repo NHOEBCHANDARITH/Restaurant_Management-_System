@@ -1,126 +1,73 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model Restaurant_Management__System.Models.DiningTable
-
 @{
-    ViewData["Title"] = "Edit Dining Table";
+    ViewData["Title"] = "Edit Table " + Model.TableNumber;
 }
 
 <div class="row justify-content-center">
-
-    <div class="col-md-7">
-
-        <div class="card">
-            <div class="card-body p-4">
-
-                <h3 class="fw-bold mb-4">
-                    <i class="bi bi-pencil-square text-warning"></i>
-                    Edit Dining Table
-                </h3>
-
-                <form asp-action="Edit" method="post">
-
-                    <input type="hidden"
-                           asp-for="TableId" />
-
-                    <div asp-validation-summary="ModelOnly"
-                         class="alert alert-danger">
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label asp-for="TableNumber"
-                               class="form-label">
-                            Table Number
-                        </label>
-
-                        <input asp-for="TableNumber"
-                               class="form-control" />
-
-                        <span asp-validation-for="TableNumber"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label asp-for="Capacity"
-                               class="form-label">
-                            Capacity
-                        </label>
-
-                        <input asp-for="Capacity"
-                               type="number"
-                               min="1"
-                               class="form-control" />
-
-                        <span asp-validation-for="Capacity"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label asp-for="Status"
-                               class="form-label">
-                            Status
-                        </label>
-
-                        <select asp-for="Status"
-                                class="form-select">
-
-                            <option value="Available">
-                                Available
-                            </option>
-
-                            <option value="Occupied">
-                                Occupied
-                            </option>
-
-                            <option value="Reserved">
-                                Reserved
-                            </option>
-
-                        </select>
-
-                        <span asp-validation-for="Status"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="mt-4">
-
-                        <button type="submit"
-                                class="btn btn-warning">
-                            <i class="bi bi-check-circle"></i>
-                            Update Table
-                        </button>
-
-                        <a asp-action="Index"
-                           class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i>
-                            Back
-                        </a>
-
-                    </div>
-
-                </form>
-
+    <div class="col-lg-6">
+        <div class="rms-form-card">
+            <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
+                <div class="rms-brand-logo-icon" style="width: 44px; height: 44px; font-size: 20px;">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <div>
+                    <h4 class="fw-bold text-dark mb-0">Edit Table @Model.TableNumber</h4>
+                    <small class="text-muted">Update table capacity or operational status</small>
+                </div>
             </div>
+
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="TableId" />
+                <div asp-validation-summary="ModelOnly" class="rms-alert rms-alert-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="TableNumber" class="rms-form-label">
+                        Table Number / Identifier <span class="required-dot">*</span>
+                    </label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-hash rms-input-icon"></i>
+                        <input asp-for="TableNumber" class="rms-form-control" required />
+                    </div>
+                    <span asp-validation-for="TableNumber" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Capacity" class="rms-form-label">
+                        Seating Capacity (Guests) <span class="required-dot">*</span>
+                    </label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-people rms-input-icon"></i>
+                        <input asp-for="Capacity" type="number" min="1" max="50" class="rms-form-control" required />
+                    </div>
+                    <span asp-validation-for="Capacity" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Status" class="rms-form-label">Table Live Status</label>
+                    <div class="rms-input-group">
+                        <i class="bi bi-flag rms-input-icon"></i>
+                        <select asp-for="Status" class="form-select rms-form-control">
+                            <option value="Available">Available (Ready for Guests)</option>
+                            <option value="Occupied">Occupied (Currently Dining)</option>
+                            <option value="Reserved">Reserved (Advance Booking)</option>
+                            <option value="Cleaning">Cleaning / Sanitizing</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="Status" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn rms-btn-primary">
+                        <i class="bi bi-check-lg"></i> Update Table
+                    </button>
+                    <a asp-action="Index" class="btn rms-btn-secondary">Cancel</a>
+                </div>
+            </form>
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Restaurant_Management__System.Data;
 using Restaurant_Management__System.Models;
@@ -16,7 +17,12 @@ namespace RestaurantManagementSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Ingredients.ToListAsync());
+            var ingredients = await _context.Ingredients
+                .Include(i => i.Supplier)
+                .OrderBy(i => i.IngredientName)
+                .ToListAsync();
+
+            return View(ingredients);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -24,6 +30,7 @@ namespace RestaurantManagementSystem.Controllers
             if (id == null) return NotFound();
 
             var ingredient = await _context.Ingredients
+                .Include(i => i.Supplier)
                 .FirstOrDefaultAsync(x => x.IngredientId == id);
 
             if (ingredient == null) return NotFound();
@@ -31,8 +38,9 @@ namespace RestaurantManagementSystem.Controllers
             return View(ingredient);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await LoadSupplierDropdown();
             return View();
         }
 
@@ -44,9 +52,11 @@ namespace RestaurantManagementSystem.Controllers
             {
                 _context.Ingredients.Add(ingredient);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Ingredient '{ingredient.IngredientName}' added successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
+            await LoadSupplierDropdown(ingredient.SupplierId);
             return View(ingredient);
         }
 
@@ -58,6 +68,7 @@ namespace RestaurantManagementSystem.Controllers
 
             if (ingredient == null) return NotFound();
 
+            await LoadSupplierDropdown(ingredient.SupplierId);
             return View(ingredient);
         }
 
@@ -69,11 +80,24 @@ namespace RestaurantManagementSystem.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Ingredients.Update(ingredient);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Ingredients.Update(ingredient);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = $"Ingredient '{ingredient.IngredientName}' updated!";
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!IngredientExists(ingredient.IngredientId))
+                    {
+                        return NotFound();
+                    }
+                    throw;
+                }
                 return RedirectToAction(nameof(Index));
             }
 
+            await LoadSupplierDropdown(ingredient.SupplierId);
             return View(ingredient);
         }
 
@@ -82,6 +106,7 @@ namespace RestaurantManagementSystem.Controllers
             if (id == null) return NotFound();
 
             var ingredient = await _context.Ingredients
+                .Include(i => i.Supplier)
                 .FirstOrDefaultAsync(x => x.IngredientId == id);
 
             if (ingredient == null) return NotFound();
@@ -99,9 +124,29 @@ namespace RestaurantManagementSystem.Controllers
             {
                 _context.Ingredients.Remove(ingredient);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = $"Ingredient '{ingredient.IngredientName}' removed.";
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool IngredientExists(int id)
+        {
+            return _context.Ingredients.Any(e => e.IngredientId == id);
+        }
+
+        private async Task LoadSupplierDropdown(int? selectedSupplierId = null)
+        {
+            var suppliers = await _context.Suppliers
+                .OrderBy(s => s.SupplierName)
+                .ToListAsync();
+
+            ViewBag.SupplierId = new SelectList(
+                suppliers,
+                "SupplierId",
+                "SupplierName",
+                selectedSupplierId
+            );
         }
     }
 }
