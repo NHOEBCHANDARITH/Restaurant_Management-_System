@@ -1,0 +1,540 @@
+@{
+    ViewData["Title"] = "Point of Sale";
+    ViewData["NoSidebar"] = true; // Use the standalone layout to maximize screen real estate
+}
+
+<style>
+    body {
+        background-color: #f8fafc;
+        height: 100vh;
+        overflow: hidden; /* Prevent full page scrolling */
+    }
+    
+    .pos-container {
+        display: flex;
+        height: 100vh;
+    }
+    
+    /* === LEFT PANE: MENU & CATEGORIES === */
+    .pos-left {
+        flex: 1; /* Takes up remaining space (approx 65-70%) */
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: #f8fafc;
+    }
+    
+    .pos-header {
+        background: #fff;
+        padding: 15px 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .category-scroll {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding: 15px 25px;
+        background: #fff;
+        border-bottom: 1px solid #e2e8f0;
+        scrollbar-width: none; /* Firefox */
+    }
+    .category-scroll::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+    
+    .cat-pill {
+        white-space: nowrap;
+        padding: 10px 22px;
+        border-radius: 50px;
+        background: #f1f5f9;
+        color: #64748b;
+        font-weight: 600;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+    .cat-pill.active {
+        background: rgba(72, 190, 218, 0.12);
+        color: #2099b5;
+        border-color: #48beda;
+        box-shadow: 0 4px 10px rgba(72, 190, 218, 0.15);
+    }
+    
+    .menu-grid-container {
+        flex: 1;
+        overflow-y: auto; /* Scroll ONLY the grid */
+        padding: 25px;
+    }
+    
+    .menu-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        user-select: none;
+    }
+    .menu-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.06);
+        border-color: rgba(72, 190, 218, 0.5);
+    }
+    .menu-card:active {
+        transform: scale(0.97); /* Click effect */
+    }
+    .menu-img-wrap {
+        height: 150px;
+        background: #f1f5f9;
+        overflow: hidden;
+    }
+    .menu-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    /* === RIGHT PANE: CART & CHECKOUT === */
+    .pos-right {
+        width: 440px;
+        min-width: 440px;
+        background: #fff;
+        border-left: 1px solid #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-shadow: -5px 0 30px rgba(0,0,0,0.04);
+        z-index: 20;
+    }
+    
+    .cart-header {
+        padding: 20px 25px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #fff;
+    }
+    
+    .cart-items-container {
+        flex: 1;
+        overflow-y: auto; /* Scroll ONLY the cart items */
+        padding: 20px 25px;
+        background: #f8fafc;
+    }
+    
+    .cart-item {
+        background: #fff;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 12px;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    
+    .qty-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .qty-btn:hover { 
+        background: #f1f5f9; 
+        color: #0f172a;
+    }
+    .qty-btn:active {
+        background: #e2e8f0;
+    }
+    
+    .cart-footer {
+        padding: 25px;
+        background: #fff;
+        border-top: 1px solid #e2e8f0;
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+    }
+</style>
+
+<div class="pos-container">
+    <!-- ======================= LEFT PANE ======================= -->
+    <div class="pos-left">
+        <!-- Header -->
+        <div class="pos-header">
+            <div class="d-flex align-items-center gap-3">
+                <a asp-controller="Dashboard" asp-action="Index" class="btn btn-light rounded-circle shadow-sm" style="width: 44px; height: 44px; display:flex; align-items:center; justify-content:center;" title="Exit POS">
+                    <i class="bi bi-arrow-left fs-5"></i>
+                </a>
+                <h4 class="mb-0 fw-bold text-dark"><i class="bi bi-shop text-primary me-2"></i> Quick POS</h4>
+            </div>
+            <!-- Live Search -->
+            <div class="input-group" style="width: 280px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border-radius: 8px;">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Search menu...">
+            </div>
+        </div>
+        
+        <!-- Category Filter Bar -->
+        <div class="category-scroll" id="categoryScroll">
+            <div class="cat-pill active" onclick="filterCategory('all', this)">All Items</div>
+            @if (ViewBag.Categories != null)
+            {
+                foreach (var cat in ViewBag.Categories)
+                {
+                    <div class="cat-pill" onclick="filterCategory('@cat.CategoryId', this)">@cat.CategoryName</div>
+                }
+            }
+        </div>
+        
+        <!-- Menu Grid -->
+        <div class="menu-grid-container">
+            <div class="row row-cols-2 row-cols-md-3 row-cols-xl-4 g-4" id="menuGrid">
+                @if (ViewBag.MenuItems != null)
+                {
+                    foreach (var item in ViewBag.MenuItems)
+                    {
+                        <div class="col menu-col" data-category="@item.CategoryId" data-name="@item.ItemName.ToLower()">
+                            <!-- Call JS addToCart on click -->
+                            <div class="menu-card" onclick="addToCart(@item.ItemId, '@item.ItemName.Replace("'", "\\'")', @item.Price)">
+                                <div class="menu-img-wrap">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" onerror="this.src='https://placehold.co/300x200?text=No+Img'" />
+                                    }
+                                    else
+                                    {
+                                        <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light text-muted">
+                                            <i class="bi bi-image fs-1 opacity-25"></i>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="p-3 d-flex flex-column flex-grow-1">
+                                    <h6 class="fw-bold text-dark mb-1 lh-base">@item.ItemName</h6>
+                                    <span class="text-muted small mb-2"><i class="bi bi-tag-fill me-1 opacity-50"></i>@(item.Category?.CategoryName)</span>
+                                    <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top border-dashed">
+                                        <span class="fw-bold text-primary fs-5">@item.Price.ToString("C")</span>
+                                        <div class="btn btn-sm btn-light text-primary rounded-circle shadow-sm" style="width: 32px; height: 32px; line-height: 20px;">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    
+    <!-- ======================= RIGHT PANE (CART) ======================= -->
+    <div class="pos-right">
+        <!-- Ticket Metadata -->
+        <div class="cart-header">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark mb-0">Current Ticket</h5>
+                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2" id="cartItemCount">0 Items</span>
+            </div>
+            
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted border-0"><i class="bi bi-person-fill"></i></span>
+                        <select id="customerId" class="form-select bg-light border-0 fw-semibold text-dark">
+                            <option value="">-- Guest --</option>
+                            @if (ViewBag.Customers != null)
+                            {
+                                foreach (var cust in ViewBag.Customers)
+                                {
+                                    <option value="@cust.CustomerId">@cust.CustomerName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted border-0"><i class="bi bi-grid-3x3-gap-fill"></i></span>
+                        <select id="tableId" class="form-select bg-light border-0 fw-semibold text-dark">
+                            <option value="">-- Table --</option>
+                            @if (ViewBag.Tables != null)
+                            {
+                                foreach (var table in ViewBag.Tables)
+                                {
+                                    <option value="@table.TableId">Table @table.TableNumber</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 mt-2">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted border-0"><i class="bi bi-person-badge-fill"></i></span>
+                        <select id="userId" class="form-select bg-light border-0 fw-semibold text-dark">
+                            <option value="">-- Assigned Server --</option>
+                            @if (ViewBag.Users != null)
+                            {
+                                foreach (var user in ViewBag.Users)
+                                {
+                                    <option value="@user.UserId">@user.FullName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cart Items List -->
+        <div class="cart-items-container" id="cartContainer">
+            <!-- Dynamic JS Items Go Here -->
+            <div id="emptyCartMsg" class="text-center text-muted mt-5 pt-4">
+                <i class="bi bi-cart-x fs-1 opacity-25 mb-3 d-block"></i>
+                <p class="fw-semibold text-dark">No items in the cart.</p>
+                <p class="small">Tap on any menu item<br>on the left to add it.</p>
+            </div>
+        </div>
+        
+        <!-- Checkout Footer -->
+        <div class="cart-footer">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted fw-semibold">Subtotal</span>
+                <span class="fw-bold text-dark" id="subtotalDisplay">$0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+                <span class="text-muted fw-semibold">Tax (Included)</span>
+                <span class="fw-bold text-dark">$0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-4 pb-3 border-bottom border-2" style="border-style: dashed !important;">
+                <span class="fs-4 fw-extrabold text-dark">Total</span>
+                <span class="fs-3 fw-extrabold text-primary" id="totalDisplay">$0.00</span>
+            </div>
+            
+            <div class="row g-2">
+                <div class="col-3">
+                    <button class="btn btn-light text-danger w-100 rounded-3 py-3 fw-bold border shadow-sm" onclick="clearCart()" title="Clear Ticket">
+                        <i class="bi bi-trash fs-5"></i>
+                    </button>
+                </div>
+                <div class="col-9">
+                    <button id="btnSubmitOrder" class="btn btn-primary w-100 rounded-3 py-3 fw-bold fs-5 shadow-sm d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #48beda 0%, #2099b5 100%); border: none;" onclick="submitOrder()">
+                        <i class="bi bi-check-circle me-2"></i> Send to Kitchen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AntiForgeryToken required for the POST request -->
+<form id="antiforgery-form">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script>
+        // --- CART STATE ---
+        let cart = [];
+
+        // --- CORE FUNCTIONS ---
+        function addToCart(id, name, price) {
+            let existingItem = cart.find(i => i.itemId === id);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+                existingItem.subtotal = existingItem.quantity * existingItem.unitPrice;
+            } else {
+                cart.push({
+                    itemId: id,
+                    name: name,
+                    quantity: 1,
+                    unitPrice: price,
+                    subtotal: price
+                });
+            }
+            updateCartUI();
+        }
+
+        function changeQty(id, delta) {
+            let itemIndex = cart.findIndex(i => i.itemId === id);
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += delta;
+                
+                if (cart[itemIndex].quantity <= 0) {
+                    cart.splice(itemIndex, 1); // Remove item if qty hits 0
+                } else {
+                    cart[itemIndex].subtotal = cart[itemIndex].quantity * cart[itemIndex].unitPrice;
+                }
+                updateCartUI();
+            }
+        }
+
+        function clearCart() {
+            if(cart.length > 0 && confirm('Are you sure you want to clear the entire ticket?')) {
+                cart = [];
+                updateCartUI();
+            }
+        }
+
+        function formatMoney(amount) {
+            return '$' + parseFloat(amount).toFixed(2);
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cartContainer');
+            const emptyMsg = document.getElementById('emptyCartMsg');
+            let html = '';
+            let total = 0;
+            let totalItems = 0;
+
+            if (cart.length === 0) {
+                emptyMsg.style.display = 'block';
+                container.innerHTML = '';
+                container.appendChild(emptyMsg);
+            } else {
+                emptyMsg.style.display = 'none';
+                
+                cart.forEach(item => {
+                    total += item.subtotal;
+                    totalItems += item.quantity;
+                    
+                    html += `
+                        <div class="cart-item">
+                            <div class="flex-grow-1 pe-2">
+                                <h6 class="mb-1 fw-bold text-dark lh-sm" style="font-size: 14px;">${item.name}</h6>
+                                <span class="text-primary fw-bold small">${formatMoney(item.unitPrice)}</span>
+                            </div>
+                            <div class="d-flex align-items-center mx-2 gap-2 bg-light rounded-pill p-1 border">
+                                <div class="qty-btn rounded-circle bg-white shadow-sm" onclick="changeQty(${item.itemId}, -1)"><i class="bi bi-dash"></i></div>
+                                <span class="fw-bold text-dark" style="min-width: 20px; text-align: center;">${item.quantity}</span>
+                                <div class="qty-btn rounded-circle bg-white shadow-sm" onclick="changeQty(${item.itemId}, 1)"><i class="bi bi-plus"></i></div>
+                            </div>
+                            <div class="text-end" style="min-width: 70px;">
+                                <div class="fw-extrabold text-dark fs-6">${formatMoney(item.subtotal)}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            // Update Totals and Badges
+            document.getElementById('subtotalDisplay').innerText = formatMoney(total);
+            document.getElementById('totalDisplay').innerText = formatMoney(total);
+            document.getElementById('cartItemCount').innerText = totalItems + (totalItems === 1 ? ' Item' : ' Items');
+        }
+
+        // --- FILTER & SEARCH ---
+        function filterCategory(catId, btnEl) {
+            // Update active styling on pills
+            document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+            btnEl.classList.add('active');
+
+            // Toggle visibility in grid
+            document.querySelectorAll('.menu-col').forEach(col => {
+                if (catId === 'all' || col.getAttribute('data-category') === catId.toString()) {
+                    col.style.display = 'block';
+                } else {
+                    col.style.display = 'none';
+                }
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            
+            document.querySelectorAll('.menu-col').forEach(col => {
+                const name = col.getAttribute('data-name');
+                if (name.includes(term)) {
+                    col.style.display = 'block';
+                } else {
+                    col.style.display = 'none';
+                }
+            });
+            
+            // Reset category pill visually to "All" when searching
+            document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+            document.querySelector('.cat-pill').classList.add('active');
+        });
+
+        // --- AJAX POST SUBMISSION ---
+        async function submitOrder() {
+            if (cart.length === 0) {
+                alert("The ticket is empty! Tap some menu items to add them.");
+                return;
+            }
+
+            const custId = document.getElementById('customerId').value;
+            const tableId = document.getElementById('tableId').value;
+            const userId = document.getElementById('userId').value;
+
+            if (!custId || !tableId || !userId) {
+                alert("Please select the Guest, Table, and Assigned Server before placing the order.");
+                return;
+            }
+
+            // Lock button to prevent double submission
+            const btnSubmit = document.getElementById('btnSubmitOrder');
+            const originalBtnHtml = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Sending...';
+            btnSubmit.disabled = true;
+
+            const totalAmount = cart.reduce((sum, item) => sum + item.subtotal, 0);
+
+            const payload = {
+                CustomerId: parseInt(custId),
+                TableId: parseInt(tableId),
+                UserId: parseInt(userId),
+                TotalAmount: totalAmount,
+                Items: cart
+            };
+
+            try {
+                // Get anti-forgery token securely
+                const token = document.querySelector('#antiforgery-form input[name="__RequestVerificationToken"]').value;
+
+                const response = await fetch('/Orders/SubmitPOS', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("Ticket #" + result.orderId + " sent to the kitchen!");
+                    // Reset POS for next customer
+                    cart = [];
+                    document.getElementById('customerId').value = '';
+                    document.getElementById('tableId').value = '';
+                    updateCartUI();
+                } else {
+                    alert("Submission Failed: " + result.message);
+                }
+            } catch (error) {
+                console.error("Submission error:", error);
+                alert("A network error occurred. Please try again.");
+            } finally {
+                // Unlock button
+                btnSubmit.innerHTML = originalBtnHtml;
+                btnSubmit.disabled = false;
+            }
+        }
+    </script>
+}
