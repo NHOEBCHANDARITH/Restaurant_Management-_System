@@ -1,101 +1,115 @@
 @model Restaurant_Management__System.Models.MenuItem
+
 @{
-    ViewData["Title"] = "Edit Menu Item - " + Model.ItemName;
+    ViewData["Title"] = "Edit Dish";
 }
 
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="rms-form-card">
-            <div class="d-flex align-items-center gap-3 mb-4 border-bottom pb-3">
-                <div class="rms-brand-logo-icon" style="width: 44px; height: 44px; font-size: 20px;">
-                    <i class="bi bi-pencil-square"></i>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div>
+        <h3 class="fw-bold text-dark mb-1">Edit Dish</h3>
+        <p class="text-muted mb-0">Update information for @Model.ItemName.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-light text-dark fw-semibold rounded-3 shadow-sm px-4 border">
+        <i class="bi bi-arrow-left me-1"></i> Back to Menu
+    </a>
+</div>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="ItemId" />
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3"></div>
+
+    <div class="row g-4">
+        <!-- Left Column: Core Details -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white border-bottom pt-4 pb-3 px-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-info-circle text-primary me-2"></i> Core Details</h5>
                 </div>
-                <div>
-                    <h4 class="fw-bold text-dark mb-0">Edit Dish: @Model.ItemName</h4>
-                    <small class="text-muted">Update pricing, description, or kitchen availability</small>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-12">
+                            <label asp-for="ItemName" class="form-label fw-semibold text-dark">Dish Name <span class="text-danger">*</span></label>
+                            <input asp-for="ItemName" class="form-control form-control-lg rounded-3 bg-light border-0 fs-6" required />
+                            <span asp-validation-for="ItemName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="CategoryId" class="form-label fw-semibold text-dark">Category <span class="text-danger">*</span></label>
+                            <select asp-for="CategoryId" class="form-select form-select-lg rounded-3 bg-light border-0 fs-6" asp-items="ViewBag.Categories" required>
+                                <option value="">-- Select Category --</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Price" class="form-label fw-semibold text-dark">Price <span class="text-danger">*</span></label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-light border-0"><i class="bi bi-currency-dollar"></i></span>
+                                <input asp-for="Price" type="number" step="0.01" min="0" class="form-control rounded-end-3 bg-light border-0 fs-6" required />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label asp-for="Description" class="form-label fw-semibold text-dark">Description</label>
+                            <textarea asp-for="Description" class="form-control rounded-3 bg-light border-0" rows="5"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <form asp-action="Edit" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" asp-for="ItemId" />
-                <div asp-validation-summary="ModelOnly" class="rms-alert rms-alert-danger mb-3"></div>
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label asp-for="ItemName" class="rms-form-label">
-                            Dish / Item Name <span class="required-dot">*</span>
-                        </label>
-                        <div class="rms-input-group">
-                            <i class="bi bi-card-heading rms-input-icon"></i>
-                            <input asp-for="ItemName" class="rms-form-control" required />
-                        </div>
-                        <span asp-validation-for="ItemName" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="CategoryId" class="rms-form-label">
-                            Food Category <span class="required-dot">*</span>
-                        </label>
-                        <div class="rms-input-group">
-                            <i class="bi bi-tags rms-input-icon"></i>
-                            <select asp-for="CategoryId" class="form-select rms-form-control" asp-items="ViewBag.CategoryId" required></select>
-                        </div>
-                        <span asp-validation-for="CategoryId" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Price" class="rms-form-label">
-                            Price ($ USD) <span class="required-dot">*</span>
-                        </label>
-                        <div class="rms-input-group">
-                            <i class="bi bi-currency-dollar rms-input-icon"></i>
-                            <input asp-for="Price" type="number" step="0.01" min="0" class="rms-form-control" required />
-                        </div>
-                        <span asp-validation-for="Price" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="Status" class="rms-form-label">Availability Status</label>
-                        <div class="rms-input-group">
-                            <i class="bi bi-check2-circle rms-input-icon"></i>
-                            <select asp-for="Status" class="form-select rms-form-control">
-                                <option value="Available">Available (Ready to Serve)</option>
-                                <option value="Unavailable">Unavailable / Sold Out</option>
-                            </select>
-                        </div>
+        <!-- Right Column: Media & Status -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-white border-bottom pt-4 pb-3 px-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-image text-primary me-2"></i> Media & Status</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <label asp-for="Status" class="form-label fw-semibold text-dark">Availability</label>
+                        <select asp-for="Status" class="form-select form-select-lg rounded-3 bg-light border-0 fs-6">
+                            <option value="Available">Available</option>
+                            <option value="Out of Stock">Out of Stock</option>
+                        </select>
                         <span asp-validation-for="Status" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-12">
-                        <label asp-for="ImageUrl" class="rms-form-label">Image URL</label>
-                        <div class="rms-input-group">
-                            <i class="bi bi-image rms-input-icon"></i>
-                            <input asp-for="ImageUrl" type="url" class="rms-form-control" />
-                        </div>
+                    <div class="mb-3">
+                        <label asp-for="ImageUrl" class="form-label fw-semibold text-dark">Image URL</label>
+                        <input asp-for="ImageUrl" id="imageUrlInput" class="form-control rounded-3 bg-light border-0" placeholder="https://example.com/image.jpg" />
                         <span asp-validation-for="ImageUrl" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-12">
-                        <label asp-for="Description" class="rms-form-label">Dish Description &amp; Flavors</label>
-                        <textarea asp-for="Description" rows="3" class="rms-form-control"></textarea>
-                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    <!-- Live Image Preview -->
+                    <div class="mt-4 text-center p-3 border rounded-3 bg-light" style="border-style: dashed !important;">
+                        <p class="text-muted small mb-2 fw-semibold">Live Preview</p>
+                        <img id="imagePreview" src="@(!string.IsNullOrEmpty(Model.ImageUrl) ? Model.ImageUrl : "https://placehold.co/300x200?text=No+Image")" alt="Preview" class="img-fluid rounded-3 shadow-sm object-fit-cover w-100" style="height: 180px; display: block;" onerror="this.src='https://placehold.co/300x200?text=Invalid+URL'" />
                     </div>
                 </div>
+            </div>
 
-                <hr class="my-4" />
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn rms-btn-primary">
-                        <i class="bi bi-check-lg"></i> Update Menu Dish
-                    </button>
-                    <a asp-action="Index" class="btn rms-btn-secondary">Cancel</a>
-                </div>
-            </form>
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary w-100 py-3 rounded-4 shadow-sm fw-bold fs-5" style="background: linear-gradient(135deg, #48beda 0%, #2099b5 100%); border: none;">
+                <i class="bi bi-check-circle me-2"></i> Update Dish
+            </button>
         </div>
     </div>
-</div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('imageUrlInput').addEventListener('input', function() {
+            var url = this.value.trim();
+            var preview = document.getElementById('imagePreview');
+            if (url) {
+                preview.src = url;
+            } else {
+                preview.src = 'https://placehold.co/300x200?text=No+Image';
+            }
+        });
+    </script>
 }

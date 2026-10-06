@@ -1,254 +1,109 @@
 @model IEnumerable<Restaurant_Management__System.Models.MenuItem>
+
 @{
     ViewData["Title"] = "Menu Management";
-    var categories = ViewBag.Categories as List<Restaurant_Management__System.Models.Category> ?? new List<Restaurant_Management__System.Models.Category>();
-    int totalItems = Model?.Count() ?? 0;
 }
 
-<!-- PAGE HEADER & ACTION -->
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
     <div>
-        <h2 class="fw-bold mb-1 text-dark">
-            <i class="bi bi-cup-hot-fill text-warning me-2"></i>Menu Items &amp; Culinary Catalog
-        </h2>
-        <p class="text-muted mb-0">Manage food dishes, beverages, pricing, photos, and kitchen availability.</p>
+        <h3 class="fw-bold text-dark mb-1">Menu Dishes <span class="badge bg-primary bg-opacity-10 text-primary ms-2 fs-6 align-middle">@Model.Count() Items</span></h3>
+        <p class="text-muted mb-0">Manage your restaurant's food and beverage offerings.</p>
     </div>
-
-    <div class="d-flex gap-2">
-        <a asp-action="Create" class="btn rms-btn-primary">
-            <i class="bi bi-plus-lg"></i> Add New Menu Item
-        </a>
-    </div>
+    <a asp-action="Create" class="btn btn-primary rounded-3 px-4 shadow-sm fw-semibold" style="background: linear-gradient(135deg, #48beda 0%, #2099b5 100%); border: none;">
+        <i class="bi bi-plus-lg me-1"></i> Add New Dish
+    </a>
 </div>
 
-<!-- CATEGORY FILTER TABS & SEARCH -->
-<div class="rms-card p-3 mb-4">
-    <div class="row g-3 align-items-center justify-content-between">
-        <div class="col-md-5 col-lg-4">
-            <div class="rms-input-group">
-                <i class="bi bi-search rms-input-icon"></i>
-                <input type="text" id="menuItemSearch" class="rms-form-control" placeholder="Search dish name, ingredient..." onkeyup="filterMenuCards()" />
-            </div>
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-header bg-white border-bottom-0 pt-4 pb-3 px-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <!-- Optional Filter Bar placeholder -->
+        <div class="input-group" style="max-width: 320px;">
+            <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control bg-light border-start-0 ps-0" placeholder="Search menu...">
         </div>
-
-        <div class="col-md-7 col-lg-8">
-            <div class="d-flex flex-wrap gap-2 justify-content-md-end align-items-center">
-                <button class="btn btn-sm btn-outline-secondary active category-filter-btn rounded-pill px-3" onclick="filterCategoryTab('all')">
-                    All Dishes (@totalItems)
-                </button>
-                @foreach (var cat in categories)
-                {
-                    <button class="btn btn-sm btn-outline-secondary category-filter-btn rounded-pill px-3" onclick="filterCategoryTab('@cat.CategoryName.ToLower()')">
-                        @cat.CategoryName
-                    </button>
-                }
-
-                <div class="btn-group ms-2" role="group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary active" id="btnMenuCardView" onclick="setMenuDisplayView('grid')">
-                        <i class="bi bi-grid-fill"></i>
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnMenuTableView" onclick="setMenuDisplayView('table')">
-                        <i class="bi bi-list-ul"></i>
-                    </button>
-                </div>
-            </div>
+        <div>
+            <!-- Category Filter placeholder -->
+            <select class="form-select bg-light border-0 text-muted fw-medium">
+                <option value="">All Categories</option>
+                <!-- Can be populated via ViewBag if needed later -->
+            </select>
         </div>
     </div>
-</div>
-
-<!-- 1. FOOD CARDS GRID VIEW -->
-<div class="row g-4" id="menuCardGrid">
-    @if (Model != null && Model.Any())
-    {
-        foreach (var item in Model)
-        {
-            string fallbackImg = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c";
-            string imgUrl = string.IsNullOrWhiteSpace(item.ImageUrl) ? fallbackImg : item.ImageUrl;
-            string categoryName = item.Category != null ? item.Category.CategoryName : "Specialty";
-            bool isAvailable = string.IsNullOrEmpty(item.Status) || item.Status.Equals("Available", StringComparison.OrdinalIgnoreCase);
-
-            <div class="col-xl-4 col-md-6 menu-card-col" 
-                 data-category="@categoryName.ToLower()" 
-                 data-name="@item.ItemName.ToLower()">
-                <div class="rms-food-card rms-searchable-card shadow-sm">
-                    <div class="rms-food-img-wrap">
-                        <img src="@imgUrl" alt="@item.ItemName" loading="lazy" onerror="this.src='@fallbackImg';" />
-                        
-                        <span class="badge position-absolute top-0 start-0 m-3 bg-dark bg-opacity-75 rounded-pill px-3 py-1">
-                            @categoryName
-                        </span>
-
-                        <span class="rms-food-price-badge">
-                            $@item.Price.ToString("F2")
-                            <small>@((item.Price * 4100).ToString("N0")) ៛</small>
-                        </span>
-                    </div>
-
-                    <div class="rms-food-card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="fw-bold text-dark mb-0">@item.ItemName</h5>
-                            @if (isAvailable)
-                            {
-                                <span class="rms-badge rms-badge-success py-1 px-2"><span class="rms-badge-dot"></span> Available</span>
-                            }
-                            else
-                            {
-                                <span class="rms-badge rms-badge-danger py-1 px-2"><span class="rms-badge-dot"></span> Sold Out</span>
-                            }
-                        </div>
-
-                        <p class="text-muted small flex-grow-1 mb-3" style="min-height: 40px;">
-                            @(string.IsNullOrWhiteSpace(item.Description) ? "Traditional freshly prepared dish made with quality Cambodian ingredients and spices." : item.Description)
-                        </p>
-
-                        <div class="border-top pt-3 mt-auto d-flex justify-content-between align-items-center">
-                            <div class="rms-action-btn-group">
-                                <a asp-action="Details" asp-route-id="@item.ItemId" class="rms-action-btn" title="View Details">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a asp-action="Edit" asp-route-id="@item.ItemId" class="rms-action-btn" title="Edit Item">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.ItemId" class="rms-action-btn delete" title="Delete Item">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </div>
-
-                            <a asp-controller="Orders" asp-action="Create" class="btn btn-sm rms-btn-outline py-1 px-2">
-                                <i class="bi bi-cart-plus"></i> Order
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    }
-    else
-    {
-        <div class="col-12">
-            <div class="rms-empty-state rms-card">
-                <div class="rms-empty-icon"><i class="bi bi-cup-hot"></i></div>
-                <h4 class="rms-empty-title">No Menu Items Listed</h4>
-                <p class="rms-empty-desc">Create your signature dishes, set prices, and attach appetizing food photos.</p>
-                <a asp-action="Create" class="btn rms-btn-primary">
-                    <i class="bi bi-plus-lg"></i> Add First Dish
-                </a>
-            </div>
-        </div>
-    }
-</div>
-
-<!-- 2. DATA TABLE VIEW -->
-<div class="rms-table-wrapper d-none" id="menuTableGrid">
-    <div class="table-responsive">
-        <table class="rms-table align-middle">
-            <thead>
-                <tr>
-                    <th class="ps-4">Dish</th>
-                    <th>Category</th>
-                    <th>Price (USD / KHR)</th>
-                    <th>Status</th>
-                    <th>Description</th>
-                    <th class="text-end pe-4">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model != null && Model.Any())
-                {
-                    foreach (var item in Model)
+    
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-muted">
+                    <tr>
+                        <th class="ps-4 border-0">Dish</th>
+                        <th class="border-0">Price</th>
+                        <th class="border-0">Status</th>
+                        <th class="text-end pe-4 border-0">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                            {
+                                                <img src="@item.ImageUrl" alt="@item.ItemName" class="rounded-3 object-fit-cover shadow-sm" style="width: 56px; height: 56px;" onerror="this.src='https://placehold.co/100x100?text=No+Img'" />
+                                            }
+                                            else
+                                            {
+                                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted shadow-sm border" style="width: 56px; height: 56px;">
+                                                    <i class="bi bi-image fs-4 opacity-50"></i>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="ms-3">
+                                            <h6 class="mb-1 fw-bold text-dark">@item.ItemName</h6>
+                                            <span class="text-muted small fw-medium">
+                                                <i class="bi bi-tag-fill me-1 opacity-50"></i> @(item.Category?.CategoryName ?? "No Category")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-dark">@item.Price.ToString("C")</span>
+                                </td>
+                                <td>
+                                    @if (item.Status == "Available")
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 border border-success border-opacity-25">@item.Status</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-2 border border-secondary border-opacity-25">@item.Status</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a asp-action="Edit" asp-route-id="@item.ItemId" class="btn btn-sm btn-light text-primary rounded-circle shadow-sm me-1" style="width: 36px; height: 36px; line-height: 24px;" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.ItemId" class="btn btn-sm btn-light text-danger rounded-circle shadow-sm" style="width: 36px; height: 36px; line-height: 24px;" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td class="ps-4">
-                                <div class="d-flex align-items-center gap-3">
-                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" : item.ImageUrl)" 
-                                         alt="@item.ItemName" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;" />
-                                    <div>
-                                        <strong class="text-dark d-block">@item.ItemName</strong>
-                                        <small class="text-muted font-monospace">#ITEM-@item.ItemId</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge bg-light text-dark border">
-                                    @(item.Category != null ? item.Category.CategoryName : "Specialty")
-                                </span>
-                            </td>
-                            <td>
-                                <strong class="text-dark font-monospace">$@item.Price.ToString("F2")</strong>
-                                <small class="text-muted d-block">@((item.Price * 4100).ToString("N0")) ៛</small>
-                            </td>
-                            <td>
-                                @if (string.IsNullOrEmpty(item.Status) || item.Status.Equals("Available", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    <span class="rms-badge rms-badge-success"><span class="rms-badge-dot"></span> Available</span>
-                                }
-                                else
-                                {
-                                    <span class="rms-badge rms-badge-danger"><span class="rms-badge-dot"></span> Sold Out</span>
-                                }
-                            </td>
-                            <td>
-                                <small class="text-muted text-truncate d-inline-block" style="max-width: 250px;">
-                                    @item.Description
-                                </small>
-                            </td>
-                            <td class="text-end pe-4">
-                                <div class="rms-action-btn-group">
-                                    <a asp-action="Details" asp-route-id="@item.ItemId" class="rms-action-btn" title="View"><i class="bi bi-eye"></i></a>
-                                    <a asp-action="Edit" asp-route-id="@item.ItemId" class="rms-action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
-                                    <a asp-action="Delete" asp-route-id="@item.ItemId" class="rms-action-btn delete" title="Delete"><i class="bi bi-trash"></i></a>
-                                </div>
+                            <td colspan="4" class="text-center text-muted py-5">
+                                <i class="bi bi-egg-fried fs-1 text-black-50 mb-3 d-block"></i>
+                                No menu items found. Click "Add New Dish" to get started.
                             </td>
                         </tr>
                     }
-                }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
-<script>
-    function setMenuDisplayView(view) {
-        const cardView = document.getElementById('menuCardGrid');
-        const tableView = document.getElementById('menuTableGrid');
-        const btnCard = document.getElementById('btnMenuCardView');
-        const btnTable = document.getElementById('btnMenuTableView');
-
-        if (view === 'grid') {
-            cardView.classList.remove('d-none');
-            tableView.classList.add('d-none');
-            btnCard.classList.add('active');
-            btnTable.classList.remove('active');
-        } else {
-            cardView.classList.add('d-none');
-            tableView.classList.remove('d-none');
-            btnTable.classList.add('active');
-            btnCard.classList.remove('active');
-        }
-    }
-
-    function filterCategoryTab(category) {
-        const buttons = document.querySelectorAll('.category-filter-btn');
-        buttons.forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-
-        const cards = document.querySelectorAll('.menu-card-col');
-        cards.forEach(card => {
-            const cat = card.getAttribute('data-category');
-            if (category === 'all' || cat === category) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-
-    function filterMenuCards() {
-        const query = document.getElementById('menuItemSearch').value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.menu-card-col');
-        cards.forEach(card => {
-            const name = card.getAttribute('data-name');
-            card.style.display = name.includes(query) ? '' : 'none';
-        });
-    }
-</script>
