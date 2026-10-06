@@ -1,0 +1,131 @@
+@model Restaurant_Management__System.Models.Payment
+@{
+    ViewData["Title"] = "Payment Receipt";
+}
+
+<div class="container py-5 d-flex justify-content-center">
+    <div class="card border-0 shadow-lg" style="width: 100%; max-width: 450px; border-radius: 16px; overflow: hidden;">
+        
+        <!-- Receipt Header -->
+        <div class="bg-dark text-white text-center p-4">
+            <h2 class="fw-bold mb-1" style="letter-spacing: 1px;">SOVANNAPHUM</h2>
+            <p class="mb-0 small text-white-50 text-uppercase letter-spacing-2">Khmer Culinary Restaurant</p>
+        </div>
+
+        <div class="card-body p-4 bg-white">
+            <div class="text-center mb-4">
+                <h5 class="fw-bold text-dark border-bottom pb-3">OFFICIAL RECEIPT</h5>
+            </div>
+
+            <!-- Meta Data -->
+            <div class="row mb-4 small text-muted">
+                <div class="col-6">
+                    <strong>Order #:</strong> ORD-@(Model.OrderId.ToString("D5"))<br />
+                    <strong>Date:</strong> @Model.PaymentDate.ToString("dd MMM yyyy")
+                </div>
+                <div class="col-6 text-end">
+                    <strong>Receipt #:</strong> REC-@(Model.PaymentId.ToString("D5"))<br />
+                    <strong>Time:</strong> @Model.PaymentDate.ToString("hh:mm tt")
+                </div>
+                <div class="col-12 mt-2 pt-2 border-top">
+                    <strong>Customer:</strong> @(Model.Order?.Customer?.CustomerName ?? "Walk-in Guest")
+                </div>
+            </div>
+
+            <!-- Items -->
+            <table class="table table-sm table-borderless small mb-4">
+                <thead>
+                    <tr class="border-bottom">
+                        <th>Qty</th>
+                        <th>Item</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.OrderItems != null)
+                    {
+                        foreach (var item in ViewBag.OrderItems)
+                        {
+                            <tr>
+                                <td>@item.Quantity x</td>
+                                <td>@item.MenuItem.ItemName</td>
+                                <td class="text-end">@item.Subtotal.ToString("C")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+            <!-- Totals -->
+            <div class="border-top pt-3 mb-4">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Subtotal</span>
+                    <span>@((Model.Order?.TotalAmount ?? 0).ToString("C")) USD</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
+                    <span class="text-muted">Tax</span>
+                    <span>Included</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-3">
+                    <span class="fw-bold fs-5 text-dark">Total Paid</span>
+                    <div class="text-end">
+                        @if (Model.Currency == "KHR")
+                        {
+                            <span class="fw-bold fs-4 text-primary d-block">@(Model.Amount.ToString("N0")) ៛</span>
+                            <small class="text-muted">KHR</small>
+                        }
+                        else
+                        {
+                            <span class="fw-bold fs-4 text-primary d-block">$@(Model.Amount.ToString("N2"))</span>
+                            <small class="text-muted">USD</small>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Info -->
+            <div class="bg-light rounded-3 p-3 small">
+                <div class="row">
+                    <div class="col-6 text-muted">Payment Method:</div>
+                    <div class="col-6 text-end fw-semibold">@Model.PaymentMethod</div>
+                    
+                    <div class="col-6 text-muted mt-2">Status:</div>
+                    <div class="col-6 text-end mt-2">
+                        @if(Model.PaymentStatus == "Paid") {
+                            <span class="badge bg-success">PAID</span>
+                        } else {
+                            <span class="badge bg-warning">@Model.PaymentStatus</span>
+                        }
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.TransactionReference))
+                    {
+                        <div class="col-6 text-muted mt-2">Ref Number:</div>
+                        <div class="col-6 text-end mt-2 fw-semibold text-truncate" title="@Model.TransactionReference">
+                            @Model.TransactionReference
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="card-footer bg-white border-0 text-center pb-4 pt-0">
+            <p class="text-muted small mb-3">Thank you for dining with us!</p>
+            <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="window.print()"><i class="bi bi-printer me-1"></i> Print</button>
+                <a href="/admin/payments" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">All Payments</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media print {
+        body * { visibility: hidden; }
+        .card, .card * { visibility: visible; }
+        .card { position: absolute; left: 0; top: 0; box-shadow: none !important; width: 100%; max-width: 100%; }
+        .btn { display: none !important; }
+    }
+</style>

@@ -1,142 +1,167 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
 @model Restaurant_Management__System.Models.Payment
-
 @{
-    ViewData["Title"] = "Create Payment";
+    ViewData["Title"] = "Process Payment";
+    var order = ViewBag.Order as Restaurant_Management__System.Models.Order;
+    decimal exchangeRate = ViewBag.ExchangeRate ?? 4050m;
+    
+    decimal usdTotal = order?.TotalAmount ?? 0;
+    decimal khrTotal = usdTotal * exchangeRate;
 }
 
-<div class="container py-4">
-
-    <div class="card shadow-sm border-0">
-
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">
-                <i class="bi bi-plus-circle me-2"></i>
-                Create Payment
-            </h4>
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold text-dark mb-1">Process Payment</h3>
+                <p class="text-muted mb-0">Settle Order #@Model.OrderId for @(order?.Customer?.CustomerName ?? "Walk-in Guest")</p>
+            </div>
+            <a href="/admin/orders" class="btn btn-light rounded-3 px-4 shadow-sm border">Back to Orders</a>
         </div>
 
-        <div class="card-body">
+        <form asp-action="Create" method="post" id="paymentForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="OrderId" />
+            <input type="hidden" asp-for="PaymentStatus" value="Paid" id="paymentStatusInput" />
 
-            <form asp-action="Create">
+            <div class="row g-4">
+                <!-- Left: Payment Form -->
+                <div class="col-md-7">
+                    <div class="card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-body p-4">
+                            
+                            <h5 class="fw-bold border-bottom pb-3 mb-4">Payment Configuration</h5>
 
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-3"></div>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Select Currency</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check flex-fill bg-light p-3 rounded-3 border">
+                                        <input class="form-check-input ms-1" type="radio" asp-for="Currency" value="USD" id="currUSD" checked onchange="updateAmountUI()">
+                                        <label class="form-check-label ms-2 fw-bold text-dark w-100 cursor-pointer" for="currUSD">
+                                            USD ($)
+                                        </label>
+                                    </div>
+                                    <div class="form-check flex-fill bg-light p-3 rounded-3 border">
+                                        <input class="form-check-input ms-1" type="radio" asp-for="Currency" value="KHR" id="currKHR" onchange="updateAmountUI()">
+                                        <label class="form-check-label ms-2 fw-bold text-dark w-100 cursor-pointer" for="currKHR">
+                                            KHR (៛)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
 
-                <div class="mb-3">
-                    <label asp-for="OrderId"
-                           class="form-label">
-                        Order
-                    </label>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Payment Amount</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-light border-0" id="currencySymbol">$</span>
+                                    <input asp-for="Amount" class="form-control bg-light border-0 fw-bold" id="amountInput" value="@usdTotal" readonly />
+                                </div>
+                            </div>
 
-                    <select asp-for="OrderId"
-                            class="form-select"
-                            asp-items="ViewBag.OrderId">
-                        <option value="">-- Select Order --</option>
-                    </select>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Payment Method</label>
+                                <select asp-for="PaymentMethod" class="form-select form-select-lg bg-light border-0" id="paymentMethod" onchange="toggleQR()">
+                                    <option value="Cash">Cash</option>
+                                    <option value="QR Payment">KHQR / Bakong (Dynamic)</option>
+                                    <option value="Card">Credit/Debit Card</option>
+                                </select>
+                            </div>
 
-                    <span asp-validation-for="OrderId"
-                          class="text-danger"></span>
+                            <div class="mb-4">
+                                <label asp-for="TransactionReference" class="form-label fw-semibold">Transaction Reference (Optional)</label>
+                                <input asp-for="TransactionReference" class="form-control bg-light border-0" placeholder="e.g. TXN-99882211" />
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100 py-3 rounded-4 shadow-sm fw-bold fs-5" style="background: linear-gradient(135deg, #48beda 0%, #2099b5 100%); border: none;">
+                                <i class="bi bi-check2-circle me-2"></i> Confirm Payment
+                            </button>
+
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="PaymentMethod"
-                           class="form-label">
-                        Payment Method
-                    </label>
+                <!-- Right: QR Code Visualizer -->
+                <div class="col-md-5">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-dark text-white" id="qrPanel" style="display: none; background: linear-gradient(135deg, #df2029 0%, #a41016 100%);">
+                        <div class="card-body p-4 text-center d-flex flex-column justify-content-center">
+                            
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/KHQR_Logo.svg" alt="KHQR" style="height: 35px; margin-bottom: 20px; filter: brightness(0) invert(1);" />
+                            
+                            <h4 class="fw-bold mb-4">Scan to Pay</h4>
+                            
+                            <div class="bg-white p-4 rounded-4 d-inline-block mx-auto shadow-lg mb-4 position-relative">
+                                <!-- Dummy QR Code for demo purposes -->
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=KHQR_MOCK_PAYLOAD_ORDER_@Model.OrderId" alt="QR Code" class="img-fluid rounded-3" style="width: 200px; height: 200px;" />
+                                <!-- Note: Integrate real Bakong/KHQR payload generator here in production -->
+                            </div>
+                            
+                            <h2 class="fw-bold mb-0" id="qrAmountDisplay">$@usdTotal.ToString("N2")</h2>
+                            <p class="text-white-50 small mb-0 mt-2">Order #@Model.OrderId &bull; Sovannaphum</p>
+                            
+                            <div class="mt-4 pt-3 border-top border-white border-opacity-25">
+                                <span class="badge bg-white text-danger px-3 py-2 rounded-pill">Awaiting Scan...</span>
+                            </div>
+                        </div>
+                    </div>
 
-                    <select asp-for="PaymentMethod"
-                            class="form-select">
-                        <option value="">-- Select Method --</option>
-                        <option value="Cash">Cash</option>
-                        <option value="Card">Card</option>
-                        <option value="ABA">ABA</option>
-                        <option value="ACLEDA">ACLEDA</option>
-                        <option value="Wing">Wing</option>
-                        <option value="Other">Other</option>
-                    </select>
-
-                    <span asp-validation-for="PaymentMethod"
-                          class="text-danger"></span>
+                    <!-- Cash Summary Panel -->
+                    <div class="card border-0 shadow-sm rounded-4 h-100" id="cashPanel">
+                        <div class="card-body p-4 d-flex flex-column justify-content-center text-center bg-light rounded-4">
+                            <i class="bi bi-cash-stack text-success opacity-50 mb-3" style="font-size: 4rem;"></i>
+                            <h4 class="fw-bold text-dark">Cash Settlement</h4>
+                            <p class="text-muted">Please collect the exact amount from the customer.</p>
+                            <h2 class="fw-bold text-success mb-0" id="cashAmountDisplay">$@usdTotal.ToString("N2")</h2>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="PaymentDate"
-                           class="form-label">
-                        Payment Date
-                    </label>
-
-                    <input asp-for="PaymentDate"
-                           type="datetime-local"
-                           class="form-control" />
-
-                    <span asp-validation-for="PaymentDate"
-                          class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Amount"
-                           class="form-label">
-                        Amount
-                    </label>
-
-                    <input asp-for="Amount"
-                           type="number"
-                           step="0.01"
-                           class="form-control"
-                           placeholder="0.00" />
-
-                    <span asp-validation-for="Amount"
-                          class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="PaymentStatus"
-                           class="form-label">
-                        Payment Status
-                    </label>
-
-                    <select asp-for="PaymentStatus"
-                            class="form-select">
-                        <option value="">-- Select Status --</option>
-                        <option value="Paid">Paid</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Cancelled">Cancelled</option>
-                        <option value="Refunded">Refunded</option>
-                    </select>
-
-                    <span asp-validation-for="PaymentStatus"
-                          class="text-danger"></span>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit"
-                            class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i>
-                        Save
-                    </button>
-
-                    <a asp-action="Index"
-                       class="btn btn-secondary">
-                        <i class="bi bi-arrow-left me-1"></i>
-                        Back
-                    </a>
-                </div>
-
-            </form>
-
-        </div>
+            </div>
+        </form>
     </div>
-
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync(
-            "_ValidationScriptsPartial");
-    }
+    <script>
+        const usdTotal = @usdTotal;
+        const khrTotal = @khrTotal;
+        
+        function updateAmountUI() {
+            const isUSD = document.getElementById('currUSD').checked;
+            const input = document.getElementById('amountInput');
+            const symbol = document.getElementById('currencySymbol');
+            const qrDisplay = document.getElementById('qrAmountDisplay');
+            const cashDisplay = document.getElementById('cashAmountDisplay');
+
+            if (isUSD) {
+                input.value = usdTotal.toFixed(2);
+                symbol.innerText = '$';
+                qrDisplay.innerText = '$' + usdTotal.toFixed(2) + ' USD';
+                cashDisplay.innerText = '$' + usdTotal.toFixed(2);
+            } else {
+                input.value = khrTotal.toFixed(0);
+                symbol.innerText = '៛';
+                // KHQR usually displays formatted Riel
+                const formattedKhr = new Intl.NumberFormat('en-US').format(khrTotal.toFixed(0));
+                qrDisplay.innerText = formattedKhr + '៛ KHR';
+                cashDisplay.innerText = formattedKhr + '៛';
+            }
+        }
+
+        function toggleQR() {
+            const method = document.getElementById('paymentMethod').value;
+            const qrPanel = document.getElementById('qrPanel');
+            const cashPanel = document.getElementById('cashPanel');
+            
+            if (method === 'QR Payment') {
+                qrPanel.style.display = 'flex';
+                cashPanel.style.display = 'none';
+            } else {
+                qrPanel.style.display = 'none';
+                cashPanel.style.display = 'flex';
+            }
+        }
+
+        // Initialize UI
+        updateAmountUI();
+        toggleQR();
+    </script>
 }
