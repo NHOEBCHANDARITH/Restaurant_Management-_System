@@ -1,300 +1,159 @@
 @{
-    ViewData["Title"] = "Executive Dashboard";
-    
-    decimal totalRevenue = ViewBag.TotalRevenue ?? 0m;
-    int totalOrders = ViewBag.TotalOrders ?? 0;
-    int pendingOrders = ViewBag.PendingOrders ?? 0;
-    int completedOrders = ViewBag.CompletedOrders ?? 0;
-    int totalCustomers = ViewBag.TotalCustomers ?? 0;
-    int todayReservations = ViewBag.TodayReservations ?? 0;
-    int totalTables = ViewBag.TotalTables ?? 0;
-    int availableTables = ViewBag.AvailableTables ?? 0;
-    int occupiedTables = ViewBag.OccupiedTables ?? 0;
-    int reservedTables = ViewBag.ReservedTables ?? 0;
-    int lowStockCount = ViewBag.LowStockCount ?? 0;
-    int totalMenuItems = ViewBag.TotalMenuItems ?? 0;
-
-    var recentOrders = ViewBag.RecentOrders as List<Restaurant_Management__System.Models.Order> ?? new List<Restaurant_Management__System.Models.Order>();
-    var recentReservations = ViewBag.RecentReservations as List<Restaurant_Management__System.Models.Reservation> ?? new List<Restaurant_Management__System.Models.Reservation>();
-    var lowStockItems = ViewBag.LowStockItems as List<Restaurant_Management__System.Models.Inventory> ?? new List<Restaurant_Management__System.Models.Inventory>();
+    ViewData["Title"] = "Dashboard Overview";
 }
 
-<!-- TOP WELCOME BANNER & QUICK ACTIONS -->
-<div class="row align-items-center g-3 mb-4">
-    <div class="col-md-7">
-        <h2 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
-            <span>Sovannaphum Overview</span>
-            <span class="badge bg-warning text-dark fs-6 rounded-pill">Live Service</span>
-        </h2>
-        <p class="text-muted mb-0">Real-time restaurant operations, active dining tables, orders, and inventory analytics.</p>
+<!-- Dashboard Header -->
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">Welcome back, Admin! 👋</h2>
+        <p class="text-muted mb-0">Here's what's happening at the restaurant today, @DateTime.Now.ToString("MMMM dd, yyyy").</p>
     </div>
-    <div class="col-md-5 text-md-end">
-        <div class="d-inline-flex gap-2 flex-wrap">
-            <a asp-controller="Orders" asp-action="Create" class="btn rms-btn-primary">
-                <i class="bi bi-plus-circle"></i> New Order
-            </a>
-            <a asp-controller="Reservations" asp-action="Create" class="btn rms-btn-secondary">
-                <i class="bi bi-calendar-plus"></i> Reserve Table
-            </a>
-            <a asp-controller="Reports" asp-action="Index" class="btn rms-btn-secondary">
-                <i class="bi bi-bar-chart"></i> Reports
-            </a>
-        </div>
+    <div>
+        <a asp-controller="Orders" asp-action="Create" class="btn btn-primary rounded-3 shadow-sm px-4 py-2 fw-semibold" style="background: linear-gradient(135deg, #48beda 0%, #2099b5 100%); border: none;">
+            <i class="bi bi-plus-lg me-1"></i> New POS Order
+        </a>
     </div>
 </div>
 
-<!-- KPI SUMMARY STATS -->
-<div class="row g-3 mb-4">
-    <!-- Total Revenue -->
-    <div class="col-xl-3 col-md-6">
-        <div class="rms-stat-card">
-            <div>
-                <div class="rms-stat-label">Total Revenue</div>
-                <div class="rms-stat-value text-dark">$@totalRevenue.ToString("N2")</div>
-                <div class="rms-stat-subtext text-success">
-                    <i class="bi bi-arrow-up-right"></i>
-                    <span>@((totalRevenue * 4100).ToString("N0")) ៛ (KHR)</span>
-                </div>
-            </div>
-            <div class="rms-stat-icon-wrapper rms-icon-gold">
-                <i class="bi bi-currency-dollar"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Total Orders -->
-    <div class="col-xl-3 col-md-6">
-        <div class="rms-stat-card">
-            <div>
-                <div class="rms-stat-label">Total Orders</div>
-                <div class="rms-stat-value text-dark">@totalOrders</div>
-                <div class="rms-stat-subtext text-primary">
-                    <i class="bi bi-hourglass-split"></i>
-                    <span>@pendingOrders Pending / Prep</span>
-                </div>
-            </div>
-            <div class="rms-stat-icon-wrapper rms-icon-blue">
-                <i class="bi bi-receipt-cutoff"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Active Reservations -->
-    <div class="col-xl-3 col-md-6">
-        <div class="rms-stat-card">
-            <div>
-                <div class="rms-stat-label">Reservations</div>
-                <div class="rms-stat-value text-dark">@todayReservations</div>
-                <div class="rms-stat-subtext text-warning">
-                    <i class="bi bi-calendar-check"></i>
-                    <span>Scheduled Bookings</span>
-                </div>
-            </div>
-            <div class="rms-stat-icon-wrapper rms-icon-purple">
-                <i class="bi bi-calendar2-week"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Available Tables -->
-    <div class="col-xl-3 col-md-6">
-        <div class="rms-stat-card">
-            <div>
-                <div class="rms-stat-label">Dining Tables</div>
-                <div class="rms-stat-value text-dark">@availableTables <span class="fs-6 text-muted fw-normal">/ @totalTables</span></div>
-                <div class="rms-stat-subtext text-success">
-                    <i class="bi bi-check-circle"></i>
-                    <span>@availableTables Tables Ready</span>
-                </div>
-            </div>
-            <div class="rms-stat-icon-wrapper rms-icon-emerald">
-                <i class="bi bi-table"></i>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- SECONDARY KPI ROW -->
-<div class="row g-3 mb-4">
-    <div class="col-md-4">
-        <div class="rms-card p-3 d-flex align-items-center gap-3">
-            <div class="rounded-3 p-3 bg-light text-primary fs-3">
-                <i class="bi bi-people-fill"></i>
-            </div>
-            <div>
-                <small class="text-muted fw-bold text-uppercase d-block">Registered Guests</small>
-                <h4 class="fw-bold mb-0 text-dark">@totalCustomers</h4>
-            </div>
-            <a asp-controller="Customers" asp-action="Index" class="btn btn-sm rms-btn-secondary ms-auto">Directory</a>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="rms-card p-3 d-flex align-items-center gap-3">
-            <div class="rounded-3 p-3 bg-light text-warning fs-3">
-                <i class="bi bi-cup-hot-fill"></i>
-            </div>
-            <div>
-                <small class="text-muted fw-bold text-uppercase d-block">Menu Specialties</small>
-                <h4 class="fw-bold mb-0 text-dark">@totalMenuItems Dishes</h4>
-            </div>
-            <a asp-controller="MenuItems" asp-action="Index" class="btn btn-sm rms-btn-secondary ms-auto">Menu</a>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="rms-card p-3 d-flex align-items-center gap-3">
-            <div class="rounded-3 p-3 @(lowStockCount > 0 ? "bg-danger bg-opacity-10 text-danger" : "bg-success bg-opacity-10 text-success") fs-3">
-                <i class="bi bi-boxes"></i>
-            </div>
-            <div>
-                <small class="text-muted fw-bold text-uppercase d-block">Stock Alerts</small>
-                <h4 class="fw-bold mb-0 @(lowStockCount > 0 ? "text-danger" : "text-success")">
-                    @(lowStockCount > 0 ? $"{lowStockCount} Low Items" : "Stock Healthy")
-                </h4>
-            </div>
-            <a asp-controller="Inventories" asp-action="Index" class="btn btn-sm rms-btn-secondary ms-auto">Inventory</a>
-        </div>
-    </div>
-</div>
-
-<!-- CHARTS ROW -->
+<!-- Key Metrics Row -->
 <div class="row g-4 mb-4">
-    <!-- Revenue & Sales Performance Chart -->
-    <div class="col-lg-8">
-        <div class="rms-card h-100">
-            <div class="rms-card-header">
-                <h5 class="rms-card-title">
-                    <i class="bi bi-graph-up-arrow text-warning"></i>
-                    Revenue &amp; Orders Trend
-                </h5>
-                <span class="badge bg-light text-muted border">Daily Dining Service</span>
-            </div>
-            <div class="rms-card-body">
-                <canvas id="rmsSalesChart" height="260"></canvas>
+    <!-- Revenue Card -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 rounded-4 shadow-sm h-100">
+            <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted fw-semibold mb-2">Total Sales</h6>
+                    <h3 class="fw-bold mb-0 text-dark">
+                        @if (ViewBag.TotalRevenue != null) {
+                            @(((decimal)ViewBag.TotalRevenue).ToString("C"))
+                        } else {
+                            <span>$0.00</span>
+                        }
+                    </h3>
+                </div>
+                <div class="rounded-circle bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; font-size: 24px;">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Table Occupancy & Status Doughnut -->
-    <div class="col-lg-4">
-        <div class="rms-card h-100">
-            <div class="rms-card-header">
-                <h5 class="rms-card-title">
-                    <i class="bi bi-pie-chart text-primary"></i>
-                    Table Seating Status
-                </h5>
-                <a asp-controller="DiningTables" asp-action="Index" class="btn btn-sm rms-btn-secondary py-1">View Floor</a>
-            </div>
-            <div class="rms-card-body d-flex flex-column align-items-center justify-content-center">
-                <div style="width: 220px; height: 220px; position: relative;">
-                    <canvas id="rmsTablesChart"></canvas>
+    <!-- Active Orders Card -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 rounded-4 shadow-sm h-100">
+            <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted fw-semibold mb-2">Active Orders</h6>
+                    <h3 class="fw-bold mb-0 text-dark">@(ViewBag.PendingOrders ?? 0)</h3>
                 </div>
-                <div class="d-flex justify-content-center gap-3 mt-4 text-center">
-                    <div>
-                        <span class="d-inline-block rounded-circle bg-success me-1" style="width: 8px; height: 8px;"></span>
-                        <small class="text-muted d-block">Available</small>
-                        <strong class="text-dark">@availableTables</strong>
-                    </div>
-                    <div>
-                        <span class="d-inline-block rounded-circle bg-danger me-1" style="width: 8px; height: 8px;"></span>
-                        <small class="text-muted d-block">Occupied</small>
-                        <strong class="text-dark">@occupiedTables</strong>
-                    </div>
-                    <div>
-                        <span class="d-inline-block rounded-circle bg-warning me-1" style="width: 8px; height: 8px;"></span>
-                        <small class="text-muted d-block">Reserved</small>
-                        <strong class="text-dark">@reservedTables</strong>
-                    </div>
+                <div class="rounded-circle bg-warning bg-opacity-10 text-warning d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; font-size: 24px;">
+                    <i class="bi bi-receipt"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tables Card -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 rounded-4 shadow-sm h-100">
+            <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted fw-semibold mb-2">Available Tables</h6>
+                    <h3 class="fw-bold mb-0 text-dark">
+                        @(ViewBag.AvailableTables ?? 0) <span class="fs-6 text-muted fw-normal">/ @(ViewBag.TotalTables ?? 0)</span>
+                    </h3>
+                </div>
+                <div class="rounded-circle bg-info bg-opacity-10 text-info d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; font-size: 24px;">
+                    <i class="bi bi-grid-3x3-gap"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Stock Card -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card border-0 rounded-4 shadow-sm h-100">
+            <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted fw-semibold mb-2">Low Stock Alerts</h6>
+                    <h3 class="fw-bold mb-0 text-dark">@(ViewBag.LowStockCount ?? 0)</h3>
+                </div>
+                <div class="rounded-circle bg-danger bg-opacity-10 text-danger d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; font-size: 24px;">
+                    <i class="bi bi-exclamation-triangle"></i>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- RECENT ORDERS & RESERVATIONS SCHEDULE -->
+<!-- Dual Panels Row -->
 <div class="row g-4">
-    <!-- Recent Orders -->
+    <!-- Left Panel: Recent Orders -->
     <div class="col-lg-8">
-        <div class="rms-card h-100">
-            <div class="rms-card-header">
-                <h5 class="rms-card-title">
-                    <i class="bi bi-receipt text-warning"></i>
-                    Recent Dining Orders
-                </h5>
-                <a asp-controller="Orders" asp-action="Index" class="btn btn-sm rms-btn-secondary">
-                    View All Orders <i class="bi bi-arrow-right ms-1"></i>
-                </a>
+        <div class="card border-0 rounded-4 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold text-dark mb-0">Recent Orders</h5>
+                <a asp-controller="Orders" asp-action="Index" class="btn btn-sm btn-light text-primary fw-semibold rounded-pill px-3">View All</a>
             </div>
-            <div class="rms-table-wrapper border-0 rounded-0">
+            <div class="card-body p-4">
                 <div class="table-responsive">
-                    <table class="rms-table align-middle">
-                        <thead>
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-muted">
                             <tr>
-                                <th>Order #</th>
-                                <th>Guest</th>
-                                <th>Table</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th class="text-end pe-3">Action</th>
+                                <th class="border-0 rounded-start-2">Order ID</th>
+                                <th class="border-0">Customer</th>
+                                <th class="border-0">Amount</th>
+                                <th class="border-0">Status</th>
+                                <th class="border-0 rounded-end-2">Date</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if (recentOrders.Any())
+                            @if (ViewBag.RecentOrders != null && ViewBag.RecentOrders.Count > 0)
                             {
-                                foreach (var order in recentOrders)
+                                foreach (var order in ViewBag.RecentOrders)
                                 {
                                     <tr>
+                                        <td class="fw-semibold text-primary">#@order.OrderId</td>
                                         <td>
-                                            <span class="badge rms-badge-primary">#@order.OrderId</span>
-                                        </td>
-                                        <td>
-                                            <strong class="text-dark">@(order.Customer?.CustomerName ?? "Walk-in Guest")</strong>
-                                        </td>
-                                        <td>
-                                            <span class="text-muted">
-                                                <i class="bi bi-table text-warning me-1"></i>
-                                                @(order.DiningTable != null ? $"Table {order.DiningTable.TableNumber}" : "Takeaway")
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <strong class="text-dark font-monospace">$@order.TotalAmount.ToString("N2")</strong>
-                                        </td>
-                                        <td>
-                                            @if (order.Status == "Completed")
+                                            @if(order.Customer != null)
                                             {
-                                                <span class="rms-badge rms-badge-success"><span class="rms-badge-dot"></span> Completed</span>
-                                            }
-                                            else if (order.Status == "Pending")
-                                            {
-                                                <span class="rms-badge rms-badge-warning"><span class="rms-badge-dot"></span> Pending</span>
-                                            }
-                                            else if (order.Status == "Preparing" || order.Status == "Processing")
-                                            {
-                                                <span class="rms-badge rms-badge-info"><span class="rms-badge-dot"></span> Preparing</span>
-                                            }
-                                            else if (order.Status == "Cancelled")
-                                            {
-                                                <span class="rms-badge rms-badge-danger"><span class="rms-badge-dot"></span> Cancelled</span>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="bg-light rounded-circle text-center d-flex align-items-center justify-content-center text-muted" style="width: 32px; height: 32px; font-size: 12px; font-weight: 600;">
+                                                        @(order.Customer.CustomerName.Substring(0, 1).ToUpper())
+                                                    </div>
+                                                    <span class="fw-medium">@order.Customer.CustomerName</span>
+                                                </div>
                                             }
                                             else
                                             {
-                                                <span class="rms-badge rms-badge-secondary"><span class="rms-badge-dot"></span> @order.Status</span>
+                                                <span class="text-muted fw-medium"><i class="bi bi-person-fill text-black-50 me-1"></i> Walk-in Guest</span>
                                             }
                                         </td>
-                                        <td class="text-end pe-3">
-                                            <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.OrderId" 
-                                               class="btn btn-sm rms-btn-secondary py-1 px-2" title="View Bill">
-                                                <i class="bi bi-receipt"></i> Bill
-                                            </a>
+                                        <td class="fw-semibold">@order.TotalAmount.ToString("C")</td>
+                                        <td>
+                                            @if (order.Status == "Completed")
+                                            {
+                                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 border border-success border-opacity-25">Completed</span>
+                                            }
+                                            else if (order.Status == "Pending" || order.Status == "Preparing")
+                                            {
+                                                <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2 border border-warning border-opacity-25">@order.Status</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-2 border border-secondary border-opacity-25">@order.Status</span>
+                                            }
                                         </td>
+                                        <td class="text-muted small">@order.OrderDate.ToString("MMM dd, hh:mm tt")</td>
                                     </tr>
                                 }
                             }
                             else
                             {
                                 <tr>
-                                    <td colspan="6" class="text-center py-4 text-muted">
-                                        <i class="bi bi-receipt fs-3 d-block mb-1 opacity-50"></i>
-                                        No recent orders placed yet.
+                                    <td colspan="5" class="text-center text-muted py-5">
+                                        <i class="bi bi-receipt fs-1 text-black-50 mb-2 d-block"></i>
+                                        No recent orders found.
                                     </td>
                                 </tr>
                             }
@@ -305,169 +164,60 @@
         </div>
     </div>
 
-    <!-- Today's Schedule & Low Stock Alerts -->
+    <!-- Right Panel: Floor & Reservations -->
     <div class="col-lg-4">
-        <!-- Upcoming Reservations Card -->
-        <div class="rms-card mb-4">
-            <div class="rms-card-header">
-                <h5 class="rms-card-title">
-                    <i class="bi bi-clock-history text-primary"></i>
-                    Today's Bookings
-                </h5>
-                <a asp-controller="Reservations" asp-action="Index" class="btn btn-sm rms-btn-secondary py-1">All</a>
+        <div class="card border-0 rounded-4 shadow-sm h-100">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+                <h5 class="fw-bold text-dark mb-0">Floor Status</h5>
             </div>
-            <div class="rms-card-body p-3">
-                @if (recentReservations.Any())
-                {
-                    <div class="list-group list-group-flush">
-                        @foreach (var res in recentReservations.Take(3))
+            <div class="card-body p-4">
+                
+                <div class="d-flex justify-content-between mb-4 text-center gap-3">
+                    <div class="p-3 bg-light rounded-4 flex-fill border">
+                        <h4 class="text-danger fw-bold mb-1">@(ViewBag.OccupiedTables ?? 0)</h4>
+                        <span class="small text-muted fw-semibold">Occupied</span>
+                    </div>
+                    <div class="p-3 bg-light rounded-4 flex-fill border">
+                        <h4 class="text-primary fw-bold mb-1">@(ViewBag.ReservedTables ?? 0)</h4>
+                        <span class="small text-muted fw-semibold">Reserved</span>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-dark mb-3 mt-4 d-flex justify-content-between align-items-center">
+                    Upcoming Reservations
+                    <span class="badge bg-primary rounded-pill">@(ViewBag.TodayReservations ?? 0) Today</span>
+                </h6>
+                
+                <div class="list-group list-group-flush rounded-3 border">
+                    @if (ViewBag.RecentReservations != null && ViewBag.RecentReservations.Count > 0)
+                    {
+                        foreach (var res in ViewBag.RecentReservations)
                         {
-                            <div class="list-group-item px-0 py-3 border-bottom d-flex align-items-center justify-content-between">
+                            <div class="list-group-item px-3 py-3 border-bottom d-flex align-items-center justify-content-between">
                                 <div>
-                                    <strong class="text-dark d-block">@(res.Customer?.CustomerName ?? "Reserved Guest")</strong>
+                                    <h6 class="mb-1 fw-bold text-dark">@res.Customer?.CustomerName</h6>
                                     <small class="text-muted">
-                                        <i class="bi bi-clock me-1"></i>@res.ReservationDate.ToString("hh:mm tt") • 
-                                        <i class="bi bi-people ms-1 me-1"></i>@res.Guests guests
+                                        <i class="bi bi-clock me-1"></i> @res.ReservationDate.ToString("hh:mm tt")
+                                        &bull; <i class="bi bi-people ms-1 me-1"></i> @res.Guests guests
                                     </small>
                                 </div>
-                                <span class="badge @(res.Status == "Confirmed" ? "bg-success" : "bg-warning text-dark")">
-                                    @res.Status
-                                </span>
+                                <span class="badge bg-light text-dark border px-2 py-1 shadow-sm">Table @res.DiningTable?.TableNumber</span>
                             </div>
                         }
-                    </div>
-                }
-                else
-                {
-                    <div class="text-center py-4 text-muted">
-                        <i class="bi bi-calendar-check fs-3 d-block mb-1 opacity-50"></i>
-                        No reservations scheduled today.
-                    </div>
-                }
-            </div>
-        </div>
-
-        <!-- Low Stock Items Warning -->
-        <div class="rms-card">
-            <div class="rms-card-header bg-light">
-                <h5 class="rms-card-title text-danger fs-6">
-                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                    Kitchen Low Stock Alert
-                </h5>
-                <a asp-controller="Inventories" asp-action="Index" class="btn btn-sm btn-outline-danger py-0 px-2">Restock</a>
-            </div>
-            <div class="rms-card-body p-3">
-                @if (lowStockItems.Any())
-                {
-                    @foreach (var item in lowStockItems)
+                    }
+                    else
                     {
-                        <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
-                            <div>
-                                <strong class="text-dark small d-block">@(item.Ingredient?.IngredientName ?? "Ingredient #" + item.IngredientId)</strong>
-                                <small class="text-muted">Stock level warning</small>
-                            </div>
-                            <span class="badge bg-danger rounded-pill">
-                                @item.Quantity left
-                            </span>
+                        <div class="list-group-item text-center text-muted py-4 bg-light">
+                            <i class="bi bi-calendar-x fs-4 d-block mb-2 text-black-50"></i>
+                            No upcoming reservations today.
                         </div>
                     }
-                }
-                else
-                {
-                    <div class="text-center py-3 text-success small">
-                        <i class="bi bi-check-circle fs-4 d-block mb-1"></i>
-                        All ingredients have adequate stock.
-                    </div>
-                }
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a asp-controller="Reservations" asp-action="Index" class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-semibold">View All Reservations</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // 1. Sales Trend Line Chart
-            const ctxSales = document.getElementById('rmsSalesChart');
-            if (ctxSales) {
-                new Chart(ctxSales, {
-                    type: 'line',
-                    data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Today'],
-                        datasets: [{
-                            label: 'Revenue ($)',
-                            data: [350, 480, 420, 690, 850, 1120, @(totalRevenue > 0 ? totalRevenue : 850)],
-                            borderColor: '#d97706',
-                            backgroundColor: 'rgba(217, 119, 6, 0.1)',
-                            fill: true,
-                            tension: 0.35,
-                            borderWidth: 3,
-                            pointBackgroundColor: '#d97706',
-                            pointRadius: 4
-                        },
-                        {
-                            label: 'Orders Count',
-                            data: [15, 22, 18, 30, 42, 58, @(totalOrders > 0 ? totalOrders : 45)],
-                            borderColor: '#0284c7',
-                            backgroundColor: 'transparent',
-                            borderDash: [5, 5],
-                            tension: 0.35,
-                            borderWidth: 2,
-                            pointBackgroundColor: '#0284c7',
-                            yAxisID: 'y1'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false,
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: { color: 'rgba(0, 0, 0, 0.05)' },
-                                ticks: { callback: value => '$' + value }
-                            },
-                            y1: {
-                                position: 'right',
-                                beginAtZero: true,
-                                grid: { display: false }
-                            },
-                            x: {
-                                grid: { display: false }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // 2. Dining Tables Status Doughnut Chart
-            const ctxTables = document.getElementById('rmsTablesChart');
-            if (ctxTables) {
-                new Chart(ctxTables, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Available', 'Occupied', 'Reserved'],
-                        datasets: [{
-                            data: [@availableTables, @occupiedTables, @reservedTables],
-                            backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
-                            borderWidth: 3,
-                            borderColor: '#ffffff',
-                            hoverOffset: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false }
-                        },
-                        cutout: '72%'
-                    }
-                });
-            }
-        });
-    </script>
-}
